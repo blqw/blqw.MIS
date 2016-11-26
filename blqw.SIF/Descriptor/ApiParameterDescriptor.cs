@@ -53,7 +53,14 @@ namespace blqw.SIF.Descriptor
         /// </summary>
         public ICollection<DataValidationAttribute> Validations { get; }
 
+        /// <summary>
+        /// 参数默认值
+        /// </summary>
         public object DefaultValue { get; }
+
+        /// <summary>
+        /// 参数名
+        /// </summary>
         public string Name { get; }
 
         /// <summary>
