@@ -19,25 +19,13 @@ namespace blqw.SIF.Descriptor
         /// </summary>
         /// <param name="type"></param>
         /// <param name="method"></param>
-        public ApiDescriptor(Type type, MethodInfo method)
+        public ApiDescriptor(ApiClassDescriptor apiClass, MethodInfo method)
         {
-            if (type == null) throw new ArgumentNullException(nameof(type));
-            if (method == null) throw new ArgumentNullException(nameof(method));
-            Type = type;
-            Method = method;
-            Parameters = new ReadOnlyCollection<ApiParameterDescriptor>(method.GetParameters().Select(it => new ApiParameterDescriptor(this, it)).ToList());
+            Class = apiClass ?? throw new ArgumentNullException(nameof(apiClass));
+            Method = method ?? throw new ArgumentNullException(nameof(method));
+            Parameters = new ReadOnlyCollection<ApiParameterDescriptor>(method.GetParameters().Select(it => new ApiParameterDescriptor(it)).ToList());
         }
-
-        /// <summary>
-        /// 创建新的接口实例
-        /// </summary>
-        /// <param name="dataGetter"></param>
-        /// <returns></returns>
-        public object CreateInstance(IApiDataGetter dataGetter)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         /// <summary>
         /// 接口方法
         /// </summary>
@@ -46,7 +34,7 @@ namespace blqw.SIF.Descriptor
         /// <summary>
         /// 接口类
         /// </summary>
-        public Type Type { get; }
+        public ApiClassDescriptor Class { get; }
 
         /// <summary>
         /// 参数描述集合
@@ -57,28 +45,36 @@ namespace blqw.SIF.Descriptor
         /// 调用api方法,获取返回值
         /// </summary>
         /// <param name="api">接口对象</param>
-        /// <param name="dataGetter">参数获取器</param>
+        /// <param name="dataProvider">Api数据提供程序</param>
         /// <returns></returns>
-        public object Invoke(object api, IApiDataGetter dataGetter)
+        public object Invoke(object api, IApiDataProvider dataProvider)
         {
-            if (api == null) throw new ArgumentNullException(nameof(api));
-            if (dataGetter == null) throw new ArgumentNullException(nameof(dataGetter));
+            if (dataProvider == null) throw new ArgumentNullException(nameof(dataProvider));
+
+            if (Method.IsStatic)
+            {
+                api = null;
+            }
+            else if (api == null)
+            {
+                throw new ArgumentNullException(nameof(api));
+            }
+
             var args = new Dictionary<string, object>();
             foreach (var p in Parameters)
             {
-                object value;
-                if (dataGetter.TryGetParameter(p, out value))
+                if (dataProvider.TryGetParameter(p, out object value))
                 {
                     value = p.DefaultValue;
                 }
                 args.Add(p.Name, value);
             }
+
             var ex = Validator.IsValid(Method, args, false);
             if (ex != null)
             {
                 return ex;
             }
-
             return Method.Invoke(api, args.Values.ToArray());
         }
     }

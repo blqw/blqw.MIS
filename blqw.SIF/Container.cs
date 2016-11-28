@@ -32,5 +32,15 @@ namespace blqw.SIF
         public ServiceCollection Services { get; }
 
 
+        /// <summary>
+        /// 如果Api是静态方法,则该方法返回null
+        /// <para></para>如果Api所在类是抽象类,则返回null,如果<seealso cref="IApiDataProvider"/>提供的参数无法正确调用构造函数,则抛出异常
+        /// <para></para>否则返回指定Api所在类的实例,
+        /// </summary>
+        /// <param name="api">Api描述</param>
+        /// <param name="dataProvider">Api数据提供程序</param>
+        /// <returns></returns>
+        public object CreateApiInstance(ApiDescriptor api, IApiDataProvider dataProvider)
+            => api.Method.IsStatic || api.Class.Type.IsAbstract ? null : Activator.CreateInstance(api.Class.Type);
     }
 }

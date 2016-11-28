@@ -18,12 +18,9 @@ namespace blqw.SIF.Descriptor
         /// </summary>
         /// <param name="api"></param>
         /// <param name="parameter"></param>
-        public ApiParameterDescriptor(ApiDescriptor api, ParameterInfo parameter)
+        public ApiParameterDescriptor(ParameterInfo parameter)
         {
-            if (api == null) throw new ArgumentNullException(nameof(api));
-            if (parameter == null) throw new ArgumentNullException(nameof(parameter));
-            Api = api;
-            Parameter = parameter;
+            Parameter = parameter ?? throw new ArgumentNullException(nameof(parameter));
             Name = parameter.Name;
             var defattr = Attribute.GetCustomAttribute(parameter, typeof(DefaultValueAttribute), true) as DefaultValueAttribute;
             if (defattr != null)
@@ -34,25 +31,13 @@ namespace blqw.SIF.Descriptor
             {
                 DefaultValue = parameter.DefaultValue;
             }
-            Validations = new ReadOnlyCollection<DataValidationAttribute>((DataValidationAttribute[])parameter.GetCustomAttributes(typeof(DataValidationAttribute), true));
         }
-
-        /// <summary>
-        ///     接口
-        /// </summary>
-        public ApiDescriptor Api { get; }
 
         /// <summary>
         ///     接口参数
         /// </summary>
         public ParameterInfo Parameter { get; }
-
-
-        /// <summary>
-        ///     当前参数的验证特性
-        /// </summary>
-        public ICollection<DataValidationAttribute> Validations { get; }
-
+        
         /// <summary>
         /// 参数默认值
         /// </summary>
@@ -62,17 +47,5 @@ namespace blqw.SIF.Descriptor
         /// 参数名
         /// </summary>
         public string Name { get; }
-
-        /// <summary>
-        ///     检查数据字段的值是否有效
-        /// </summary>
-        /// <param name="value">要验证的值</param>
-        /// <param name="items"> 与要验证的值关联的键/值对的字典</param>
-        /// <returns></returns>
-        public ApiException IsValid(object value, IDictionary<string, object> items)
-            => (from it in Validations
-                where it.IsValid(value, items) == false
-                select new ApiException(it.ErrorCode, it.GetErrorMessage(value, items))
-            ).FirstOrDefault();
     }
 }

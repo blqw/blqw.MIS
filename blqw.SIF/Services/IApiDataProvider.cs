@@ -7,23 +7,23 @@ using System.Text;
 namespace blqw.SIF.Services
 {
     /// <summary>
-    /// 用于获取api参数数据
+    /// Api数据提供程序
     /// </summary>
-    public interface IApiDataGetter
+    public interface IApiDataProvider
     {
         /// <summary>
         /// 尝试获取api参数
         /// </summary>
-        /// <param name="parameter">参数</param>
+        /// <param name="parameter">参数描述</param>
         /// <param name="value">如果获取成功,返回参数值</param>
         /// <returns></returns>
         bool TryGetParameter(ApiParameterDescriptor parameter, out object value);
         /// <summary>
         /// 尝试获取api属性
         /// </summary>
-        /// <param name="argName"></param>
-        /// <param name="value"></param>
+        /// <param name="property">属性描述</param>
+        /// <param name="value">如果获取成功,返回属性值</param>
         /// <returns></returns>
-        bool TryGetProperty(string argName, out object value);
+        bool TryGetProperty(ApiPropertyDescriptor property, out object value);
     }
 }

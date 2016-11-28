@@ -9,7 +9,7 @@ namespace blqw.SIF
     public class ApiCollection
     {
         public ICollection<NamespaceDescriptor> Namespaces { get; set; }
-        public ICollection<TypeDescriptor> Types { get; set; }
+        public ICollection<ApiClassDescriptor> Types { get; set; }
         public ICollection<ApiDescriptor> Apis { get; set; }
     }
 }

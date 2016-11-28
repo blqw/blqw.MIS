@@ -9,9 +9,9 @@ using Microsoft.Owin;
 
 namespace blqw.SIF.Owin
 {
-    class DataGetter : IApiDataGetter
+    class dataProvider : IApiDataProvider
     {
-        public DataGetter(IOwinContext context)
+        public dataProvider(IOwinContext context)
         {
 
         }
