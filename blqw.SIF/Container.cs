@@ -16,15 +16,15 @@ namespace blqw.SIF
         /// 初始化容器
         /// </summary>
         /// <param name="id">容器名称,唯一标识</param>
-        public Container(string id)
+        public Container(string id, IServiceProvider provider)
         {
-            
+
         }
 
         /// <summary>
         /// 接口集合
         /// </summary>
-        public ICollection<ApiDescriptor> Apis { get; }
+        public ApiCollection Apis { get; }
 
         /// <summary>
         /// 服务集合
