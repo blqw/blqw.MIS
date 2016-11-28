@@ -1,4 +1,6 @@
-﻿using System;
+﻿using blqw.SIF.Services;
+using blqw.SIF.Validation;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -27,6 +29,16 @@ namespace blqw.SIF.Descriptor
         }
 
         /// <summary>
+        /// 创建新的接口实例
+        /// </summary>
+        /// <param name="dataGetter"></param>
+        /// <returns></returns>
+        public object CreateInstance(IApiDataGetter dataGetter)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// 接口方法
         /// </summary>
         public MethodInfo Method { get; }
@@ -45,28 +57,29 @@ namespace blqw.SIF.Descriptor
         /// 调用api方法,获取返回值
         /// </summary>
         /// <param name="api">接口对象</param>
-        /// <param name="apiParameters">接口参数</param>
+        /// <param name="dataGetter">参数获取器</param>
         /// <returns></returns>
-        public object Invoke(object api, IDictionary<string, object> apiParameters)
+        public object Invoke(object api, IApiDataGetter dataGetter)
         {
             if (api == null) throw new ArgumentNullException(nameof(api));
-            if (apiParameters == null) throw new ArgumentNullException(nameof(apiParameters));
-            var args = new object[Parameters.Count];
+            if (dataGetter == null) throw new ArgumentNullException(nameof(dataGetter));
+            var args = new Dictionary<string, object>();
             foreach (var p in Parameters)
             {
                 object value;
-                if (apiParameters.TryGetValue(p.Name, out value) == false)
+                if (dataGetter.TryGetParameter(p, out value))
                 {
                     value = p.DefaultValue;
                 }
-                var ex = p.IsValid(value, apiParameters);
-                if (ex != null)
-                {
-                    return ex;
-                }
-                args[p.Parameter.Position] = value;
+                args.Add(p.Name, value);
             }
-            return Method.Invoke(api, args);
+            var ex = Validator.IsValid(Method, args, false);
+            if (ex != null)
+            {
+                return ex;
+            }
+
+            return Method.Invoke(api, args.Values.ToArray());
         }
     }
 }

@@ -56,8 +56,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataGetter.cs" />
     <Compile Include="OwinProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RouteTable.cs" />
     <Compile Include="SIFMiddleware.cs" />
   </ItemGroup>
   <ItemGroup>

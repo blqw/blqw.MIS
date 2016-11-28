@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using Microsoft.Owin;
 using System.Threading.Tasks;
-using blqw.SIF.Descriptor;
 
 /// <summary>
 /// Middleware类必须继承Microsoft.Owin.OwinMiddleware

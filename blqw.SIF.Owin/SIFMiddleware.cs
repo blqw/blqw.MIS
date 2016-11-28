@@ -10,34 +10,36 @@ namespace blqw.SIF.Owin
     public sealed class SIFMiddleware : OwinMiddleware
     {
         private Container _container;
+        private RouteTable _routeTable;
 
         public SIFMiddleware(OwinMiddleware next)
             : base(next)
         {
             _container = new Container("Owin", new OwinProvider());
-            _routes = new Dictionary<string, ApiDescriptor>();
+            _routeTable = new RouteTable(_container.Apis);
         }
 
-        private readonly Dictionary<string, ApiDescriptor> _routes;
-        public override Task Invoke(IOwinContext context)
+
+        public override async Task Invoke(IOwinContext context)
         {
-            ApiDescriptor api;
-            if (_routes.TryGetValue(context.Request.Path.Value, out api))
+            var api = _routeTable.Select(context);
+            if (api != null)
             {
-                var param = new Dictionary<string, object>();
-                foreach (var q in context.Request.Query)
-                {
-                    var q -
-                }
-                var obj = Activator.CreateInstance(api.Type);
-                api.Invoke(obj, null);
+                var dataGetter = new DataGetter(context);
+                var obj = api.CreateInstance(dataGetter);
+                var result = api.Invoke(obj, dataGetter);
+
+                var content = result.ToString();
                 context.Response.ContentType = "text/plain";
                 context.Response.ContentLength = content.Length;
                 context.Response.StatusCode = 200;
                 context.Response.Expires = DateTimeOffset.Now;
+                await context.Response.WriteAsync(content);
             }
-
-            return Next.Invoke(context);
+            else
+            {
+                await Next.Invoke(context);
+            }
         }
     }
 }

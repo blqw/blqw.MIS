@@ -5,25 +5,25 @@ using System.Text;
 
 namespace blqw.SIF
 {
+
     /// <summary>
-    /// 表示可以用于对外提供接口的方法
+    /// 表示Api属性
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-    public class ApiAttribute : Attribute, IApiAttribute
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = false)]
+    public sealed class ApiPropertyAttribute : Attribute, IApiAttribute
     {
         /// <summary>
         /// 初始化接口特性
         /// </summary>
-        public ApiAttribute()
+        public ApiPropertyAttribute()
         {
 
         }
-
         /// <summary>
         /// 使用指定设置字符串初始化接口特性
         /// </summary>
         /// <param name="settingString">接口设置</param>
-        public ApiAttribute(string settingString)
+        public ApiPropertyAttribute(string settingString)
         {
             SettingString = settingString;
         }
@@ -33,17 +33,16 @@ namespace blqw.SIF
         /// </summary>
         /// <param name="container">指定容器</param>
         /// <param name="settingString">接口设置</param>
-        public ApiAttribute(string container, string settingString)
+        public ApiPropertyAttribute(string container, string settingString)
         {
             Container = container;
             SettingString = settingString;
         }
-
         /// <summary>
         /// 容器ID
         /// </summary>
         public string Container { get; }
-        
+
         /// <summary>
         /// 设置字符串
         /// </summary>
