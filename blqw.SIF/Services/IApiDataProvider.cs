@@ -12,18 +12,18 @@ namespace blqw.SIF.Services
     public interface IApiDataProvider
     {
         /// <summary>
-        /// 尝试获取api参数
+        /// 获取api参数
         /// </summary>
         /// <param name="parameter">参数描述</param>
         /// <param name="value">如果获取成功,返回参数值</param>
         /// <returns></returns>
-        bool TryGetParameter(ApiParameterDescriptor parameter, out object value);
+        ApiData GetParameter(ApiParameterDescriptor parameter);
         /// <summary>
-        /// 尝试获取api属性
+        /// 获取api属性
         /// </summary>
         /// <param name="property">属性描述</param>
         /// <param name="value">如果获取成功,返回属性值</param>
         /// <returns></returns>
-        bool TryGetProperty(ApiPropertyDescriptor property, out object value);
+        ApiData GetProperty(ApiPropertyDescriptor property);
     }
 }

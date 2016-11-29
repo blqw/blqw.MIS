@@ -42,5 +42,6 @@ namespace blqw.SIF.Descriptor
         /// 属性名
         /// </summary>
         public string Name { get; }
+        public Type PropertyType { get; set; }
     }
 }

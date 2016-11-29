@@ -22,6 +22,7 @@ namespace blqw.SIF.Descriptor
         {
             Parameter = parameter ?? throw new ArgumentNullException(nameof(parameter));
             Name = parameter.Name;
+            ParameterType = parameter.ParameterType;
             var defattr = Attribute.GetCustomAttribute(parameter, typeof(DefaultValueAttribute), true) as DefaultValueAttribute;
             if (defattr != null)
             {
@@ -47,5 +48,9 @@ namespace blqw.SIF.Descriptor
         /// 参数名
         /// </summary>
         public string Name { get; }
+        /// <summary>
+        /// 参数类型
+        /// </summary>
+        public Type ParameterType { get; }
     }
 }

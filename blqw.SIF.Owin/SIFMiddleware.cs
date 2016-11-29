@@ -26,7 +26,7 @@ namespace blqw.SIF.Owin
             if (api != null)
             {
                 var dataProvider = new dataProvider(context);
-                var obj = api.CreateInstance(dataProvider);
+                var obj = _container.CreateApiInstance(api, dataProvider);
                 var result = api.Invoke(obj, dataProvider);
 
                 var content = result.ToString();
