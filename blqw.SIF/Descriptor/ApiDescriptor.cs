@@ -25,7 +25,7 @@ namespace blqw.SIF.Descriptor
             Method = method ?? throw new ArgumentNullException(nameof(method));
             Parameters = new ReadOnlyCollection<ApiParameterDescriptor>(method.GetParameters().Select(it => new ApiParameterDescriptor(it)).ToList());
         }
-        
+
         /// <summary>
         /// 接口方法
         /// </summary>
@@ -63,19 +63,22 @@ namespace blqw.SIF.Descriptor
             var args = new Dictionary<string, object>();
             foreach (var p in Parameters)
             {
-                if (dataProvider.TryGetParameter(p, out object value))
+                var result = dataProvider.GetParameter(p);
+                if (result.Exists == false)
                 {
-                    value = p.DefaultValue;
+                    args.Add(p.Name, p.DefaultValue);
                 }
-                args.Add(p.Name, value);
+                else if (result.Error != null)
+                {
+                    return result.Error;
+                }
+                else
+                {
+                    args.Add(p.Name, result.Value);
+                }
             }
 
-            var ex = Validator.IsValid(Method, args, false);
-            if (ex != null)
-            {
-                return ex;
-            }
-            return Method.Invoke(api, args.Values.ToArray());
+            return Validator.IsValid(Method, args, false) ?? Method.Invoke(api, args.Values.ToArray());
         }
     }
 }

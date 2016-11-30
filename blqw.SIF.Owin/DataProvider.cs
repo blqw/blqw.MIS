@@ -53,7 +53,7 @@ namespace blqw.SIF.Owin
                 var encoding = GetEncoding(context.Request.ContentType) ?? Encoding.UTF8;
                 var json = encoding.GetString(bytes);
                 var obj = Json.ToObject(json);
-                return new InnerBody(obj)
+                return new InnerBody(obj);
             }
             throw new NotSupportedException("不支持的ContentType");
         }

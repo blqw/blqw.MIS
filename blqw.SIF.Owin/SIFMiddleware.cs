@@ -25,7 +25,7 @@ namespace blqw.SIF.Owin
             var api = _routeTable.Select(context);
             if (api != null)
             {
-                var dataProvider = new dataProvider(context);
+                var dataProvider = new DataProvider(context);
                 var obj = _container.CreateApiInstance(api, dataProvider);
                 var result = api.Invoke(obj, dataProvider);
 
