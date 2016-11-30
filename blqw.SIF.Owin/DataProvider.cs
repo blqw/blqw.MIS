@@ -53,7 +53,7 @@ namespace blqw.SIF.Owin
                 var encoding = GetEncoding(context.Request.ContentType) ?? Encoding.UTF8;
                 var json = encoding.GetString(bytes);
                 var obj = Json.ToObject(json);
-                return new InnerBody(obj)
+                return new InnerBody(obj, t => Json.ToObject(t, json));
             }
             throw new NotSupportedException("不支持的ContentType");
         }
@@ -63,43 +63,73 @@ namespace blqw.SIF.Owin
         {
             private object _obj;
             private IDictionary _dict;
+            private Func<Type, object> _converter;
 
-            public InnerBody(object obj)
+            public InnerBody(object obj, Func<Type, object> converter)
             {
                 _obj = obj;
                 _dict = obj as IDictionary;
+                _converter = converter;
             }
 
-            public string this[string key]
-            {
-                get
-                {
-                    if (_dict.Contains(key))
-                    {
-                        return _dict[key]?.ToString();
-                    }
-                    return null;
-                }
-            }
+            public string this[string key] => Get(key);
 
             public string Get(string key)
             {
-                throw new NotImplementedException();
+                if (_dict?.Contains(key) == true)
+                {
+                    return _dict[key]?.ToString();
+                }
+                return null;
             }
 
             public IEnumerator<KeyValuePair<string, string[]>> GetEnumerator()
             {
-                throw new NotImplementedException();
+                if (_dict == null)
+                {
+                    if (_obj is IEnumerable || _obj is IEnumerator)
+                    {
+                        yield return new KeyValuePair<string, string[]>(null, _obj.To<string[]>());
+                    }
+                    else
+                    {
+                        yield return new KeyValuePair<string, string[]>(null, (string[])_converter(typeof(string[])));
+                    }
+                    yield break;
+                }
+                foreach (DictionaryEntry item in _dict)
+                {
+                    yield return new KeyValuePair<string, string[]>((string)item.Key, item.Value.To<string[]>());
+                }
             }
 
             public IList<string> GetValues(string key)
             {
-                throw new NotImplementedException();
+                if (_dict?.Contains(key) == true)
+                {
+                    return _dict[key].To<IList<string>>();
+                }
+                return null;
             }
 
             IEnumerator IEnumerable.GetEnumerator()
             {
-                throw new NotImplementedException();
+                if (_dict == null)
+                {
+                    if (_obj is IEnumerable || _obj is IEnumerator)
+                    {
+                        yield return new KeyValuePair<string, string[]>(null, _obj);
+                    }
+                    else
+                    {
+                        yield return new KeyValuePair<string, string[]>(null, (string[])_converter(typeof(string[])));
+                    }
+                    yield break;
+                }
+                foreach (DictionaryEntry item in _dict)
+                {
+                    yield return new KeyValuePair<string, string[]>((string)item.Key, item.Value.To<string[]>());
+                }
             }
         }
 
