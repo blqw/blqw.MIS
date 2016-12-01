@@ -4,35 +4,54 @@ using System.Collections.Specialized;
 using System.Threading.Tasks;
 using blqw.SIF.Descriptor;
 using Microsoft.Owin;
+using System.Text;
 
 namespace blqw.SIF.Owin
 {
     public sealed class SIFMiddleware : OwinMiddleware
     {
-        private Container _container;
+        private ApiContainer _container;
         private RouteTable _routeTable;
 
         public SIFMiddleware(OwinMiddleware next)
             : base(next)
         {
-            _container = new Container("Owin", new OwinProvider());
+            _container = new ApiContainer("Owin", new OwinProvider());
             _routeTable = new RouteTable(_container.Apis);
         }
 
 
         public override async Task Invoke(IOwinContext context)
         {
+           
+            //AppDomain.CurrentDomain.GetAssemblies
             var api = _routeTable.Select(context);
             if (api != null)
             {
                 var dataProvider = new DataProvider(context);
                 var obj = _container.CreateApiInstance(api, dataProvider);
                 var result = api.Invoke(obj, dataProvider);
-
-                var content = result.ToString();
-                context.Response.ContentType = "text/plain";
+                var ex = result as Exception;
+                byte[] content;
+                if (ex == null)
+                {
+                    content = Encoding.UTF8.GetBytes(Json.ToJsonString(result));
+                    context.Response.ContentType = "application/json;charset=utf-8";
+                    context.Response.StatusCode = 200;
+                }
+                else if (ex is ApiException)
+                {
+                    content = Encoding.UTF8.GetBytes(Json.ToJsonString(new { ErrorCode = ex.HResult, Message = ex.Message, DetailMessage = ex.InnerException?.ToString() }));
+                    context.Response.ContentType = "application/json;charset=utf-8";
+                    context.Response.StatusCode = 251;
+                }
+                else
+                {
+                    content = Encoding.UTF8.GetBytes(result.ToString());
+                    context.Response.ContentType = "text/plain;charset=utf-8";
+                    context.Response.StatusCode = 500;
+                }
                 context.Response.ContentLength = content.Length;
-                context.Response.StatusCode = 200;
                 context.Response.Expires = DateTimeOffset.Now;
                 await context.Response.WriteAsync(content);
             }

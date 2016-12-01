@@ -12,18 +12,18 @@ namespace blqw.SIF.Descriptor
     /// <summary>
     /// 用于描述一个接口
     /// </summary>
-    public sealed class ApiDescriptor
+    public sealed class ApiDescriptor : IDescriptor
     {
         /// <summary>
         /// 初始化接口描述
         /// </summary>
         /// <param name="type"></param>
         /// <param name="method"></param>
-        public ApiDescriptor(ApiClassDescriptor apiClass, MethodInfo method)
+        public ApiDescriptor(ApiClassDescriptor apiClass, MethodInfo method, ApiContainer container, ApiSettings settings)
         {
-            Class = apiClass ?? throw new ArgumentNullException(nameof(apiClass));
+            ApiClass = apiClass ?? throw new ArgumentNullException(nameof(apiClass));
             Method = method ?? throw new ArgumentNullException(nameof(method));
-            Parameters = new ReadOnlyCollection<ApiParameterDescriptor>(method.GetParameters().Select(it => new ApiParameterDescriptor(it)).ToList());
+            Parameters = new ReadOnlyCollection<ApiParameterDescriptor>(method.GetParameters().Select(it => new ApiParameterDescriptor(apiClass, it, container, settings)).ToList());
         }
 
         /// <summary>
@@ -34,12 +34,23 @@ namespace blqw.SIF.Descriptor
         /// <summary>
         /// 接口类
         /// </summary>
-        public ApiClassDescriptor Class { get; }
+        public ApiClassDescriptor ApiClass { get; }
 
         /// <summary>
         /// 参数描述集合
         /// </summary>
         public ICollection<ApiParameterDescriptor> Parameters { get; }
+
+        /// <summary>
+        /// 属性描述集合
+        /// </summary>
+        public ICollection<ApiPropertyDescriptor> Properties => ApiClass.Properties;
+
+        public string Name { get; }
+
+        public ApiContainer Container { get; }
+
+        public ApiSettings Settings { get; }
 
         /// <summary>
         /// 调用api方法,获取返回值
@@ -79,6 +90,11 @@ namespace blqw.SIF.Descriptor
             }
 
             return Validator.IsValid(Method, args, false) ?? Method.Invoke(api, args.Values.ToArray());
+        }
+
+        internal static ApiDescriptor Create(MethodInfo m, ApiContainer container, ApiClassDescriptor apiclass)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -116,19 +116,12 @@ namespace blqw.SIF.Owin
             {
                 if (_dict == null)
                 {
-                    if (_obj is IEnumerable || _obj is IEnumerator)
-                    {
-                        yield return new KeyValuePair<string, string[]>(null, _obj);
-                    }
-                    else
-                    {
-                        yield return new KeyValuePair<string, string[]>(null, (string[])_converter(typeof(string[])));
-                    }
+                    yield return new KeyValuePair<string, object>(null, _obj);
                     yield break;
                 }
                 foreach (DictionaryEntry item in _dict)
                 {
-                    yield return new KeyValuePair<string, string[]>((string)item.Key, item.Value.To<string[]>());
+                    yield return new KeyValuePair<string, object>((string)item.Key, item.Value);
                 }
             }
         }

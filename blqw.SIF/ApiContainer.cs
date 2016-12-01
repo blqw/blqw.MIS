@@ -4,23 +4,28 @@ using System.Linq;
 using System.Text;
 using blqw.SIF.Descriptor;
 using blqw.SIF.Services;
+using System.Reflection;
 
 namespace blqw.SIF
 {
     /// <summary>
     /// 容器
     /// </summary>
-    public sealed class Container
+    public sealed class ApiContainer
     {
         /// <summary>
         /// 初始化容器
         /// </summary>
         /// <param name="id">容器名称,唯一标识</param>
-        public Container(string id, IServiceProvider provider)
+        public ApiContainer(string id, ApiServiceProvider serviceProvider)
         {
-
+            ID = id;
+            Services = serviceProvider;
+            Apis = new ApiCollection(this);
         }
 
+        public string ID { get; }
+        
         /// <summary>
         /// 接口集合
         /// </summary>
@@ -29,7 +34,7 @@ namespace blqw.SIF
         /// <summary>
         /// 服务集合
         /// </summary>
-        public ServiceCollection Services { get; }
+        public ApiServiceProvider Services { get; }
 
 
         /// <summary>
@@ -41,6 +46,7 @@ namespace blqw.SIF
         /// <param name="dataProvider">Api数据提供程序</param>
         /// <returns></returns>
         public object CreateApiInstance(ApiDescriptor api, IApiDataProvider dataProvider)
-            => api.Method.IsStatic || api.Class.Type.IsAbstract ? null : Activator.CreateInstance(api.Class.Type);
+            => api.Method.IsStatic || api.ApiClass.Type.GetTypeInfo().IsAbstract == true ? null : Activator.CreateInstance(api.ApiClass.Type);
     }
 }
+

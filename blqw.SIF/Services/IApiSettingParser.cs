@@ -10,6 +10,6 @@ namespace blqw.SIF.Services
     /// </summary>
     public interface IApiSettingParser : IService
     {
-        bool TryParse(string apiSettingString, out IDictionary<string, object> settings);
+        bool TryParse(IEnumerable<IApiAttribute> settingAttributes, out IDictionary<string, object> settings);
     }
 }
