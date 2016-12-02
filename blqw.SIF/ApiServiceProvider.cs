@@ -9,7 +9,7 @@ namespace blqw.SIF
 {
     public abstract class ApiServiceProvider
     {
-        public abstract Assembly[] Assemblies { get; }
+        public abstract IEnumerable<Type> Types { get; }
 
         public abstract IApiSettingParser SettingParser { get; }
 
@@ -20,11 +20,11 @@ namespace blqw.SIF
 
         public ApiSettings ParseSetting(IEnumerable<IApiAttribute> settingAttributes)
         {
-            if (settingAttributes.Any() == false)
+            var parser = GetService(SettingParser, false);
+            if (parser == null || settingAttributes.Any(it => it.SettingString != null) == false)
             {
                 return new ApiSettings();
             }
-            var parser = GetService(SettingParser);
             if (parser.TryParse(settingAttributes, out IDictionary<string, object> settings))
             {
                 return new ApiSettings(settings);
@@ -32,10 +32,14 @@ namespace blqw.SIF
             throw new InvalidOperationException($"{nameof(IApiSettingParser)}.TryParse:{parser.Name}");
         }
 
-        internal static T GetService<T>(T service)
+        internal static T GetService<T>(T service, bool required)
         {
             if (service == null)
-                throw new InvalidOperationException($"{nameof(ApiServiceProvider)}没有提供{typeof(T).Name}");
+            {
+                if (required)
+                    throw new InvalidOperationException($"{nameof(ApiServiceProvider)}没有提供{typeof(T).Name}");
+                return service;
+            }
             var iservice = service as IService;
             if (iservice == null)
             {
@@ -44,7 +48,7 @@ namespace blqw.SIF
             if (iservice.RequireClone)
             {
                 service = (T)iservice.Clone();
-                if (service == null)
+                if (service == null && required)
                 {
                     throw new InvalidOperationException($"{typeof(T).Name}.Clone()返回值为null");
                 }

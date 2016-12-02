@@ -23,7 +23,12 @@ namespace blqw.SIF.Descriptor
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
             Apis = new ReadOnlyCollection<ApiDescriptor>(_apis = new List<ApiDescriptor>());
             Properties = new ReadOnlyCollection<ApiPropertyDescriptor>(_properties = new List<ApiPropertyDescriptor>());
+            Name = type.Name;
+            FullName = GetFullName(type);
         }
+
+        private static string GetFullName(Type type)
+            => type.IsNested ? $"{GetFullName(type.DeclaringType)}.{type.Name}" : type.Name;
 
         public Type Type { get; }
         /// <summary>
@@ -40,7 +45,7 @@ namespace blqw.SIF.Descriptor
         public ApiContainer Container { get; }
 
         public ApiSettings Settings { get; }
-        
+
         /// <summary>
         /// 返回当前Api类的实例,如果当前类是静态类或抽象类,则返回null,如果<seealso cref="IApiDataProvider"/>提供的参数无法正确调用构造函数,则抛出异常
         /// </summary>
@@ -58,7 +63,7 @@ namespace blqw.SIF.Descriptor
         {
             var typeInfo = t.GetTypeInfo();
             var classAttrs = typeInfo.GetCustomAttributes<ApiClassAttribute>().ToArray();
-            
+
             var settings = container.Services.ParseSetting(classAttrs);
             var apiclass = new ApiClassDescriptor(t, container, settings);
 
@@ -71,7 +76,7 @@ namespace blqw.SIF.Descriptor
 
             var apis = typeInfo.DeclaredMethods
                                 .Where(it => it.IsPublic)
-                                .Select(it => ApiDescriptor.Create(it, container, apiclass))
+                                .Select(it => ApiDescriptor.Create(apiclass, it, container))
                                 .Where(it => it != null);
 
             apiclass._apis.AddRange(apis);

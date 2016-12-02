@@ -11,9 +11,10 @@ namespace OwinHost
     class Program
     {
         static void Main(string[] args)
-        {
+        { 
             StartOptions options = new StartOptions();
             options.Urls.Add("http://localhost:3398");
+            Console.WriteLine("http://localhost:3398");
             //Server实现类库设置
             options.ServerFactory = "Microsoft.Owin.Host.HttpListener";
             //以当前的Options和Startup启动Server

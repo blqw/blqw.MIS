@@ -22,7 +22,7 @@ namespace blqw.SIF.Owin
 
         public DataProvider(IOwinContext context)
         {
-            _context = _context ?? throw new ArgumentNullException(nameof(_context));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _query = _context.Request.Query;
             _header = _context.Request.Headers;
             _body = ParseBody(_context);
@@ -36,7 +36,7 @@ namespace blqw.SIF.Owin
         private IReadableStringCollection ParseBody(IOwinContext context)
         {
             var contentType = context.Request.ContentType;
-            if (contentType.StartsWith("application/x-www-form-urlencoded", StringComparison.OrdinalIgnoreCase))
+            if (contentType == null || contentType.StartsWith("application/x-www-form-urlencoded", StringComparison.OrdinalIgnoreCase))
             {
                 return context.Request.ReadFormAsync().Result;
             }
@@ -57,8 +57,7 @@ namespace blqw.SIF.Owin
             }
             throw new NotSupportedException("不支持的ContentType");
         }
-
-
+        
         private class InnerBody : IReadableStringCollection
         {
             private object _obj;
@@ -126,7 +125,7 @@ namespace blqw.SIF.Owin
             }
         }
 
-        static char[] _ContentTypeSeparator = new[] { ' ', ';' };
+        static char[] _contentTypeSeparator = new[] { ' ', ';' };
         private string GetFormat(string contentType)
         {
             if (contentType == null)
@@ -139,7 +138,7 @@ namespace blqw.SIF.Owin
                 return null;
             }
             i++;
-            var e = contentType.IndexOfAny(_ContentTypeSeparator);
+            var e = contentType.IndexOfAny(_contentTypeSeparator);
             if (e < 0)
             {
                 e = contentType.Length;
@@ -159,7 +158,7 @@ namespace blqw.SIF.Owin
                 return null;
             }
             i++;
-            var e = contentType.IndexOfAny(_ContentTypeSeparator);
+            var e = contentType.IndexOfAny(_contentTypeSeparator);
             if (e < 0)
             {
                 e = contentType.Length;

@@ -12,7 +12,7 @@ namespace blqw.SIF.Descriptor
     /// <summary>
     /// 用于描述一个接口
     /// </summary>
-    public sealed class ApiDescriptor : IDescriptor
+    public class ApiDescriptor : IDescriptor
     {
         /// <summary>
         /// 初始化接口描述
@@ -24,6 +24,9 @@ namespace blqw.SIF.Descriptor
             ApiClass = apiClass ?? throw new ArgumentNullException(nameof(apiClass));
             Method = method ?? throw new ArgumentNullException(nameof(method));
             Parameters = new ReadOnlyCollection<ApiParameterDescriptor>(method.GetParameters().Select(it => new ApiParameterDescriptor(apiClass, it, container, settings)).ToList());
+            Container = container ?? throw new ArgumentNullException(nameof(container));
+            Settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            Name = method.Name;
         }
 
         /// <summary>
@@ -92,9 +95,15 @@ namespace blqw.SIF.Descriptor
             return Validator.IsValid(Method, args, false) ?? Method.Invoke(api, args.Values.ToArray());
         }
 
-        internal static ApiDescriptor Create(MethodInfo m, ApiContainer container, ApiClassDescriptor apiclass)
+        internal static ApiDescriptor Create(ApiClassDescriptor apiclass, MethodInfo m, ApiContainer container)
         {
-            throw new NotImplementedException();
+            var attrs = m.GetCustomAttributes<ApiAttribute>().Where(it => it.Container == null || it.Container == container.ID).OrderBy(it => it.Container).ToArray();
+            if (attrs.Length == 0)
+            {
+                return null;
+            }
+            var settings = container.Services.ParseSetting(attrs);
+            return new ApiDescriptor(apiclass, m, container, settings);
         }
     }
 }

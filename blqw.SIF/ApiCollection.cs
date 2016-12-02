@@ -28,35 +28,33 @@ namespace blqw.SIF
             ApiClasses = new ReadOnlyCollection<ApiClassDescriptor>(_types);
             Apis = new ReadOnlyCollection<ApiDescriptor>(_apis);
 
-            var assemblies = ApiServiceProvider.GetService(container.Services.Assemblies);
-            FindAllApis(assemblies);
+            var types = ApiServiceProvider.GetService(container.Services.Types, true);
+            FindAllApis(types);
         }
 
-        private void FindAllApis(Assembly[] assemblies)
+        private void FindAllApis(IEnumerable<Type> types)
         {
-            foreach (var a in assemblies)
+            foreach (var t in types)
             {
-                foreach (var t in a.ExportedTypes)
+                var apiclass = ApiClassDescriptor.Create(t, Container);
+                if (apiclass == null)
                 {
-                    var apiclass = ApiClassDescriptor.Create(t, Container);
-                    if (apiclass == null)
-                    {
-                        continue;
-                    }
-                    _types.Add(apiclass);
-                    var ns = _namespaces.FirstOrDefault(it => it.FullName == t.Namespace);
-                    if (ns == null)
-                    {
-                        _namespaces.Add(ns = new NamespaceDescriptor(t.Namespace, Container));
-                    }
-                    ns.AddApiCalss(apiclass);
-                    foreach (var type in _types)
-                    {
-                        _apis.AddRange(type.Apis);
-                    }                    
+                    continue;
+                }
+                _types.Add(apiclass);
+                var ns = _namespaces.FirstOrDefault(it => it.FullName == t.Namespace);
+                if (ns == null)
+                {
+                    _namespaces.Add(ns = new NamespaceDescriptor(t.Namespace, Container));
+                }
+                ns.AddApiCalss(apiclass);
+                foreach (var type in _types)
+                {
+                    _apis.AddRange(type.Apis);
                 }
             }
         }
+
 
         public ICollection<NamespaceDescriptor> Namespaces { get; }
         public ICollection<ApiClassDescriptor> ApiClasses { get; }
