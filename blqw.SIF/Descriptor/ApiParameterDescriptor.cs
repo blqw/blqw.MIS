@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using blqw.SIF.Validation;
+using blqw.SIF.Services;
 
 namespace blqw.SIF.Descriptor
 {
@@ -19,11 +20,10 @@ namespace blqw.SIF.Descriptor
         /// </summary>
         /// <param name="api"></param>
         /// <param name="parameter"></param>
-        public ApiParameterDescriptor(ApiClassDescriptor apiclass, ParameterInfo parameter, ApiContainer container, ApiSettings settings)
+        public ApiParameterDescriptor(ApiClassDescriptor apiclass, ParameterInfo parameter, ApiContainer container)
         {
             Parameter = parameter ?? throw new ArgumentNullException(nameof(parameter));
             Container = container ?? throw new ArgumentNullException(nameof(container));
-            Settings = settings ?? throw new ArgumentNullException(nameof(settings));
             ApiClass = apiclass ?? throw new ArgumentNullException(nameof(apiclass));
 
             Name = parameter.Name;
@@ -38,6 +38,9 @@ namespace blqw.SIF.Descriptor
             {
                 DefaultValue = parameter.DefaultValue;
             }
+            
+            var attrs = parameter.GetCustomAttributes<ApiParameterAttribute>();
+            Settings = container.Services.ParseSetting(attrs) ?? new ApiSettings();
         }
 
         /// <summary>

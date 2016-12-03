@@ -47,14 +47,6 @@ namespace blqw.SIF.Descriptor
         public ApiSettings Settings { get; }
 
         /// <summary>
-        /// 返回当前Api类的实例,如果当前类是静态类或抽象类,则返回null,如果<seealso cref="IApiDataProvider"/>提供的参数无法正确调用构造函数,则抛出异常
-        /// </summary>
-        /// <param name="dataProvider">Api数据提供程序</param>
-        /// <returns></returns>
-        public object CreateInstance(IApiDataProvider dataProvider)
-            => Activator.CreateInstance(Type);
-
-        /// <summary>
         /// 构建一个ApiClass描述,如果<paramref name="t"/>不是ApiClass则返回null
         /// </summary>
         /// <param name="t"></param>
@@ -62,20 +54,23 @@ namespace blqw.SIF.Descriptor
         internal static ApiClassDescriptor Create(Type t, ApiContainer container)
         {
             var typeInfo = t.GetTypeInfo();
+            if (typeInfo.IsAbstract || typeInfo.IsGenericTypeDefinition) //排除抽象类和泛型定义类型
+            {
+                return null;
+            }
+
             var classAttrs = typeInfo.GetCustomAttributes<ApiClassAttribute>().ToArray();
 
-            var settings = container.Services.ParseSetting(classAttrs);
+            var settings = container.Services.ParseSetting(classAttrs) ?? new ApiSettings();
             var apiclass = new ApiClassDescriptor(t, container, settings);
 
 
             var propAttrs = typeInfo.DeclaredProperties
-                                .Where(it => it.CanWrite && it.SetMethod.IsPublic)
                                 .Select(it => ApiPropertyDescriptor.Create(it, container, apiclass))
                                 .Where(it => it != null);
             apiclass._properties.AddRange(propAttrs);
 
             var apis = typeInfo.DeclaredMethods
-                                .Where(it => it.IsPublic)
                                 .Select(it => ApiDescriptor.Create(apiclass, it, container))
                                 .Where(it => it != null);
 

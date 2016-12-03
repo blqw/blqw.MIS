@@ -40,6 +40,7 @@
     <Compile Include="Attributes\ApiAttribute.cs" />
     <Compile Include="Attributes\ApiClassAttribute.cs" />
     <Compile Include="ApiException.cs" />
+    <Compile Include="Attributes\ApiParameterAttribute.cs" />
     <Compile Include="Attributes\ApiPropertyAttribute.cs" />
     <Compile Include="IApiAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

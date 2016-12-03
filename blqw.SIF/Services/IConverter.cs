@@ -2,75 +2,62 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace blqw.SIF.Services
 {
     /// <summary>
-    /// 转换器
+    /// 类型转换接口
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public abstract class  Converter<T> : IConverter<T>
+    public interface IConverter : IService
     {
         /// <summary>
-        /// 转换器输出的类型
+        /// 数据类型转换
         /// </summary>
-        public Type OutputType { get; } = typeof(T);
-
-        /// <summary>
-        /// 转换对象到另一种类型,返回转换后的对象,如果转换失败则为null
-        /// </summary>
-        /// <param name="input">需要转换的对象</param>
-        /// <param name="failException">转换中出现的异常</param>
+        /// <param name="value"> 待转换类型的值 </param>
+        /// <param name="conversionType">  要返回的对象的类型。 </param>
         /// <returns></returns>
-        object IConverter.Convert(object input, out Exception failException)
+        /// <remarks>此接口不应抛出异常</remarks>
+        ConvertResult ChangeType(object value, Type conversionType);
+    }
+
+    /// <summary>
+    /// 类型转换结果
+    /// </summary>
+    public struct ConvertResult
+    {
+        /// <summary>
+        /// 初始化结果
+        /// </summary>
+        /// <param name="value">转换后的值</param>
+        public ConvertResult(object value)
         {
-            var result = Convert(input, out failException);
-            if (failException != null)
-            {
-                return null;
-            }
-            return result;
+            Value = value;
+            Succeed = true;
+            Error = null;
         }
 
         /// <summary>
-        /// 转换对象到另一种类型,返回转换后的对象,如果转换失败则为 default(T)
+        /// 初始化转换异常
         /// </summary>
-        /// <param name="input">需要转换的对象</param>
-        /// <param name="failException">转换中出现的异常</param>
-        /// <returns></returns>
-        public abstract T Convert(object input, out Exception failException);
-    }
-
-    /// <summary>
-    /// 转换器
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public interface IConverter<out T>: IConverter
-    {
+        /// <param name="error">转换中的异常</param>
+        public ConvertResult(Exception error)
+        {
+            Value = null;
+            Succeed = false;
+            Error = error;
+        }
         /// <summary>
-        /// 转换对象到另一种类型,返回转换后的对象,如果转换失败则为 default(T)
+        /// 转换结果
         /// </summary>
-        /// <param name="input">需要转换的对象</param>
-        /// <param name="failException">转换中出现的异常</param>
-        /// <returns></returns>
-        T Convert(object input, out Exception failException);
-    }
-
-    /// <summary>
-    /// 转换器
-    /// </summary>
-    public interface IConverter
-    {
+        public object Value { get; }
         /// <summary>
-        /// 转换器输出的类型
+        /// 是否转换成功
         /// </summary>
-        Type OutputType { get; }
+        public bool Succeed { get; }
         /// <summary>
-        /// 转换对象到另一种类型,返回转换后的对象,如果转换失败则为null
+        /// 转换中的异常信息
         /// </summary>
-        /// <param name="input">需要转换的对象</param>
-        /// <param name="failException">转换中出现的异常</param>
-        /// <returns></returns>
-        object Convert(object input, out Exception failException);
+        public Exception Error { get; }
     }
 }

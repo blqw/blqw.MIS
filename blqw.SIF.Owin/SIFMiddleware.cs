@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using blqw.SIF.Descriptor;
 using Microsoft.Owin;
 using System.Text;
+using System.Linq;
 
 namespace blqw.SIF.Owin
 {
@@ -18,17 +19,18 @@ namespace blqw.SIF.Owin
         {
             _container = new ApiContainer("Owin", new OwinProvider());
             _routeTable = new RouteTable(_container.Apis);
+            Console.WriteLine($"载入接口:{_container.Apis.Apis.Count}个");
         }
 
 
         public override async Task Invoke(IOwinContext context)
         {
+            
             var api = _routeTable.Select(context);
             if (api != null)
             {
                 var dataProvider = new DataProvider(context);
-                var obj = _container.CreateApiInstance(api, dataProvider);
-                var result = api.Invoke(obj, dataProvider);
+                var result = api.Invoke(dataProvider);
                 var ex = result as Exception;
                 byte[] content;
                 if (ex == null)

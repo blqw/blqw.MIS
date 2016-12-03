@@ -12,12 +12,7 @@ namespace blqw.SIF.Services
         /// 服务名称
         /// </summary>
         string Name { get; }
-
-        /// <summary>
-        /// 支持容器列表
-        /// </summary>
-        ICollection<string> SupportContainers { get; }
-
+        
         /// <summary>
         /// 服务属性集
         /// </summary>

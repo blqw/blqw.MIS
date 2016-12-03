@@ -32,7 +32,7 @@ using System.Runtime.InteropServices;
 
 internal static class VersionString
 {
-    public const string VERSION = "0.0.1";
+    public const string VERSION = "0.0.2";
     public const string BUG_FIX = ".0";
     public const bool BETA = true;
 }

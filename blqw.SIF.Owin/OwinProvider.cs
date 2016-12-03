@@ -9,19 +9,29 @@ using System.IO;
 
 namespace blqw.SIF.Owin
 {
-    class OwinProvider : ApiServiceProvider
+    class OwinProvider : IApiContainerServices, IConverter, IApiSettingParser
     {
 
-        public override IApiSettingParser SettingParser => null;
+        public IApiSettingParser SettingParser => null;
 
         static readonly Lazy<IEnumerable<Type>> _typesLazy = new Lazy<IEnumerable<Type>>(GetTypes);
-        public override IEnumerable<Type> Types => _typesLazy.Value;
+        public IEnumerable<Type> ApiTypes => _typesLazy.Value;
+
+        public string ContainerId => "Owin";
+
+        public IConverter Converter => this;
+
+        public string Name => nameof(OwinProvider);
+
+        public IDictionary<string, object> Propertise { get; } = new ApiSettings();
+
+        public bool RequireClone => false;
 
         private static IEnumerable<Type> GetTypes()
         {
             var owinDomain = AppDomain.CreateDomain("Owin.SIF");
 
-            foreach (var file in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory,"*.dll", SearchOption.AllDirectories)
+            foreach (var file in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll", SearchOption.AllDirectories)
                                 .Union(Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.exe", SearchOption.AllDirectories)))
             {
                 Assembly ass;
@@ -47,14 +57,20 @@ namespace blqw.SIF.Owin
             }
         }
 
-        public override IConverter GetConverter(Type type)
+        public ConvertResult ChangeType(object value, Type conversionType)
+            => Convert3.TryChangedType(value, conversionType, out var r) ?
+                    new ConvertResult(r) : new ConvertResult(new InvalidCastException());
+
+        public IService Clone() => this;
+
+        public void Dispose()
         {
-            throw new NotImplementedException();
+
         }
 
-        public override IConverter<T> GetConverter<T>()
+        public ParseResult Parse(IEnumerable<IApiAttribute> settingAttributes)
         {
-            throw new NotImplementedException();
+            return new ParseResult(new Dictionary<string, object>());
         }
     }
 }

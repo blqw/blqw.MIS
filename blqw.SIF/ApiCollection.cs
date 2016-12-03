@@ -5,6 +5,7 @@ using System.Text;
 using blqw.SIF.Descriptor;
 using System.Collections.ObjectModel;
 using System.Reflection;
+using blqw.SIF.Services;
 
 namespace blqw.SIF
 {
@@ -28,7 +29,8 @@ namespace blqw.SIF
             ApiClasses = new ReadOnlyCollection<ApiClassDescriptor>(_types);
             Apis = new ReadOnlyCollection<ApiDescriptor>(_apis);
 
-            var types = ApiServiceProvider.GetService(container.Services.Types, true);
+            var types = ServiceExtensions.GetUsableService(container.Services.ApiTypes, true);
+
             FindAllApis(types);
         }
 

@@ -10,6 +10,11 @@ namespace blqw.SIF
     /// </summary>
     public class ApiException : Exception, IFormattable
     {
+        public static readonly ApiException NotFound = new ApiException(-404, "接口不存在");
+
+        public static readonly ApiException ArgumentCountError = new ApiException(-456, "参数个数错误");
+
+
         /// <summary>
         /// 初始化API异常
         /// </summary>
@@ -32,7 +37,7 @@ namespace blqw.SIF
         /// 返回异常信息字符串
         /// </summary>
         /// <returns></returns>
-        public override string ToString() 
+        public override string ToString()
             => $"api error:{HResult}, {Message}" + (InnerException == null ? null : Environment.NewLine + InnerException.ToString());
 
         /// <summary>

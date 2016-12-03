@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
@@ -23,10 +24,11 @@ namespace blqw.SIF.Descriptor
         {
             ApiClass = apiClass ?? throw new ArgumentNullException(nameof(apiClass));
             Method = method ?? throw new ArgumentNullException(nameof(method));
-            Parameters = new ReadOnlyCollection<ApiParameterDescriptor>(method.GetParameters().Select(it => new ApiParameterDescriptor(apiClass, it, container, settings)).ToList());
+            Parameters = new ReadOnlyCollection<ApiParameterDescriptor>(method.GetParameters().Select(it => new ApiParameterDescriptor(apiClass, it, container)).ToList());
             Container = container ?? throw new ArgumentNullException(nameof(container));
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
             Name = method.Name;
+            _invoker = CreateInvoker(method);
         }
 
         /// <summary>
@@ -55,55 +57,63 @@ namespace blqw.SIF.Descriptor
 
         public ApiSettings Settings { get; }
 
-        /// <summary>
-        /// 调用api方法,获取返回值
-        /// </summary>
-        /// <param name="api">接口对象</param>
-        /// <param name="dataProvider">Api数据提供程序</param>
-        /// <returns></returns>
-        public object Invoke(object api, IApiDataProvider dataProvider)
-        {
-            if (dataProvider == null) throw new ArgumentNullException(nameof(dataProvider));
-
-            if (Method.IsStatic)
-            {
-                api = null;
-            }
-            else if (api == null)
-            {
-                throw new ArgumentNullException(nameof(api));
-            }
-
-            var args = new Dictionary<string, object>();
-            foreach (var p in Parameters)
-            {
-                var result = dataProvider.GetParameter(p);
-                if (result.Exists == false)
-                {
-                    args.Add(p.Name, p.DefaultValue);
-                }
-                else if (result.Error != null)
-                {
-                    return result.Error;
-                }
-                else
-                {
-                    args.Add(p.Name, result.Value);
-                }
-            }
-
-            return Validator.IsValid(Method, args, false) ?? Method.Invoke(api, args.Values.ToArray());
-        }
-
+        private Func<object, object[], object> _invoker;
         internal static ApiDescriptor Create(ApiClassDescriptor apiclass, MethodInfo m, ApiContainer container)
         {
-            var attrs = m.GetCustomAttributes<ApiAttribute>().Where(it => it.Container == null || it.Container == container.ID).OrderBy(it => it.Container).ToArray();
-            if (attrs.Length == 0)
+            if (m.IsPublic && m.IsGenericMethodDefinition == false)
             {
-                return null;
+                var attrs = m.GetCustomAttributes<ApiAttribute>();
+                var settings = container.Services.ParseSetting(attrs);
+                if (settings == null)
+                {
+                    return null;
+                }
+                return new ApiDescriptor(apiclass, m, container, settings);
             }
-            var settings = container.Services.ParseSetting(attrs);
-            return new ApiDescriptor(apiclass, m, container, settings);
+            return null;
+        }
+
+        internal object Invoke(object instance, object[] args)
+        {
+            if (args?.Length == Parameters.Count)
+            {
+                try
+                {
+                    return _invoker(instance, args);
+                }
+                catch (Exception ex)
+                {
+                    return ex;
+                }
+            }
+            return ApiException.ArgumentCountError;
+        }
+
+        private Func<object, object[], object> CreateInvoker(MethodInfo method)
+        {
+            var instance = Expression.Parameter(typeof(object), "instance");
+            var args = Expression.Parameter(typeof(object[]), "args");
+
+            var arguments = new List<Expression>();
+            foreach (var p in method.GetParameters())
+            {
+                arguments.Add(Expression.Convert(Expression.ArrayIndex(args, Expression.Constant(p.Position)), p.ParameterType));
+            }
+
+            var call = Expression.Call(method.IsStatic ? null : Expression.Convert(instance, method.DeclaringType), method, arguments.ToArray());
+
+            if (method.ReturnType == typeof(void))
+            {
+                var lambda = Expression.Lambda<Action<object, object[]>>(call, instance, args);
+
+                Action<object, object[]> execute = lambda.Compile();
+                return (a, b) => { execute(a, b); return null; };
+            }
+            else
+            {
+                var ret = Expression.Convert(call, typeof(object));
+                return Expression.Lambda<Func<object, object[], object>>(ret, instance, args).Compile();
+            }
         }
     }
 }
