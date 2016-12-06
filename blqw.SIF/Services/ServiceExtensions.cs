@@ -1,10 +1,11 @@
-﻿using System;
+﻿using blqw.SIF.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace blqw.SIF.Services
+namespace blqw.SIF
 {
     /// <summary>
     /// 服务扩展方法
@@ -69,5 +70,16 @@ namespace blqw.SIF.Services
             }
             return service;
         }
+
+
+        /// <summary>
+        /// 根据键安全的获取字典中的值
+        /// </summary>
+        /// <param name="dictionary">需要获取值的字典</param>
+        /// <param name="key">指定的键</param>
+        /// <param name="defaultValue">当字典为空或键不存在时返回的值</param>
+        /// <returns>字典为空或键不存在时返回 <paramref name="defaultValue"/>，否则获取键对应的值</returns>
+        public static object SafeGet(this IDictionary<string, object> dictionary, string key, object defaultValue = null)
+            => dictionary != null && dictionary.TryGetValue(key, out var value) ? value : defaultValue;
     }
 }
