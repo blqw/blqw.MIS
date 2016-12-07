@@ -7,6 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using blqw.SIF.Filters;
 
 namespace blqw.SIF.Descriptor
 {
@@ -50,6 +51,8 @@ namespace blqw.SIF.Descriptor
         /// 属性描述集合
         /// </summary>
         public ICollection<ApiPropertyDescriptor> Properties => ApiClass.Properties;
+
+        public ICollection<ApiFilterAttribute> Filters { get; }
 
         public string Name { get; }
 
