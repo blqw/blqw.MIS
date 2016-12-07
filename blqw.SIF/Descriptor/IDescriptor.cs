@@ -18,6 +18,6 @@ namespace blqw.SIF.Descriptor
 
         ApiContainer Container { get; }
 
-        ApiSettings Settings { get; }
+        IDictionary<string, object> Settings { get; }
     }
 }

@@ -42,8 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiCollection.cs" />
-    <Compile Include="ApiSettings.cs" />
     <Compile Include="ApiContainer.cs" />
+    <Compile Include="ApiGlobalProxy.cs" />
     <Compile Include="Descriptor\ApiDescriptor.cs" />
     <Compile Include="Descriptor\ApiParameterDescriptor.cs" />
     <Compile Include="Descriptor\ApiPropertyDescriptor.cs" />

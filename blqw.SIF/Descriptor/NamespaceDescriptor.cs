@@ -18,7 +18,7 @@ namespace blqw.SIF.Descriptor
             FullName = @namespace ?? throw new ArgumentNullException(nameof(@namespace));
             Container = container ?? throw new ArgumentNullException(nameof(container));
             Name = @namespace.Split('.').Last();
-            Settings = new ApiSettings();
+            Settings = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
             _types = new List<ApiClassDescriptor>();
             Types = new ReadOnlyCollection<ApiClassDescriptor>(_types);
         }
@@ -35,7 +35,7 @@ namespace blqw.SIF.Descriptor
 
         public ApiContainer Container { get; }
 
-        public ApiSettings Settings { get; }
+        public IDictionary<string, object> Settings { get; }
 
         /// <summary>
         /// 添加一个ApiClass描述

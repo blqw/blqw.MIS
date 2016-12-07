@@ -38,9 +38,9 @@ namespace blqw.SIF.Descriptor
             {
                 DefaultValue = parameter.DefaultValue;
             }
-            
+
             var attrs = parameter.GetCustomAttributes<ApiParameterAttribute>();
-            Settings = container.Services.ParseSetting(attrs) ?? new ApiSettings();
+            Settings = container.Services.ParseSetting(attrs) ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -66,6 +66,6 @@ namespace blqw.SIF.Descriptor
 
         public ApiContainer Container { get; }
 
-        public ApiSettings Settings { get; }
+        public IDictionary<string, object> Settings { get; }
     }
 }

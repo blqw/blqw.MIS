@@ -21,7 +21,7 @@ namespace blqw.SIF.Descriptor
         /// </summary>
         /// <param name="type"></param>
         /// <param name="method"></param>
-        public ApiDescriptor(ApiClassDescriptor apiClass, MethodInfo method, ApiContainer container, ApiSettings settings)
+        public ApiDescriptor(ApiClassDescriptor apiClass, MethodInfo method, ApiContainer container, IDictionary<string, object> settings)
         {
             ApiClass = apiClass ?? throw new ArgumentNullException(nameof(apiClass));
             Method = method ?? throw new ArgumentNullException(nameof(method));
@@ -30,6 +30,19 @@ namespace blqw.SIF.Descriptor
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
             Name = method.Name;
             _invoker = CreateInvoker(method);
+
+            var filters = new List<ApiFilterAttribute>();
+            foreach (ApiFilterAttribute filter in method.GetCustomAttributes<ApiFilterAttribute>().FiltrateAttribute(container.Services, true)
+                        .Union(method.DeclaringType.GetTypeInfo().GetCustomAttributes<ApiFilterAttribute>().FiltrateAttribute(container.Services, true))
+                        .Union(container.ApiGlobal.Filters.FiltrateAttribute(container.Services, true)))
+            {
+                if (filters.Any(a => a.Match(filter)) == false)
+                {
+                    filters.Add(filter);
+                }
+            }
+            filters.Sort((a, b) => a.OrderNumber.CompareTo(b.OrderNumber));
+            Filters = new ReadOnlyCollection<ApiFilterAttribute>(filters);
         }
 
         /// <summary>
@@ -58,7 +71,7 @@ namespace blqw.SIF.Descriptor
 
         public ApiContainer Container { get; }
 
-        public ApiSettings Settings { get; }
+        public IDictionary<string, object> Settings { get; }
 
         private Func<object, object[], object> _invoker;
         internal static ApiDescriptor Create(ApiClassDescriptor apiclass, MethodInfo m, ApiContainer container)

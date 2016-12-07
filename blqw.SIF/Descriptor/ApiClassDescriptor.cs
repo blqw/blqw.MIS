@@ -16,7 +16,7 @@ namespace blqw.SIF.Descriptor
         private readonly List<ApiDescriptor> _apis;
         private readonly List<ApiPropertyDescriptor> _properties;
 
-        private ApiClassDescriptor(Type type, ApiContainer container, ApiSettings settings)
+        private ApiClassDescriptor(Type type, ApiContainer container, IDictionary<string, object> settings)
         {
             Type = type ?? throw new ArgumentNullException(nameof(type));
             Container = container ?? throw new ArgumentNullException(nameof(container));
@@ -44,7 +44,7 @@ namespace blqw.SIF.Descriptor
 
         public ApiContainer Container { get; }
 
-        public ApiSettings Settings { get; }
+        public IDictionary<string, object> Settings { get; }
 
         /// <summary>
         /// 构建一个ApiClass描述,如果<paramref name="t"/>不是ApiClass则返回null
@@ -61,7 +61,7 @@ namespace blqw.SIF.Descriptor
 
             var classAttrs = typeInfo.GetCustomAttributes<ApiClassAttribute>().ToArray();
 
-            var settings = container.Services.ParseSetting(classAttrs) ?? new ApiSettings();
+            var settings = container.Services.ParseSetting(classAttrs) ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
             var apiclass = new ApiClassDescriptor(t, container, settings);
 
 

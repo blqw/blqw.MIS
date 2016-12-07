@@ -12,6 +12,7 @@ namespace BizDemo
         [Api]
         public object Get(int id)
         {
+            
             return new { id = id, created_time = DateTime.Now };
         }
     }

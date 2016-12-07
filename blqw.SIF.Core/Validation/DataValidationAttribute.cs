@@ -8,7 +8,7 @@ namespace blqw.SIF.Validation
     /// <summary>
     /// 提供数据验证规则的基类
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = true)]
     public abstract class DataValidationAttribute : Attribute
     {
         /// <summary>
@@ -44,10 +44,10 @@ namespace blqw.SIF.Validation
         /// <summary>
         /// 验证对象值是否有效
         /// </summary>
-        /// <param name="value">要验证的值</param>
-        /// <param name="items"> 与要验证的值关联的键/值对的字典</param>
+        /// <param name="arg">要验证的值</param>
+        /// <param name="context"> Api调用上下文 </param>
         /// <returns></returns>
-        public abstract bool IsValid(object value, IDictionary<string, object> items);
+        public abstract bool IsValid(object arg, ApiCallContext context);
 
         
     }

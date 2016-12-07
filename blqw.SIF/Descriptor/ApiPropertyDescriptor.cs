@@ -18,7 +18,7 @@ namespace blqw.SIF.Descriptor
         /// </summary>
         /// <param name="api"></param>
         /// <param name="property"></param>
-        private ApiPropertyDescriptor(ApiClassDescriptor apiclass, PropertyInfo property, ApiContainer container, ApiSettings settings)
+        private ApiPropertyDescriptor(ApiClassDescriptor apiclass, PropertyInfo property, ApiContainer container, IDictionary<string, object> settings)
         {
             Property = property ?? throw new ArgumentNullException(nameof(property));
             Container = container ?? throw new ArgumentNullException(nameof(container));
@@ -59,7 +59,7 @@ namespace blqw.SIF.Descriptor
 
         public ApiContainer Container { get; }
 
-        public ApiSettings Settings { get; }
+        public IDictionary<string, object> Settings { get; }
 
         public ApiClassDescriptor ApiClass { get; }
 

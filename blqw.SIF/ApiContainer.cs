@@ -21,11 +21,12 @@ namespace blqw.SIF
         {
             ID = id;
             Services = serviceProvider;
+            ApiGlobal = new ApiGlobalProxy();
             Apis = new ApiCollection(this);
         }
 
         public string ID { get; }
-        
+
         /// <summary>
         /// 接口集合
         /// </summary>
@@ -36,6 +37,8 @@ namespace blqw.SIF
         /// </summary>
         public IApiContainerServices Services { get; }
 
-        }
+        public ApiGlobal ApiGlobal { get; private set; }
+
+    }
 }
 

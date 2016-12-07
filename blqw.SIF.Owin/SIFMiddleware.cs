@@ -25,7 +25,6 @@ namespace blqw.SIF.Owin
 
         public override async Task Invoke(IOwinContext context)
         {
-            
             var api = _routeTable.Select(context);
             if (api != null)
             {

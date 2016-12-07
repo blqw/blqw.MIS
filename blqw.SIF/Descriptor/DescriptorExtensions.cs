@@ -146,23 +146,24 @@ namespace blqw.SIF
 
             var filterArgs = new FilterArgs(apiDescriptor.Method, args);
             var result = instance.FiltrationOnBegin(filterArgs).SyncProcess(); //执行前置过滤器
-            if (result == null)
+            if (filterArgs.Cancel == false)
             {
                 result = apiDescriptor.Invoke(instance, args.Values.ToArray()).SyncProcess(); //执行方法
             }
             filterArgs.Result = result;
+            filterArgs.Cancel = false;
             result = instance.FiltrationOnEnd(filterArgs).SyncProcess(); //执行后置过滤器
             return result ?? filterArgs.Result;
         }
 
         private static object FiltrationOnEnd(this object instance, FilterArgs filterArgs)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         private static object FiltrationOnBegin(this object instance, FilterArgs filterArgs)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         //public static async Task<object> InvokeAsync(this ApiDescriptor apiDescriptor, IApiDataProvider dataProvider)

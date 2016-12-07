@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace blqw.SIF.Filters
 {
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
-    public class ApiFilterAttribute : Attribute, IApiAttribute
+    public abstract class ApiFilterAttribute : Attribute, IApiAttribute
     {
         /// <summary>
         /// 初始化接口特性
@@ -46,5 +46,14 @@ namespace blqw.SIF.Filters
         /// 设置字符串
         /// </summary>
         public string SettingString { get; }
+
+        /// <summary>
+        /// 该值指示此实例是否等于指定的对象。
+        /// </summary>
+        /// <param name="attribute"> 要与此实例进行比较 <see cref="ApiFilterAttribute"/>。</param>
+        /// <returns></returns>
+        public virtual bool Match(ApiFilterAttribute attribute) => GetType() == attribute?.GetType();
+
+        public int OrderNumber { get; set; }
     }
 }

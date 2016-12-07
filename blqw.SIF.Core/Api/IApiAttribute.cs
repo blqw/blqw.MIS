@@ -13,5 +13,6 @@
         /// 设置字符串
         /// </summary>
         string SettingString { get; }
+        
     }
 }

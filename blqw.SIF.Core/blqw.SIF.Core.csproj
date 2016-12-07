@@ -33,16 +33,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ApiCallContext.cs" />
+    <Compile Include="ApiGlobal.cs" />
     <Compile Include="Api\ApiAttribute.cs" />
     <Compile Include="Api\ApiClassAttribute.cs" />
     <Compile Include="ApiException.cs" />
     <Compile Include="Api\ApiParameterAttribute.cs" />
     <Compile Include="Api\ApiPropertyAttribute.cs" />
+    <Compile Include="DataModification\DataModificationAttribute.cs" />
     <Compile Include="Filters\ApiFilterAttribute.cs" />
     <Compile Include="Api\IApiAttribute.cs" />
     <Compile Include="Filters\FilterArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Validation\ValidationAttribute.cs" />
+    <Compile Include="Validation\DataValidationAttribute.cs" />
     <Compile Include="Validation\Validator.cs" />
   </ItemGroup>
   <ItemGroup />

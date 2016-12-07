@@ -20,14 +20,18 @@ namespace blqw.SIF
         /// <param name="provider">容器</param>
         /// <param name="hasGeneral">是否包含通用特性</param>
         /// <returns></returns>
-        public static IEnumerable<IApiAttribute> FiltrationAttribute(this IEnumerable<IApiAttribute> attributes, IApiContainerServices provider, bool hasGeneral)
+        public static IEnumerable<IApiAttribute> FiltrateAttribute(this IEnumerable<IApiAttribute> attributes, IApiContainerServices provider, bool hasGeneral)
         {
-            var container = provider.ContainerId;
+            if (attributes == null)
+            {
+                return null;
+            }
+            var container = provider.ContainerId ?? throw new ArgumentNullException("provider.ContainerId");
             if (hasGeneral)
             {
-                return attributes.Where(it => it.Container == null || string.Equals(it.Container, container, StringComparison.OrdinalIgnoreCase));
+                return attributes.Where(it => it != null).Where(it => it.Container == null || string.Equals(it.Container, container, StringComparison.OrdinalIgnoreCase));
             }
-            return attributes.Where(it => string.Equals(it.Container, container, StringComparison.OrdinalIgnoreCase));
+            return attributes.Where(it => it != null).Where(it => string.Equals(it.Container, container, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -39,7 +43,7 @@ namespace blqw.SIF
         public static IDictionary<string, object> ParseSetting(this IApiContainerServices provider, IEnumerable<IApiAttribute> settingAttributes)
         {
             var parser = GetUsableService(provider.SettingParser, false);
-            settingAttributes = settingAttributes.FiltrationAttribute(provider, true);
+            settingAttributes = settingAttributes.FiltrateAttribute(provider, true);
             if (settingAttributes.Any() == false)
             {
                 return null;
@@ -50,7 +54,7 @@ namespace blqw.SIF
             }
 
             var baseSetting = ParseGeneralSetting(settingAttributes);
-            
+
             var result = parser.Parse(settingAttributes.Where(a => a.Container != null));
             if (result.Succeed)
             {
@@ -63,9 +67,12 @@ namespace blqw.SIF
             throw new InvalidOperationException($"{parser}异常:{result.Error ?? (object)"错误信息丢失"}");
         }
 
-
-
-        public static IDictionary<string, object> ParseGeneralSetting(this IEnumerable<IApiAttribute> settingAttributes)
+        /// <summary>
+        /// 解析通用api特性中的设置
+        /// </summary>
+        /// <param name="settingAttributes">特性集合</param>
+        /// <returns></returns>
+        private static IDictionary<string, object> ParseGeneralSetting(this IEnumerable<IApiAttribute> settingAttributes)
         {
             var dict = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
             foreach (var attr in settingAttributes)
@@ -82,14 +89,21 @@ namespace blqw.SIF
             return dict;
         }
 
+        /// <summary>
+        /// 解析设置用的正则表达式
+        /// </summary>
         private static readonly Regex _parseRegex = new Regex(@"(?<=^|;)(?<key>(\\=|\\;|[^=;])*)=(?<value>(\\;|\\=|[^=;])*)(?=;|$)");
-        
 
+        /// <summary>
+        /// 使用标准方式解析设置字符串
+        /// </summary>
+        /// <param name="setting">设置字符串,标准格式为 "name1=value1;name2=value2" </param>
+        /// <returns></returns>
         public static IEnumerable<KeyValuePair<string, string>> ParseSetting(this string setting)
         {
             if (string.IsNullOrWhiteSpace(setting))
             {
-                yield break ;
+                yield break;
             }
             foreach (Match m in _parseRegex.Matches(setting))
             {

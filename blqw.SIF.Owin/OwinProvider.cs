@@ -23,7 +23,7 @@ namespace blqw.SIF.Owin
 
         public string Name => nameof(OwinProvider);
 
-        public IDictionary<string, object> Propertise { get; } = new ApiSettings();
+        public IDictionary<string, object> Propertise { get; } = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
         public bool RequireClone => false;
 
