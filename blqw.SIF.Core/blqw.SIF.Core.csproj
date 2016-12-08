@@ -41,10 +41,14 @@
     <Compile Include="Api\ApiParameterAttribute.cs" />
     <Compile Include="Api\ApiPropertyAttribute.cs" />
     <Compile Include="DataModification\DataModificationAttribute.cs" />
+    <Compile Include="DataModification\Modifier.cs" />
     <Compile Include="Filters\ApiFilterAttribute.cs" />
     <Compile Include="Api\IApiAttribute.cs" />
     <Compile Include="Filters\FilterArgs.cs" />
+    <Compile Include="ResultProvider\IResultProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResultProvider\ResultProvider.cs" />
+    <Compile Include="SafeStringDictionary.cs" />
     <Compile Include="Validation\DataValidationAttribute.cs" />
     <Compile Include="Validation\Validator.cs" />
   </ItemGroup>

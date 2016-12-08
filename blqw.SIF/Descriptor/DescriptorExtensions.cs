@@ -17,63 +17,6 @@ namespace blqw.SIF
     public static class DescriptorExtensions
     {
         /// <summary>
-        /// 编译得到api的实例和方法参数
-        /// </summary>
-        /// <param name="apiDescriptor">api描述</param>
-        /// <param name="dataProvider">数据提供程序</param>
-        /// <param name="instance">api实例</param>
-        /// <param name="args">api参数</param>
-        /// <returns>如果编译失败,返回异常信息</returns>
-        private static Exception Build(ApiDescriptor apiDescriptor, IApiDataProvider dataProvider, out object instance, out Dictionary<string, object> args)
-        {
-            if (apiDescriptor.Method.IsStatic == false)
-            {
-                instance = Activator.CreateInstance(apiDescriptor.ApiClass.Type);
-                foreach (var p in apiDescriptor.Properties)
-                {
-                    var result = dataProvider.GetProperty(p);
-                    if (result.Error != null)
-                    {
-                        instance = null;
-                        args = null;
-                        return result.Error;
-                    }
-                    else if (result.Exists)
-                    {
-                        p.Setter(instance, result.Value);
-                    }
-                }
-            }
-            else
-            {
-                instance = null;
-            }
-
-            args = new Dictionary<string, object>();
-
-            foreach (var p in apiDescriptor.Parameters)
-            {
-                var result = dataProvider.GetParameter(p);
-                if (result.Exists == false)
-                {
-                    args.Add(p.Name, p.DefaultValue);
-                }
-                else if (result.Error != null)
-                {
-                    instance = null;
-                    args = null;
-                    return result.Error;
-                }
-                else
-                {
-                    args.Add(p.Name, result.Value);
-                }
-            }
-
-            return null;
-        }
-
-        /// <summary>
         /// 同步处理返回值
         /// </summary>
         /// <param name="result">原始返回值</param>
@@ -110,21 +53,22 @@ namespace blqw.SIF
         /// </summary>
         /// <param name="exception">需要获取真实异常的异常信息</param>
         /// <returns></returns>
-        private static Exception GetRealException(this Exception exception)
+        public static Exception GetRealException(this Exception exception)
         {
+            if (exception == null) return null;
             var ex1 = exception as AggregateException;
             if (ex1 != null)
             {
                 if (ex1.InnerExceptions.Count == 1)
                 {
-                    return GetRealException(ex1.InnerException);
+                    return GetRealException(ex1.InnerException) ?? ex1;
                 }
                 return ex1;
             }
             var ex2 = exception as TargetInvocationException;
             if (ex2 != null)
             {
-                return GetRealException(ex2.InnerException);
+                return GetRealException(ex2.InnerException) ?? ex2;
             }
             return exception;
         }
@@ -136,13 +80,20 @@ namespace blqw.SIF
         /// <param name="api">接口对象</param>
         /// <param name="dataProvider">Api数据提供程序</param>
         /// <returns></returns>
-        public static object Invoke(this ApiDescriptor apiDescriptor, IApiDataProvider dataProvider)
+        public static ApiCallContext Invoke(this ApiDescriptor apiDescriptor, IApiDataProvider dataProvider)
         {
             if (dataProvider == null) throw new ArgumentNullException(nameof(dataProvider));
-            var error = Build(apiDescriptor, dataProvider, out var instance, out var args); //api实例和方法参数
-            if (error != null) return error.GetRealException();
-            error = Validator.IsValid(apiDescriptor.Method, args, false);  //验证参数有效性
-            if (error != null) return error.GetRealException();
+            var context = apiDescriptor.Container.CreateContext(apiDescriptor, dataProvider, out var resultProvider);
+            if (context.IsError) return context;
+
+
+
+            var error = Validator.IsValid(apiDescriptor.Method, context.Parameters, false);  //验证参数有效性
+            if (error != null)
+            {
+                resultProvider.Result = error;
+                return context;
+            }
 
             var filterArgs = new FilterArgs(apiDescriptor.Method, args);
             var result = instance.FiltrationOnBegin(filterArgs).SyncProcess(); //执行前置过滤器

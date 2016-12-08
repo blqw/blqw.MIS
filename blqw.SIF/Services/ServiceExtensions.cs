@@ -50,7 +50,7 @@ namespace blqw.SIF
             }
             if (parser == null || settingAttributes.Any(it => it.SettingString != null) == false)
             {
-                return new Dictionary<string, object>();
+                return new SafeStringDictionary();
             }
 
             var baseSetting = ParseGeneralSetting(settingAttributes);
@@ -154,5 +154,21 @@ namespace blqw.SIF
         /// <returns>字典为空或键不存在时返回 <paramref name="defaultValue"/>，否则获取键对应的值</returns>
         public static object SafeGet(this IDictionary<string, object> dictionary, string key, object defaultValue = null)
             => dictionary != null && dictionary.TryGetValue(key, out var value) ? value : defaultValue;
+
+        /// <summary>
+        /// 向上下文中追加Data数据
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <param name="key">data数据键</param>
+        /// <param name="value">data值</param>
+        /// <returns></returns>
+        public static ApiCallContext AppendData(this ApiCallContext context,string key,object value)
+        {
+            if (context != null)
+            {
+                context.Data[key] = value;
+            }
+            return context;
+        }
     }
 }

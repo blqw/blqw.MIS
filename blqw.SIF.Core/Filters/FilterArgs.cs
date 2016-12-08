@@ -17,26 +17,25 @@ namespace blqw.SIF.Filters
         /// </summary>
         /// <param name="method">当前api方法</param>
         /// <param name="arguments">执行api方法时使用的参数</param>
-        public FilterArgs(MethodInfo method, IDictionary<string, object> arguments)
+        public FilterArgs(ApiCallContext context)
         {
-            Method = method;
-            Arguments = arguments;
+            Context = context;
         }
 
         /// <summary>
         /// 当前api方法
         /// </summary>
-        public MethodInfo Method { get; }
+        public ApiCallContext Context { get; }
 
-        /// <summary>
-        /// 获取或设置执行api方法时使用的参数
-        /// </summary>
-        public IDictionary<string, object> Arguments { get; }
 
         /// <summary>
         /// 执行api后得到的返回值
         /// </summary>
-        public object Result { get; set; }
+        public object Result
+        {
+            get => Context.Result;
+            set => Context.Result = value;
+        }
 
         /// <summary>
         /// 是否取消当前

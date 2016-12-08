@@ -18,8 +18,8 @@ namespace blqw.SIF.Owin
             : base(next)
         {
             _container = new ApiContainer("Owin", new OwinProvider());
-            _routeTable = new RouteTable(_container.Apis);
-            Console.WriteLine($"载入接口:{_container.Apis.Apis.Count}个");
+            _routeTable = new RouteTable(_container.ApiCollection);
+            Console.WriteLine($"载入接口:{_container.ApiCollection.Apis.Count}个");
         }
 
 
