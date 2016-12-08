@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Collections.ObjectModel;
 
 namespace blqw.SIF
 {
@@ -170,5 +171,22 @@ namespace blqw.SIF
             }
             return context;
         }
+
+        /// <summary>
+        /// 转换当前集合为只读集合
+        /// </summary>
+        /// <param name="enumerable">枚举器</param>
+        /// <returns></returns>
+        internal static ReadOnlyCollection<T> AsReadOnly<T>(this IEnumerable<T> enumerable) => new ReadOnlyCollection<T>(enumerable.ToList());
+
+        internal static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
+        {
+            if (action == null) return;
+            foreach (var item in enumerable)
+            {
+                action(item);
+            }
+        }
+
     }
 }

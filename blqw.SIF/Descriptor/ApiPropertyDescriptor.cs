@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using blqw.SIF.Validation;
+using blqw.SIF.DataModification;
 
 namespace blqw.SIF.Descriptor
 {
@@ -30,10 +32,39 @@ namespace blqw.SIF.Descriptor
             if (defattr != null)
             {
                 DefaultValue = defattr.Value;
+                HasDefaultValue = true;
             }
+            
 
             var setter = (IServiceProvider)Activator.CreateInstance(typeof(SetProvider<,>).GetTypeInfo().MakeGenericType(property.DeclaringType, property.PropertyType), property);
             Setter = (Action<object, object>)setter.GetService(typeof(Action<object, object>));
+
+
+            var validations = new List<DataValidationAttribute>();
+            foreach (DataValidationAttribute filter in property.GetCustomAttributes<DataValidationAttribute>().Reverse()
+                        .Union(property.DeclaringType.GetTypeInfo().GetCustomAttributes<DataValidationAttribute>().Reverse())
+                        .Union(container.ApiGlobal.Validations.Reverse()))
+            {
+                if (validations.Any(a => a.Match(filter)) == false)
+                {
+                    validations.Add(filter);
+                }
+            }
+            validations.Reverse();
+            DataValidations = validations.AsReadOnly();
+
+            var modifications = new List<DataModificationAttribute>();
+            foreach (DataModificationAttribute filter in property.GetCustomAttributes<DataModificationAttribute>().Reverse()
+                        .Union(property.DeclaringType.GetTypeInfo().GetCustomAttributes<DataModificationAttribute>().Reverse())
+                        .Union(container.ApiGlobal.Modifications.Reverse()))
+            {
+                if (modifications.Any(a => a.Match(filter)) == false)
+                {
+                    modifications.Add(filter);
+                }
+            }
+            modifications.Reverse();
+            DataModifications = modifications.AsReadOnly();
         }
 
         /// <summary>
@@ -51,6 +82,11 @@ namespace blqw.SIF.Descriptor
         public object DefaultValue { get; }
 
         /// <summary>
+        /// 是否存在默认值
+        /// </summary>
+        public bool HasDefaultValue { get; }
+
+        /// <summary>
         /// 属性名
         /// </summary>
         public string Name { get; }
@@ -62,6 +98,16 @@ namespace blqw.SIF.Descriptor
         public IDictionary<string, object> Settings { get; }
 
         public ApiClassDescriptor ApiClass { get; }
+
+
+        /// <summary>
+        /// 数据验证规则
+        /// </summary>
+        public ICollection<DataValidationAttribute> DataValidations { get; }
+        /// <summary>
+        /// 数据更改规则
+        /// </summary>
+        public ICollection<DataModificationAttribute> DataModifications { get; }
 
         internal static ApiPropertyDescriptor Create(PropertyInfo p, ApiContainer container, ApiClassDescriptor apiclass)
         {

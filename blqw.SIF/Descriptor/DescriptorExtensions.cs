@@ -35,7 +35,7 @@ namespace blqw.SIF
                 else
                     task.Wait(); //同步等待返回值
             }
-            catch (Exception)
+            catch
             {
                 return task.Exception.GetRealException();
             }
@@ -86,7 +86,10 @@ namespace blqw.SIF
             var context = apiDescriptor.Container.CreateContext(apiDescriptor, dataProvider, out var resultProvider);
             if (context.IsError) return context;
 
+            foreach (var item in apiDescriptor.Parameters)
+            {
 
+            }
 
             var error = Validator.IsValid(apiDescriptor.Method, context.Parameters, false);  //验证参数有效性
             if (error != null)

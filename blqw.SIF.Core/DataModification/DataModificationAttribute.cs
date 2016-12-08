@@ -9,7 +9,7 @@ namespace blqw.SIF.DataModification
     /// <summary>
     /// 提供数据更改规则的基类
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = true)]
     public abstract class DataModificationAttribute : Attribute
     {
         /// <summary>
@@ -18,6 +18,14 @@ namespace blqw.SIF.DataModification
         /// <param name="arg">待修改的值</param>
         /// <param name="context"> Api调用上下文 </param>
         /// <returns></returns>
-        public abstract object Modifies(object arg, ApiCallContext context);
+        public abstract void Modifies(ref object arg, ApiCallContext context);
+
+
+        /// <summary>
+        /// 该值指示此实例是否等于指定的对象。
+        /// </summary>
+        /// <param name="attribute"> 要与此实例进行比较 <see cref="ApiFilterAttribute"/>。</param>
+        /// <returns></returns>
+        public virtual bool Match(DataModificationAttribute attribute) => GetType() == attribute?.GetType();
     }
 }

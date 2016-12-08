@@ -5,6 +5,8 @@ using System.Text;
 using blqw.SIF.Descriptor;
 using blqw.SIF.Services;
 using System.Reflection;
+using blqw.SIF.DataModification;
+using blqw.SIF.Validation;
 
 namespace blqw.SIF
 {
@@ -57,13 +59,17 @@ namespace blqw.SIF
             {
                 throw new ArgumentException("Api描述无效", nameof(apiDescriptor));
             }
-            var instance = (object)null;
+            var instance = apiDescriptor.Method.IsStatic ? null : Activator.CreateInstance(apiDescriptor.ApiClass.Type);
             var parameters = new SafeStringDictionary();
             var properties = new SafeStringDictionary();
+            resultProvider = new ResultProvider();
+            var context = new ApiCallContext(resultProvider, instance, parameters, properties)
+                            .AppendData("$ResultProvider", resultProvider)
+                            .AppendData("$ApiContainer", this);
 
             if (apiDescriptor.Method.IsStatic == false)
             {
-                instance = Activator.CreateInstance(apiDescriptor.ApiClass.Type);
+                //属性
                 foreach (var p in apiDescriptor.Properties)
                 {
                     var result = dataProvider.GetProperty(p);
@@ -71,32 +77,38 @@ namespace blqw.SIF
                     if (result.Error != null && result.Exists)
                     {
                         properties.Add(p.Name, result.Error);
-                        resultProvider = new ResultProvider(result.Error);
-                        return new ApiCallContext(resultProvider, instance, null, properties).AppendData("$ResultProvider", resultProvider).AppendData("$ApiContainer", this);
+                        resultProvider.Result = result.Error;
+                        return context;
                     }
-                    else if (result.Exists)
+
+                    if (result.Exists || p.HasDefaultValue == false)
                     {
-                        p.Setter(instance, result.Value);
-                        properties.Add(p.Name, result.Value);
-                    }
-                    else if (p.DefaultValue == null)
-                    {
-                        properties.Add(p.Name, null);
+                        var value = result.Exists ? result.Value : null;
+                        if (p.DataModifications.Count > 0) p.DataModifications.ForEach(it => it.Modifies(ref value, context)); //变更数据
+                        Modifier.Modifies(value, context);
+                        properties.Add(p.Name, value);
+                        p.Setter(instance, value);
+                        if (p.DataValidations.Count > 0)
+                        {
+                            var ex = p.DataValidations.FirstOrDefault(it => it.IsValid(value, context) == false)?.GetException(value, context)
+                                        ?? Validator.IsValid(value, context, true); //数据验证
+                            if (ex != null)
+                            {
+                                resultProvider.Result = ex;
+                                return context;
+                            }
+                        }
                     }
                     else
                     {
-                        p.Setter(instance, p.DefaultValue);
                         properties.Add(p.Name, p.DefaultValue);
+                        p.Setter(instance, p.DefaultValue);
                     }
+
                 }
             }
-            else
-            {
-                instance = null;
-            }
 
-            parameters = new SafeStringDictionary();
-
+            //参数
             foreach (var p in apiDescriptor.Parameters)
             {
                 var result = dataProvider.GetParameter(p);
@@ -104,21 +116,41 @@ namespace blqw.SIF
                 if (result.Error != null && result.Exists)
                 {
                     parameters.Add(p.Name, result.Error);
-                    resultProvider = new ResultProvider(result.Error);
-                    return new ApiCallContext(resultProvider, instance, parameters, properties).AppendData("$ResultProvider", resultProvider).AppendData("$ApiContainer", this);
+                    resultProvider.Result = result.Error;
+                    return context;
                 }
-                else if (result.Exists)
+
+                if (result.Exists)
                 {
-                    parameters.Add(p.Name, result.Value);
+                    var value = result.Value;
+                    if (p.DataModifications.Count > 0) p.DataModifications.ForEach(it => it.Modifies(ref value, context)); //变更数据
+                    Modifier.Modifies(value, context);
+                    parameters.Add(p.Name, value);
+                    if (p.DataValidations.Count > 0)
+                    {
+                        var ex = p.DataValidations.FirstOrDefault(it => it.IsValid(value, context) == false)?.GetException(value, context)
+                                    ?? Validator.IsValid(value, context, true); //数据验证
+                        if (ex != null)
+                        {
+                            resultProvider.Result = ex;
+                            return context;
+                        }
+                    }
                 }
-                else
+                else if (p.HasDefaultValue)
                 {
                     parameters.Add(p.Name, p.DefaultValue);
                 }
+                else
+                {
+                    var ex = ApiException.ArgumentMissing(p.Name);
+                    parameters.Add(p.Name, ex);
+                    resultProvider.Result = ex;
+                    return context;
+                }
             }
 
-            resultProvider = new ResultProvider(null);
-            return new ApiCallContext(resultProvider, instance, parameters, properties).AppendData("$ResultProvider", resultProvider).AppendData("$ApiContainer", this);
+            return context;
         }
 
     }

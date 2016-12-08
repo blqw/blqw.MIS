@@ -10,9 +10,64 @@ namespace blqw.SIF
     /// </summary>
     public class ApiException : Exception, IFormattable
     {
-        public static readonly ApiException NotFound = new ApiException(-404, "接口不存在");
+        public static ApiException ApiNotFound() => new ApiException(-404, "接口不存在");
 
-        public static readonly ApiException ArgumentCountError = new ApiException(-456, "参数个数错误");
+
+        /// <summary>
+        /// 参数错误 <paramref name="name"/> <paramref name="message"/>
+        /// </summary>
+        /// <param name="name">参数名</param>
+        /// <param name="message">消息</param>
+        public static ApiException ArgumentError(string name, string message) => new ApiException(-450, $"参数错误 {name} {message}");
+        /// <summary>
+        /// 缺少参数 <paramref name="name"/>
+        /// </summary>
+        /// <param name="name">参数名</param>
+        /// <returns></returns>
+        public static ApiException ArgumentMissing(string name) => new ApiException(-451, $"缺少参数 {name}");
+        /// <summary>
+        /// 参数 <paramref name="name"/> 值超过允许范围
+        /// </summary>
+        /// <param name="name">参数名</param>
+        /// <returns></returns>
+        public static ApiException ArgumentOutRange(string name) => new ApiException(-452, $"参数 {name} 值超过允许范围");
+        /// <summary>
+        /// 参数 <paramref name="name"/> 格式错误
+        /// </summary>
+        /// <param name="name">参数名</param>
+        /// <returns></returns>
+        public static ApiException ArgumentFormatError(string name) => new ApiException(-453, $"参数 {name} 格式错误");
+        /// <summary>
+        /// 参数 <paramref name="name"/> 类型错误
+        /// </summary>
+        /// <param name="name">参数名</param>
+        /// <returns></returns>
+        public static ApiException ArgumentTypeError(string name) => new ApiException(-454, $"参数 {name} 类型错误");
+        /// <summary>
+        /// 参数 <paramref name="name"/> 非法
+        /// </summary>
+        /// <param name="name">参数名</param>
+        /// <returns></returns>
+        public static ApiException ArgumentIllegality(string name) => new ApiException(-455, $"参数 {name} 非法");
+        /// <summary>
+        /// 参数 <paramref name="name"/> 无效
+        /// </summary>
+        /// <param name="name">参数名</param>
+        /// <returns></returns>
+        public static ApiException ArgumentInvalid(string name) => new ApiException(-456, $"参数 {name} 无效");
+        /// <summary>
+        /// 参数 <paramref name="name"/> 值太长
+        /// </summary>
+        /// <param name="name">参数名</param>
+        /// <returns></returns>
+        public static ApiException ArgumentTooLong(string name) => new ApiException(-457, $"参数 {name} 值太长");
+        /// <summary>
+        /// 参数 <paramref name="name"/> 值太大
+        /// </summary>
+        /// <param name="name">参数名</param>
+        /// <returns></returns>
+        public static ApiException ArgumentTooBig(string name) => new ApiException(-458, $"参数 {name} 值太大");
+
 
 
         /// <summary>

@@ -8,7 +8,7 @@ namespace blqw.SIF.Validation
     /// <summary>
     /// 提供数据验证规则的基类
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = true)]
     public abstract class DataValidationAttribute : Attribute
     {
         /// <summary>
@@ -36,19 +36,43 @@ namespace blqw.SIF.Validation
         /// 获取异常信息
         /// </summary>
         /// <param name="value">验证失败的值</param>
-        /// <param name="items"> 与要验证的值关联的键/值对的字典</param>
+        /// <param name="context"> Api调用上下文 </param>
         /// <returns></returns>
-        public virtual string GetErrorMessage(object value, IDictionary<string, object> items)
-            => string.Format(ErrorMessageFormat, value ?? "<null>", value?.GetType() ?? (object)"`null`");
+        public virtual Exception GetException(object value, ApiCallContext context)
+            => GetException(value, context?.Parameters);
+
+        /// <summary>
+        /// 获取异常信息
+        /// </summary>
+        /// <param name="value">验证失败的值</param>
+        /// <param name="args"> 参数列表 </param>
+        /// <returns></returns>
+        public virtual Exception GetException(object value, IDictionary<string, object> args)
+            => new ApiException(ErrorCode, string.Format(ErrorMessageFormat, value ?? "<null>", value?.GetType() ?? (object)"`null`"));
 
         /// <summary>
         /// 验证对象值是否有效
         /// </summary>
-        /// <param name="arg">要验证的值</param>
+        /// <param name="value">要验证的值</param>
         /// <param name="context"> Api调用上下文 </param>
         /// <returns></returns>
-        public abstract bool IsValid(object arg, ApiCallContext context);
+        public virtual bool IsValid(object value, ApiCallContext context)
+            => IsValid(value, context?.Parameters);
 
-        
+
+        /// <summary>
+        /// 验证对象值是否有效
+        /// </summary>
+        /// <param name="value">要验证的值</param>
+        /// <param name="args"> 参数列表 </param>
+        /// <returns></returns>
+        public abstract bool IsValid(object value, IDictionary<string, object> args);
+
+        /// <summary>
+        /// 该值指示此实例是否等于指定的对象。
+        /// </summary>
+        /// <param name="attribute"> 要与此实例进行比较 <see cref="ApiFilterAttribute"/>。</param>
+        /// <returns></returns>
+        public virtual bool Match(DataValidationAttribute attribute) => GetType() == attribute?.GetType();
     }
 }
