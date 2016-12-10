@@ -37,9 +37,9 @@ namespace blqw.SIF.Validation
                         {
                             if (valid.IsValid(value, args) == false)
                             {
-                                if (lazy) return valid.GetException(value, args);
+                                if (lazy) return valid.GetException(p.Member.Name,value, args);
                                 if (errors == null) errors = new List<Exception>();
-                                errors.Add(valid.GetException(value, args));
+                                errors.Add(valid.GetException(p.Member.Name, value, args));
                             }
                         }
                     }
@@ -86,9 +86,9 @@ namespace blqw.SIF.Validation
                 {
                     if (valid.IsValid(value, context) == false)
                     {
-                        if (lazy) return valid.GetException(value, context?.Parameters);
+                        if (lazy) return valid.GetException($"{p.Member.DeclaringType.ToString()}.{p.Member.Name}", value, context?.Parameters);
                         if (errors == null) errors = new List<Exception>();
-                        errors.Add(valid.GetException(value, context?.Parameters));
+                        errors.Add(valid.GetException($"{p.Member.DeclaringType.ToString()}.{p.Member.Name}", value, context?.Parameters));
                     }
                 }
                 var ex = IsValid(value, context, lazy);

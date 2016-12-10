@@ -60,8 +60,8 @@ namespace blqw.SIF
                 throw new ArgumentException("Api描述无效", nameof(apiDescriptor));
             }
             var instance = apiDescriptor.Method.IsStatic ? null : Activator.CreateInstance(apiDescriptor.ApiClass.Type);
-            var parameters = new SafeStringDictionary();
-            var properties = new SafeStringDictionary();
+            var parameters = new NameDictionary();
+            var properties = new NameDictionary();
             resultProvider = new ResultProvider();
             var context = new ApiCallContext(resultProvider, instance, parameters, properties);
             context.Data["$ResultProvider"] = resultProvider;
@@ -90,7 +90,7 @@ namespace blqw.SIF
                         p.Setter(instance, value);
                         if (p.DataValidations.Count > 0)
                         {
-                            var ex = p.DataValidations.FirstOrDefault(it => it.IsValid(value, context) == false)?.GetException(value, context)
+                            var ex = p.DataValidations.FirstOrDefault(it => it.IsValid(value, context) == false)?.GetException(p.Name, value, context)
                                         ?? Validator.IsValid(value, context, true); //数据验证
                             if (ex != null)
                             {
@@ -128,7 +128,7 @@ namespace blqw.SIF
                     parameters.Add(p.Name, value);
                     if (p.DataValidations.Count > 0)
                     {
-                        var ex = p.DataValidations.FirstOrDefault(it => it.IsValid(value, context) == false)?.GetException(value, context)
+                        var ex = p.DataValidations.FirstOrDefault(it => it.IsValid(value, context) == false)?.GetException(p.Name, value, context)
                                     ?? Validator.IsValid(value, context, true); //数据验证
                         if (ex != null)
                         {

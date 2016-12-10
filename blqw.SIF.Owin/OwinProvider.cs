@@ -70,7 +70,7 @@ namespace blqw.SIF.Owin
 
         public ParseResult Parse(IEnumerable<IApiAttribute> settingAttributes)
         {
-            return new ParseResult(new SafeStringDictionary());
+            return new ParseResult(new NameDictionary());
         }
     }
 }

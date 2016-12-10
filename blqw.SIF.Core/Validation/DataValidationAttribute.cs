@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace blqw.SIF.Validation
 {
@@ -14,8 +15,15 @@ namespace blqw.SIF.Validation
         /// <summary>
         /// 初始化验证基类
         /// </summary>
+        public DataValidationAttribute()
+        {
+
+        }
+        /// <summary>
+        /// 初始化验证基类
+        /// </summary>
         /// <param name="errorCode">验证失败时的错误码</param>
-        /// <param name="errorMessageFormat">验证失败时的异常信息,可以使用占位符,默认{0}表示验证失败的值,{1}表示验证失败的值类型</param>
+        /// <param name="errorMessageFormat">验证失败时的异常信息,可以使用占位符,{name}表示参数名{value}表示验证失败的值,{type}表示验证失败的值类型</param>
         protected DataValidationAttribute(int errorCode, string errorMessageFormat)
         {
             ErrorCode = errorCode;
@@ -25,30 +33,52 @@ namespace blqw.SIF.Validation
         /// <summary>
         /// 验证失败时的错误码
         /// </summary>
-        public int ErrorCode { get; }
+        public int ErrorCode { get; set; }
 
         /// <summary>
         /// 验证失败时的异常信息
         /// </summary>
-        public string ErrorMessageFormat { get; }
+        public string ErrorMessageFormat { get; set; }
 
         /// <summary>
         /// 获取异常信息
         /// </summary>
+        /// <param name="name">参数名</param>
         /// <param name="value">验证失败的值</param>
         /// <param name="context"> Api调用上下文 </param>
         /// <returns></returns>
-        public virtual Exception GetException(object value, ApiCallContext context)
-            => GetException(value, context?.Parameters);
+        public virtual Exception GetException(string name, object value, ApiCallContext context)
+            => GetException(name, value, context?.Parameters);
 
+        public abstract string GetDescription(Type type);
+
+
+        static readonly Regex _replacePlaceholder = new Regex(@"(?<!{){[^{}]+}(?!})");
         /// <summary>
         /// 获取异常信息
         /// </summary>
+        /// <param name="name">参数名</param>
         /// <param name="value">验证失败的值</param>
         /// <param name="args"> 参数列表 </param>
         /// <returns></returns>
-        public virtual Exception GetException(object value, IDictionary<string, object> args)
-            => new ApiException(ErrorCode, string.Format(ErrorMessageFormat, value ?? "<null>", value?.GetType() ?? (object)"`null`"));
+        public virtual Exception GetException(string name, object value, IDictionary<string, object> args)
+        {
+            var message = _replacePlaceholder.Replace(ErrorMessageFormat, m =>
+            {
+                switch (m.Value?.ToLowerInvariant())
+                {
+                    case "{name}":
+                        return name;
+                    case "{value}":
+                        return value?.ToString() ?? "<null>";
+                    case "{type}":
+                        return value?.GetType().ToString() ?? "`null`";
+                    default:
+                        return "";
+                }
+            });
+            return new ApiException(ErrorCode, message);
+        }
 
         /// <summary>
         /// 验证对象值是否有效

@@ -51,7 +51,7 @@ namespace blqw.SIF
             }
             if (parser == null || settingAttributes.Any(it => it.SettingString != null) == false)
             {
-                return new SafeStringDictionary();
+                return new NameDictionary();
             }
 
             var baseSetting = ParseGeneralSetting(settingAttributes);

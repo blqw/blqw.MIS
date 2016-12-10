@@ -49,60 +49,46 @@ namespace blqw.SIF
                 => (Func<object, object>)GetValue;
         }
 
-        private Dictionary<TKey, List<ValueCache>> _cache;
+        private SimplyMap<TKey, List<ValueCache>> _cache;
         private object _locker;
         public AttributeCache()
         {
-            _cache = new Dictionary<TKey, List<ValueCache>>();
+            _cache = new SimplyMap<TKey, List<ValueCache>>();
             _locker = new object();
         }
 
-        public List<ValueCache> this[TKey key]
+        public List<ValueCache> this[TKey key] => _cache.GetOrAdd(key, CreateList);
+
+        private List<ValueCache> CreateList(TKey key)
         {
-            get
+            var list = new List<ValueCache>();
+            var t = key as Type;
+            if (t != null)
             {
-                if (_cache.TryGetValue(key, out var list))
+                foreach (var p in t.GetTypeInfo().DeclaredProperties)
                 {
-                    return list;
-                }
-                lock (_locker)
-                {
-                    if (_cache.TryGetValue(key, out list))
+                    var attr = p.GetCustomAttributes<TValue>();
+                    if (attr.Any() == false) continue;
+                    if (p.CanRead)
                     {
-                        return list;
-                    }
-                    var temp = new Dictionary<TKey, List<ValueCache>>(_cache);
-                    list = new List<ValueCache>();
-                    var t = key as Type;
-                    if (t != null)
-                    {
-                        foreach (var p in t.GetTypeInfo().DeclaredProperties)
-                        {
-                            var attr = p.GetCustomAttributes<TValue>();
-                            if (attr.Any() == false) continue; 
-                            if (p.CanRead)
-                            {
-                                var service = (IServiceProvider)Activator.CreateInstance(typeof(GetProvider<,>).GetTypeInfo().MakeGenericType(p.DeclaringType, p.PropertyType));
-                                var getter = (Func<object, object>)service.GetService(null);
-                                list.Add(new ValueCache(p, attr, getter));
-                            }
-                            else
-                            {
-                                list.Add(new ValueCache(p, attr, null));
-                            }
-                        }
+                        var service = (IServiceProvider)Activator.CreateInstance(typeof(GetProvider<,>).GetTypeInfo().MakeGenericType(p.DeclaringType, p.PropertyType));
+                        var getter = (Func<object, object>)service.GetService(null);
+                        list.Add(new ValueCache(p, attr, getter));
                     }
                     else
                     {
-                        foreach (var p in (key as MethodInfo).GetParameters())
-                        {
-                            list.Add(new ValueCache(p, p.GetCustomAttributes<TValue>()));
-                        }
+                        list.Add(new ValueCache(p, attr, null));
                     }
-                    _cache = temp;
                 }
-                return list;
             }
+            else
+            {
+                foreach (var p in (key as MethodInfo).GetParameters())
+                {
+                    list.Add(new ValueCache(p, p.GetCustomAttributes<TValue>()));
+                }
+            }
+            return list;
         }
     }
 }

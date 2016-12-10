@@ -8,11 +8,21 @@ using System.Threading.Tasks;
 namespace blqw.SIF
 {
     /// <summary>
-    /// 一种安全的以<seealso cref="string"/>类型为键的字典
+    /// 一种的以<seealso cref="string"/>类型为键的字典
     /// <para></para>当key不存在时返回null
     /// </summary>
-    public class SafeStringDictionary : Dictionary<string, object>, IDictionary<string, object>
+    public class NameDictionary : Dictionary<string, object>, IDictionary<string, object>
     {
+        public NameDictionary()
+        {
+
+        }
+
+        public NameDictionary(StringComparer comparer)
+            : base(comparer)
+        {
+
+        }
         object IDictionary<string, object>.this[string key]
         {
             get => TryGetValue(key, out var value) ? value : null;

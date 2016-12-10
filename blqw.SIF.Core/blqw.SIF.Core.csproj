@@ -48,9 +48,21 @@
     <Compile Include="ResultProvider\IResultProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultProvider\ResultProvider.cs" />
-    <Compile Include="AttributeCache.cs" />
-    <Compile Include="SafeStringDictionary.cs" />
+    <Compile Include="Tools\AttributeCache.cs" />
+    <Compile Include="Tools\SimplyMap.cs" />
+    <Compile Include="Tools\NameDictionary.cs" />
+    <Compile Include="Validation\AllowScriptAttribute.cs" />
+    <Compile Include="Validation\CountAttribute.cs" />
     <Compile Include="Validation\DataValidationAttribute.cs" />
+    <Compile Include="Validation\EmailAttribute.cs" />
+    <Compile Include="Validation\EnumAttribute.cs" />
+    <Compile Include="Validation\NoDefaultAttribute.cs" />
+    <Compile Include="Validation\NoScriptAttribute.cs" />
+    <Compile Include="Validation\PositiveAttribute.cs" />
+    <Compile Include="Validation\RangeAttribute.cs" />
+    <Compile Include="Validation\RegexAttribute.cs" />
+    <Compile Include="Validation\RequiredAttribute.cs" />
+    <Compile Include="Validation\StringLengthAttribute.cs" />
     <Compile Include="Validation\Validator.cs" />
   </ItemGroup>
   <ItemGroup />

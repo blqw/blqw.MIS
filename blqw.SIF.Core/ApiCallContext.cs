@@ -20,10 +20,10 @@ namespace blqw.SIF
             IDictionary<string, object> properties)
         {
             _resultProvider = resultProvider ?? throw new ArgumentNullException(nameof(resultProvider));
-            Parameters = parameters ?? new SafeStringDictionary();
-            Properties = properties ?? new SafeStringDictionary();
+            Parameters = parameters ?? new NameDictionary();
+            Properties = properties ?? new NameDictionary();
             ApiInstance = instance ?? throw new ArgumentNullException(nameof(instance));
-            Data = new SafeStringDictionary();
+            Data = new NameDictionary();
         }
 
         public IDictionary<string, object> Parameters { get; }
