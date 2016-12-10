@@ -10,7 +10,7 @@ namespace blqw.SIF
     /// <summary>
     /// 当前Api调用上下文
     /// </summary>
-    public class ApiCallContext : IResultProvider
+    public class ApiCallContext
     {
         private readonly IResultProvider _resultProvider;
         public ApiCallContext(
@@ -22,7 +22,7 @@ namespace blqw.SIF
             _resultProvider = resultProvider ?? throw new ArgumentNullException(nameof(resultProvider));
             Parameters = parameters ?? new SafeStringDictionary();
             Properties = properties ?? new SafeStringDictionary();
-            Instance = instance ?? throw new ArgumentNullException(nameof(instance));
+            ApiInstance = instance ?? throw new ArgumentNullException(nameof(instance));
             Data = new SafeStringDictionary();
         }
 
@@ -30,7 +30,7 @@ namespace blqw.SIF
         public IDictionary<string, object> Properties { get; }
         public IDictionary<string, object> Data { get; }
 
-        public object Instance { get; }
+        public object ApiInstance { get; }
         public MethodInfo Method { get; }
         public object Result => _resultProvider.Result;
         public Exception Exception => _resultProvider.Exception;

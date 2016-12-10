@@ -75,7 +75,7 @@ namespace blqw.SIF
 
 
         /// <summary>
-        /// 同步调用api,获取返回值
+        /// 同步调用api
         /// </summary>
         /// <param name="api">接口对象</param>
         /// <param name="dataProvider">Api数据提供程序</param>
@@ -86,38 +86,103 @@ namespace blqw.SIF
             var context = apiDescriptor.Container.CreateContext(apiDescriptor, dataProvider, out var resultProvider);
             if (context.IsError) return context;
 
-            foreach (var item in apiDescriptor.Parameters)
-            {
-
-            }
-
-            var error = Validator.IsValid(apiDescriptor.Method, context.Parameters, false);  //验证参数有效性
-            if (error != null)
-            {
-                resultProvider.Result = error;
-                return context;
-            }
-
-            var filterArgs = new FilterArgs(apiDescriptor.Method, args);
-            var result = instance.FiltrationOnBegin(filterArgs).SyncProcess(); //执行前置过滤器
+            var instance = context.ApiInstance;
+            var filterArgs = new FilterArgs(context, resultProvider);
+            apiDescriptor.FiltrationOnExecuting(context, filterArgs); //执行前置过滤器
             if (filterArgs.Cancel == false)
             {
-                result = apiDescriptor.Invoke(instance, args.Values.ToArray()).SyncProcess(); //执行方法
+                filterArgs.Result = apiDescriptor.Invoke(instance, context.Parameters.Values.ToArray()).SyncProcess(); //执行方法
             }
-            filterArgs.Result = result;
             filterArgs.Cancel = false;
-            result = instance.FiltrationOnEnd(filterArgs).SyncProcess(); //执行后置过滤器
-            return result ?? filterArgs.Result;
+            apiDescriptor.FiltrationOnExecuted(context, filterArgs); //执行后置过滤器
+            return context;
         }
 
-        private static object FiltrationOnEnd(this object instance, FilterArgs filterArgs)
+        private static void FiltrationOnExecuted(this ApiDescriptor apiDescriptor, ApiCallContext context, FilterArgs filterArgs)
         {
+            foreach (var filter in apiDescriptor.Filters)
+            {
+                filter.OnExecuted(context, filterArgs);
+            }
+        }
+
+        private static void FiltrationOnExecuting(this ApiDescriptor apiDescriptor, ApiCallContext context, FilterArgs filterArgs)
+        {
+            foreach (var filter in apiDescriptor.Filters)
+            {
+                filter.OnExecuting(context, filterArgs);
+            }
+        }
+        
+        /// <summary>
+        /// 异步处理返回值
+        /// </summary>
+        /// <param name="result">原始返回值</param>
+        /// <returns>如果返回值是Task,则返回同步执行后的返回值</returns>
+        private static async Task<object> AsyncProcess(this object result)
+        {
+            var task = result as Task;
+            if (task == null)
+            {
+                return (result as Exception)?.GetRealException() ?? result;
+            }
+            try
+            {
+                await task;
+            }
+            catch
+            {
+                return task.Exception.GetRealException();
+            }
+
+            var t = task.GetType().GetTypeInfo();
+            if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Task<>))
+            {
+                return await t.GetDeclaredProperty("Result").GetValue(task)?.AsyncProcess(); //如果是泛型任务,获得Result值
+            }
             return null;
         }
 
-        private static object FiltrationOnBegin(this object instance, FilterArgs filterArgs)
+        /// <summary>
+        /// 异步调用api
+        /// </summary>
+        /// <param name="api">接口对象</param>
+        /// <param name="dataProvider">Api数据提供程序</param>
+        /// <returns></returns>
+        public static async Task<ApiCallContext> InvokeAsync(this ApiDescriptor apiDescriptor, IApiDataProvider dataProvider)
         {
-            return null;
+            if (dataProvider == null) throw new ArgumentNullException(nameof(dataProvider));
+            var context = apiDescriptor.Container.CreateContext(apiDescriptor, dataProvider, out var resultProvider);
+            if (context.IsError) return context;
+
+            var instance = context.ApiInstance;
+            var filterArgs = new FilterArgs(context, resultProvider);
+            await apiDescriptor.FiltrationOnExecutingAsync(context, filterArgs); //执行前置过滤器
+            if (filterArgs.Cancel == false)
+            {
+                filterArgs.Result = await apiDescriptor.Invoke(instance, context.Parameters.Values.ToArray()).AsyncProcess(); //执行方法
+            }
+            filterArgs.Cancel = false;
+            await apiDescriptor.FiltrationOnExecutedAsync(context, filterArgs); //执行后置过滤器
+            return context;
+        }
+
+        private static async Task FiltrationOnExecutedAsync(this ApiDescriptor apiDescriptor, ApiCallContext context, FilterArgs filterArgs)
+        {
+            foreach (var filter in apiDescriptor.Filters)
+            {
+                var task = filter.OnExecutedAsync(context, filterArgs);
+                if (task != null) await task;
+            }
+        }
+
+        private static async Task FiltrationOnExecutingAsync(this ApiDescriptor apiDescriptor, ApiCallContext context, FilterArgs filterArgs)
+        {
+            foreach (var filter in apiDescriptor.Filters)
+            {
+                var task = filter.OnExecutingAsync(context, filterArgs);
+                if (task != null) await task;
+            }
         }
 
         //public static async Task<object> InvokeAsync(this ApiDescriptor apiDescriptor, IApiDataProvider dataProvider)

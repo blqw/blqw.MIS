@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,7 +15,11 @@ namespace blqw.SIF.Filters
         /// </summary>
         public ApiFilterAttribute()
         {
-
+            var type = this.GetType().GetTypeInfo();
+            _overridedExecuting = type.GetDeclaredMethod("OnExecuting").DeclaringType != typeof(ApiFilterAttribute);
+            _overridedExecuted = type.GetDeclaredMethod("OnExecuted").DeclaringType != typeof(ApiFilterAttribute);
+            _overridedExecutingAsync = type.GetDeclaredMethod("OnExecutingAsync").DeclaringType != typeof(ApiFilterAttribute);
+            _overridedExecutedAsync = type.GetDeclaredMethod("OnExecutedAsync").DeclaringType != typeof(ApiFilterAttribute);
         }
 
         /// <summary>
@@ -22,6 +27,7 @@ namespace blqw.SIF.Filters
         /// </summary>
         /// <param name="settingString">接口设置</param>
         public ApiFilterAttribute(string settingString)
+            :this()
         {
             SettingString = settingString;
         }
@@ -32,9 +38,9 @@ namespace blqw.SIF.Filters
         /// <param name="container">指定容器</param>
         /// <param name="settingString">接口设置</param>
         public ApiFilterAttribute(string container, string settingString)
+            : this(settingString)
         {
             Container = container;
-            SettingString = settingString;
         }
 
         /// <summary>
@@ -54,6 +60,60 @@ namespace blqw.SIF.Filters
         /// <returns></returns>
         public virtual bool Match(ApiFilterAttribute attribute) => GetType() == attribute?.GetType();
 
+        /// <summary>
+        /// 过滤器排序
+        /// </summary>
         public int OrderNumber { get; set; }
+        /// <summary>
+        /// 是否已重写 OnExecuting 
+        /// </summary>
+        private readonly bool _overridedExecuting;
+        /// <summary>
+        /// 是否已重写 OnExecuted 
+        /// </summary>
+        private readonly bool _overridedExecuted;
+        /// <summary>
+        /// 是否已重写 OnExecutingAsync 
+        /// </summary>
+        private readonly bool _overridedExecutingAsync;
+        /// <summary>
+        /// 是否已重写 OnExecutedAsync 
+        /// </summary>
+        private readonly bool _overridedExecutedAsync;
+
+        public virtual void OnExecuting(ApiCallContext context, FilterArgs args)
+        {
+            if (_overridedExecuting == false && _overridedExecutingAsync)
+            {
+                OnExecutingAsync(context, args).Wait();
+            }
+        }
+        
+        public virtual void OnExecuted(ApiCallContext context, FilterArgs args)
+        {
+            if (_overridedExecuted  == false && _overridedExecutedAsync)
+            {
+                OnExecutedAsync(context, args).Wait();
+            }
+        }
+
+        public virtual Task OnExecutingAsync(ApiCallContext context, FilterArgs args)
+        {
+            if (_overridedExecuting && _overridedExecutingAsync == false)
+            {
+                OnExecuting(context, args);
+            }
+            return null;
+        }
+
+        public virtual Task OnExecutedAsync(ApiCallContext context, FilterArgs args)
+        {
+            if (_overridedExecuted && _overridedExecutedAsync == false)
+            {
+                OnExecuted(context, args);
+            }
+            return null;
+        }
+
     }
 }

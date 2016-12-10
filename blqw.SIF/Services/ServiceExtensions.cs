@@ -156,21 +156,7 @@ namespace blqw.SIF
         public static object SafeGet(this IDictionary<string, object> dictionary, string key, object defaultValue = null)
             => dictionary != null && dictionary.TryGetValue(key, out var value) ? value : defaultValue;
 
-        /// <summary>
-        /// 向上下文中追加Data数据
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="key">data数据键</param>
-        /// <param name="value">data值</param>
-        /// <returns></returns>
-        public static ApiCallContext AppendData(this ApiCallContext context,string key,object value)
-        {
-            if (context != null)
-            {
-                context.Data[key] = value;
-            }
-            return context;
-        }
+   
 
         /// <summary>
         /// 转换当前集合为只读集合

@@ -53,7 +53,7 @@ namespace blqw.SIF
         /// <param name="instance">api实例</param>
         /// <param name="args">api参数</param>
         /// <returns>如果编译失败,返回异常信息</returns>
-        public ApiCallContext CreateContext(ApiDescriptor apiDescriptor, IApiDataProvider dataProvider, out ResultProvider resultProvider)
+        public ApiCallContext CreateContext(ApiDescriptor apiDescriptor, IApiDataProvider dataProvider, out IResultProvider resultProvider)
         {
             if (ApiCollection.Apis.Contains(apiDescriptor) == false)
             {
@@ -63,10 +63,10 @@ namespace blqw.SIF
             var parameters = new SafeStringDictionary();
             var properties = new SafeStringDictionary();
             resultProvider = new ResultProvider();
-            var context = new ApiCallContext(resultProvider, instance, parameters, properties)
-                            .AppendData("$ResultProvider", resultProvider)
-                            .AppendData("$ApiContainer", this);
-
+            var context = new ApiCallContext(resultProvider, instance, parameters, properties);
+            context.Data["$ResultProvider"] = resultProvider;
+            context.Data["$ApiContainer"] = this;
+            context.Data["$ApiDescriptor"] = apiDescriptor;
             if (apiDescriptor.Method.IsStatic == false)
             {
                 //属性
@@ -77,7 +77,7 @@ namespace blqw.SIF
                     if (result.Error != null && result.Exists)
                     {
                         properties.Add(p.Name, result.Error);
-                        resultProvider.Result = result.Error;
+                        resultProvider.Exception = result.Error;
                         return context;
                     }
 
@@ -94,7 +94,7 @@ namespace blqw.SIF
                                         ?? Validator.IsValid(value, context, true); //数据验证
                             if (ex != null)
                             {
-                                resultProvider.Result = ex;
+                                resultProvider.Exception = ex;
                                 return context;
                             }
                         }
@@ -116,7 +116,7 @@ namespace blqw.SIF
                 if (result.Error != null && result.Exists)
                 {
                     parameters.Add(p.Name, result.Error);
-                    resultProvider.Result = result.Error;
+                    resultProvider.Exception = result.Error;
                     return context;
                 }
 
@@ -132,7 +132,7 @@ namespace blqw.SIF
                                     ?? Validator.IsValid(value, context, true); //数据验证
                         if (ex != null)
                         {
-                            resultProvider.Result = ex;
+                            resultProvider.Exception = ex;
                             return context;
                         }
                     }
@@ -145,7 +145,7 @@ namespace blqw.SIF
                 {
                     var ex = ApiException.ArgumentMissing(p.Name);
                     parameters.Add(p.Name, ex);
-                    resultProvider.Result = ex;
+                    resultProvider.Exception = ex;
                     return context;
                 }
             }

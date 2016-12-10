@@ -20,10 +20,15 @@ namespace blqw.SIF
         {
             Result = result;
         }
+
         /// <summary>
         /// Api异常
         /// </summary>
-        public Exception Exception => Result as Exception;
+        public Exception Exception
+        {
+            get => Result as Exception;
+            set => Result = value;
+        }
 
         /// <summary>
         /// Api是否有错误
@@ -34,5 +39,6 @@ namespace blqw.SIF
         /// Api结果
         /// </summary>
         public object Result { get; set; }
+
     }
 }

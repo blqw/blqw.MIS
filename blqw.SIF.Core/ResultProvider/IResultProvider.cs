@@ -14,11 +14,11 @@ namespace blqw.SIF
         /// <summary>
         /// Api结果
         /// </summary>
-        object Result { get; }
+        object Result { get; set; }
         /// <summary>
         /// Api异常
         /// </summary>
-        Exception Exception { get; }
+        Exception Exception { get; set; }
         /// <summary>
         /// Api是否有错误
         /// </summary>

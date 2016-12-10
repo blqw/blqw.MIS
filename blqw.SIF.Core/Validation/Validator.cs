@@ -91,6 +91,13 @@ namespace blqw.SIF.Validation
                         errors.Add(valid.GetException(value, context?.Parameters));
                     }
                 }
+                var ex = IsValid(value, context, lazy);
+                if (ex != null)
+                {
+                    if (lazy) return ex;
+                    if (errors == null) errors = new List<Exception>();
+                    errors.AddRange((ex as AggregateException).InnerExceptions);
+                }
             }
             if (errors == null)
             {

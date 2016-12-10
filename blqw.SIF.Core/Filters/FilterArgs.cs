@@ -12,14 +12,12 @@ namespace blqw.SIF.Filters
     /// </summary>
     public sealed class FilterArgs
     {
-        /// <summary>
-        /// 初始化过滤器参数
-        /// </summary>
-        /// <param name="method">当前api方法</param>
-        /// <param name="arguments">执行api方法时使用的参数</param>
-        public FilterArgs(ApiCallContext context)
+        private IResultProvider _resultProvider;
+
+        public FilterArgs(ApiCallContext context, IResultProvider resultProvider)
         {
             Context = context;
+            _resultProvider = resultProvider;
         }
 
         /// <summary>
@@ -27,18 +25,34 @@ namespace blqw.SIF.Filters
         /// </summary>
         public ApiCallContext Context { get; }
 
-
         /// <summary>
-        /// 执行api后得到的返回值
+        /// 获取或设置过滤器的返回值
         /// </summary>
         public object Result
         {
             get => Context.Result;
-            set => Context.Result = value;
+            set
+            {
+                Cancel = true;
+                _resultProvider.Result = value;
+            }
         }
 
         /// <summary>
-        /// 是否取消当前
+        /// 获取或设置过滤器的异常
+        /// </summary>
+        public Exception Exception
+        {
+            get => Context.Exception;
+            set
+            {
+                Cancel = true;
+                _resultProvider.Exception = value;
+            }
+        }
+
+        /// <summary>
+        /// 是否取消当前请求
         /// </summary>
         public bool Cancel { get; set; }
     }

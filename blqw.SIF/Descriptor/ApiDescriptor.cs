@@ -102,7 +102,7 @@ namespace blqw.SIF.Descriptor
                     return ex;
                 }
             }
-            return ApiException.ArgumentCountError;
+            return new ArgumentException("");
         }
 
         private Func<object, object[], object> CreateInvoker(MethodInfo method)
