@@ -18,13 +18,22 @@ namespace blqw.SIF.DataModification
         /// <param name="arg">待修改的值</param>
         /// <param name="context"> Api调用上下文 </param>
         /// <returns></returns>
-        public abstract void Modifies(ref object arg, ApiCallContext context);
+        public virtual void Modifies(ref object arg, ApiCallContext context)
+            => Modifies(ref arg);
+
+
+        /// <summary>
+        /// 将一个值更改为类型相同的新值
+        /// </summary>
+        /// <param name="arg">待修改的值</param>
+        /// <returns></returns>
+        public abstract void Modifies(ref object arg);
 
 
         /// <summary>
         /// 该值指示此实例是否等于指定的对象。
         /// </summary>
-        /// <param name="attribute"> 要与此实例进行比较 <see cref="ApiFilterAttribute"/>。</param>
+        /// <param name="attribute"> 要与此实例进行比较 <see cref="DataModificationAttribute"/>。</param>
         /// <returns></returns>
         public virtual bool Match(DataModificationAttribute attribute) => GetType() == attribute?.GetType();
     }

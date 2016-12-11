@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace blqw.SIF.Validation
 {
@@ -27,29 +25,25 @@ namespace blqw.SIF.Validation
             if (method == null) throw new ArgumentNullException(nameof(method));
             if (args == null) throw new ArgumentNullException(nameof(args));
             List<Exception> errors = null;
-            foreach (var p in MethodCache[method])
+            var paras = MethodCache[method];
+            for (var i = 0; i < paras.Count; i++)
             {
+                var p = paras[i];
                 if (args.TryGetValue(p.Member.Name, out var value))
                 {
-                    if (p.Count > 0)
+                    for (var j = 0; j < p.Count; j++)
                     {
-                        foreach (var valid in p)
-                        {
-                            if (valid.IsValid(value, args) == false)
-                            {
-                                if (lazy) return valid.GetException(p.Member.Name,value, args);
-                                if (errors == null) errors = new List<Exception>();
-                                errors.Add(valid.GetException(p.Member.Name, value, args));
-                            }
-                        }
-                    }
-                    var ex = IsValid(value, lazy);
-                    if (ex != null)
-                    {
-                        if (lazy) return ex;
+                        var valid = p[j];
+                        if (valid.IsValid(value, args)) continue;
+                        if (lazy) return valid.GetException(p.Member.Name, value, args);
                         if (errors == null) errors = new List<Exception>();
-                        errors.AddRange((ex as AggregateException).InnerExceptions);
+                        errors.Add(valid.GetException(p.Member.Name, value, args));
                     }
+                    var ex = IsValid(value, null, lazy);
+                    if (ex == null) continue;
+                    if (lazy) return ex;
+                    if (errors == null) errors = new List<Exception>();
+                    errors.AddRange((ex as AggregateException)?.InnerExceptions);
                 }
                 else
                 {
@@ -58,52 +52,50 @@ namespace blqw.SIF.Validation
                     errors.Add(ApiException.ArgumentMissing(p.Member.Name));
                 }
             }
-            if (errors == null)
-            {
-                return null;
-            }
-            return new AggregateException(errors);
+            return errors == null ? null : new AggregateException(errors);
         }
 
         /// <summary>
         /// 验证对象属性的值
         /// </summary>
         /// <param name="instance"> 待验证属性的对象 </param>
-        /// <param name="lazy">懒惰模式,存在第一个不合法的参数立即返回,为false则返回所有不合法的验证结果</param>
+        /// <param name="lazy"> 懒惰模式,存在第一个不合法的参数立即返回,为false则返回所有不合法的验证结果 </param>
         /// <returns></returns>
         public static Exception IsValid(object instance, bool lazy)
             => IsValid(instance, null, lazy);
 
+        /// <summary>
+        /// 验证对象属性的值
+        /// </summary>
+        /// <param name="instance"> 待验证属性的对象 </param>
+        /// <param name="context"> api上下文 </param>
+        /// <param name="lazy"> 懒惰模式,存在第一个不合法的参数立即返回,为false则返回所有不合法的验证结果 </param>
+        /// <returns></returns>
         public static Exception IsValid(object instance, ApiCallContext context, bool lazy)
         {
             if (instance == null) throw new ArgumentNullException(nameof(instance));
 
             List<Exception> errors = null;
-            foreach (var p in TypeCache[instance.GetType()])
+            var props = TypeCache[instance.GetType()];
+            for (var i = 0; i < props.Count; i++)
             {
+                var p = props[i];
                 var value = p.Getter(instance);
-                foreach (var valid in p)
+                for (var j = 0; j < p.Count; j++)
                 {
-                    if (valid.IsValid(value, context) == false)
-                    {
-                        if (lazy) return valid.GetException($"{p.Member.DeclaringType.ToString()}.{p.Member.Name}", value, context?.Parameters);
-                        if (errors == null) errors = new List<Exception>();
-                        errors.Add(valid.GetException($"{p.Member.DeclaringType.ToString()}.{p.Member.Name}", value, context?.Parameters));
-                    }
+                    var valid = p[j];
+                    if (valid.IsValid(value, context)) continue;
+                    if (lazy) return valid.GetException($"{p.Member.DeclaringType}.{p.Member.Name}", value, context?.Parameters);
+                    if (errors == null) errors = new List<Exception>();
+                    errors.Add(valid.GetException($"{p.Member.DeclaringType}.{p.Member.Name}", value, context?.Parameters));
                 }
                 var ex = IsValid(value, context, lazy);
-                if (ex != null)
-                {
-                    if (lazy) return ex;
-                    if (errors == null) errors = new List<Exception>();
-                    errors.AddRange((ex as AggregateException).InnerExceptions);
-                }
+                if (ex == null) continue;
+                if (lazy) return ex;
+                if (errors == null) errors = new List<Exception>();
+                errors.AddRange((ex as AggregateException)?.InnerExceptions);
             }
-            if (errors == null)
-            {
-                return null;
-            }
-            return new AggregateException(errors);
+            return errors == null ? null : new AggregateException(errors);
         }
     }
 }

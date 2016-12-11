@@ -42,6 +42,7 @@
     <Compile Include="Api\ApiPropertyAttribute.cs" />
     <Compile Include="DataModification\DataModificationAttribute.cs" />
     <Compile Include="DataModification\Modifier.cs" />
+    <Compile Include="DataModification\TrimAttribute.cs" />
     <Compile Include="Filters\ApiFilterAttribute.cs" />
     <Compile Include="Api\IApiAttribute.cs" />
     <Compile Include="Filters\FilterArgs.cs" />

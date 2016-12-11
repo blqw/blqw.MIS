@@ -53,7 +53,7 @@ namespace blqw.SIF.Validation
         public abstract string GetDescription(Type type);
 
 
-        static readonly Regex _replacePlaceholder = new Regex(@"(?<!{){[^{}]+}(?!})");
+        private static readonly Regex ReplacePlaceholder = new Regex(@"(?<!{){[^{}]+}(?!})");
         /// <summary>
         /// 获取异常信息
         /// </summary>
@@ -63,7 +63,7 @@ namespace blqw.SIF.Validation
         /// <returns></returns>
         public virtual Exception GetException(string name, object value, IDictionary<string, object> args)
         {
-            var message = _replacePlaceholder.Replace(ErrorMessageFormat, m =>
+            var message = ReplacePlaceholder.Replace(ErrorMessageFormat, m =>
             {
                 switch (m.Value?.ToLowerInvariant())
                 {

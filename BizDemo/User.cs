@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using blqw.SIF;
+using blqw.SIF.DataModification;
 using blqw.SIF.Validation;
 
 namespace BizDemo
@@ -11,10 +12,9 @@ namespace BizDemo
     public class User
     {
         [Api]
-        public object Get([Positive]int id)
+        public object Get([Positive]int id, [Trim]string name)
         {
-            
-            return new { id = id, created_time = DateTime.Now };
+            return new { id = id, name = name, created_time = DateTime.Now };
         }
     }
 }

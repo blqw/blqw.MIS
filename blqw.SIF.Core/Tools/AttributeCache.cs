@@ -13,26 +13,28 @@ namespace blqw.SIF
         where TMember : class
         where TValue : Attribute
     {
-        static readonly ICollection<TValue> _emptyValues = new TValue[0];
+        private static readonly ICollection<TValue> EmptyValues = new TValue[0];
 
         public sealed class ValueCache : IEnumerable<TValue>
         {
             public TMember Member { get; set; }
             public readonly Func<object, object> Getter;
-            private ICollection<TValue> list;
-            public ValueCache(object member, IEnumerable<TValue> attributes, Func<object, object> getter = null)
+            private readonly IList<TValue> _list;
+            public ValueCache(object member, IList<TValue> attributes, Func<object, object> getter = null)
             {
                 Member = (TMember)member;
                 Getter = getter;
-                list = attributes?.ToList();
-                Count = list?.Count ?? 0;
+                _list = attributes;
+                Count = _list?.Count ?? 0;
             }
 
             public int Count { get; }
 
-            public IEnumerator<TValue> GetEnumerator() => list?.GetEnumerator() ?? _emptyValues.GetEnumerator();
+            public TValue this[int index] => _list[index];
 
-            IEnumerator IEnumerable.GetEnumerator() => list?.GetEnumerator() ?? _emptyValues.GetEnumerator();
+            public IEnumerator<TValue> GetEnumerator() => _list?.GetEnumerator() ?? EmptyValues.GetEnumerator();
+
+            IEnumerator IEnumerable.GetEnumerator() => _list?.GetEnumerator() ?? EmptyValues.GetEnumerator();
         }
 
         class GetProvider<I, V> : IServiceProvider
@@ -49,7 +51,7 @@ namespace blqw.SIF
                 => (Func<object, object>)GetValue;
         }
 
-        private SimplyMap<TKey, List<ValueCache>> _cache;
+        private readonly SimplyMap<TKey, List<ValueCache>> _cache;
         private object _locker;
         public AttributeCache()
         {
@@ -67,8 +69,8 @@ namespace blqw.SIF
             {
                 foreach (var p in t.GetTypeInfo().DeclaredProperties)
                 {
-                    var attr = p.GetCustomAttributes<TValue>();
-                    if (attr.Any() == false) continue;
+                    var attr = p.GetCustomAttributes<TValue>().ToList();
+                    if (attr.Count == 0) continue;
                     if (p.CanRead)
                     {
                         var service = (IServiceProvider)Activator.CreateInstance(typeof(GetProvider<,>).GetTypeInfo().MakeGenericType(p.DeclaringType, p.PropertyType));
@@ -85,7 +87,9 @@ namespace blqw.SIF
             {
                 foreach (var p in (key as MethodInfo).GetParameters())
                 {
-                    list.Add(new ValueCache(p, p.GetCustomAttributes<TValue>()));
+                    var attr = p.GetCustomAttributes<TValue>().ToList();
+                    if (attr.Count == 0) continue;
+                    list.Add(new ValueCache(p, attr));
                 }
             }
             return list;
