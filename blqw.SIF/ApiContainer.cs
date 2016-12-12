@@ -54,6 +54,9 @@ namespace blqw.SIF
             ApiCollection = new ApiCollection(this);
         }
 
+        /// <summary>
+        /// 容器id
+        /// </summary>
         public string ID { get; }
 
         /// <summary>
@@ -66,11 +69,19 @@ namespace blqw.SIF
         /// </summary>
         public IApiContainerServices Services { get; }
 
-
+        /// <summary>
+        /// 全局过滤器
+        /// </summary>
         public IReadOnlyCollection<ApiFilterAttribute> Filters { get; }
 
+        /// <summary>
+        /// 全局验证器
+        /// </summary>
         public IReadOnlyCollection<DataValidationAttribute> Validations { get; }
 
+        /// <summary>
+        /// 全局数据变更器
+        /// </summary>
         public IReadOnlyCollection<DataModificationAttribute> Modifications { get; }
 
 

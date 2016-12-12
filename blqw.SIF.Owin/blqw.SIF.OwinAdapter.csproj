@@ -83,9 +83,9 @@
       <Project>{5b066124-fab8-435e-a86b-7e4d5b270650}</Project>
       <Name>blqw.SIF.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\blqw.SIF\blqw.SIF.csproj">
+    <ProjectReference Include="..\blqw.SIF\blqw.SIF.Container.csproj">
       <Project>{a54df45f-52a2-4785-8e91-f80be0556285}</Project>
-      <Name>blqw.SIF</Name>
+      <Name>blqw.SIF.Container</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
