@@ -1,5 +1,6 @@
-# blqw.SIF
-服务接口框架
+# blqw.UIF
+Universal Interface Framework
+通用接口框架
 
 # 说明
 该项目目前还处于设想阶段,我的想法是先做一个服务接口框架;  
@@ -49,6 +50,7 @@
 ## [0.0.7] 2016.12.12
 * 实现数据变更器`Trim`, `NoTrim`, `Correct`
 * 实现 `ApiGlobal`
+* 项目改名为`UIF`(Universal Interface Framework)
 
 ## [0.0.6] 2016.12.11
 * 优化验证器验证部分代码

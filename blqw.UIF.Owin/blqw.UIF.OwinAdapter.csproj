@@ -4,15 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2ABDDA39-E76C-48A0-B8E6-220C74C73DB3}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>OwinHost</RootNamespace>
-    <AssemblyName>OwinHost</AssemblyName>
+    <ProjectGuid>{0D03B13D-F385-4D11-BDC8-CEDC2F74B4C8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>blqw.SIF.Owin</RootNamespace>
+    <AssemblyName>blqw.SIF.Owin</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -31,6 +30,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="blqw.Convert3, Version=3.0.4.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\blqw.Convert3.3.0.4.1\lib\net45\blqw.Convert3.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="blqw.IOC, Version=1.3.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\blqw.IOC.1.3.6\lib\net45\blqw.IOC.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="blqw.Json, Version=3.1.3.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\blqw.Json.3.1.3.1\lib\net45\blqw.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
       <Private>True</Private>
@@ -57,21 +68,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="DataProvider.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="OwinProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RouteTable.cs" />
+    <Compile Include="UIFMiddleware.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BizDemo\BizDemo.csproj">
-      <Project>{46a94acc-edf2-42cc-bde1-94a376d6f3d4}</Project>
-      <Name>BizDemo</Name>
+    <ProjectReference Include="..\blqw.UIF.Core\blqw.UIF.Core.csproj">
+      <Project>{5b066124-fab8-435e-a86b-7e4d5b270650}</Project>
+      <Name>blqw.UIF.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\blqw.UIF.Owin\blqw.UIF.OwinAdapter.csproj">
-      <Project>{0d03b13d-f385-4d11-bdc8-cedc2f74b4c8}</Project>
-      <Name>blqw.SIF.OwinAdapter</Name>
+    <ProjectReference Include="..\blqw.UIF\blqw.UIF.Container.csproj">
+      <Project>{a54df45f-52a2-4785-8e91-f80be0556285}</Project>
+      <Name>blqw.UIF.Container</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
