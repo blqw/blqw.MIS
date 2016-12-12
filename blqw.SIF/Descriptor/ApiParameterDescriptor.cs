@@ -48,7 +48,7 @@ namespace blqw.SIF.Descriptor
             var validations = new List<DataValidationAttribute>();
             foreach (DataValidationAttribute filter in parameter.GetCustomAttributes<DataValidationAttribute>().Reverse()
                         .Union(Parameter.Member.DeclaringType.GetTypeInfo().GetCustomAttributes<DataValidationAttribute>().Reverse())
-                        .Union(container.ApiGlobal.Validations.Reverse()))
+                        .Union(container.Validations.Reverse()))
             {
                 if (validations.Any(a => a.Match(filter)) == false)
                 {
@@ -61,7 +61,7 @@ namespace blqw.SIF.Descriptor
             var modifications = new List<DataModificationAttribute>();
             foreach (DataModificationAttribute filter in parameter.GetCustomAttributes<DataModificationAttribute>().Reverse()
                         .Union(Parameter.Member.DeclaringType.GetTypeInfo().GetCustomAttributes<DataModificationAttribute>().Reverse())
-                        .Union(container.ApiGlobal.Modifications.Reverse()))
+                        .Union(container.Modifications.Reverse()))
             {
                 if (modifications.Any(a => a.Match(filter)) == false)
                 {

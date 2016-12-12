@@ -40,8 +40,10 @@
     <Compile Include="ApiException.cs" />
     <Compile Include="Api\ApiParameterAttribute.cs" />
     <Compile Include="Api\ApiPropertyAttribute.cs" />
+    <Compile Include="DataModification\CorrectAttribute.cs" />
     <Compile Include="DataModification\DataModificationAttribute.cs" />
     <Compile Include="DataModification\Modifier.cs" />
+    <Compile Include="DataModification\NoTrimAttribute.cs" />
     <Compile Include="DataModification\TrimAttribute.cs" />
     <Compile Include="Filters\ApiFilterAttribute.cs" />
     <Compile Include="Api\IApiAttribute.cs" />
@@ -66,6 +68,5 @@
     <Compile Include="Validation\StringLengthAttribute.cs" />
     <Compile Include="Validation\Validator.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
 </Project>

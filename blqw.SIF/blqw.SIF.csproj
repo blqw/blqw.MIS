@@ -43,7 +43,6 @@
   <ItemGroup>
     <Compile Include="Components\ApiCollection.cs" />
     <Compile Include="ApiContainer.cs" />
-    <Compile Include="Components\ApiGlobalProxy.cs" />
     <Compile Include="Descriptor\ApiDescriptor.cs" />
     <Compile Include="Descriptor\ApiParameterDescriptor.cs" />
     <Compile Include="Descriptor\ApiPropertyDescriptor.cs" />

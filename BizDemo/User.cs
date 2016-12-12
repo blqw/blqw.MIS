@@ -12,9 +12,9 @@ namespace BizDemo
     public class User
     {
         [Api]
-        public object Get([Positive]int id, [Trim]string name)
+        public object Get([Range(1, 2)]long id, string name, [Correct(1, 100)]int page = 1)
         {
-            return new { id = id, name = name, created_time = DateTime.Now };
+            return new { id = id, name = name, created_time = DateTime.Now , page };
         }
     }
 }

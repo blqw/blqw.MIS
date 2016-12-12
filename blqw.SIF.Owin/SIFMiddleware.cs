@@ -6,6 +6,7 @@ using blqw.SIF.Descriptor;
 using Microsoft.Owin;
 using System.Text;
 using System.Linq;
+using blqw.SIF.DataModification;
 
 namespace blqw.SIF.Owin
 {
@@ -17,7 +18,10 @@ namespace blqw.SIF.Owin
         public SIFMiddleware(OwinMiddleware next)
             : base(next)
         {
-            _container = new ApiContainer("Owin", new OwinProvider());
+            var owin = new OwinProvider();
+            owin.GlobalModifications.Add(new TrimAttribute());
+
+            _container = new ApiContainer("Owin", owin);
             _routeTable = new RouteTable(_container.ApiCollection);
             Console.WriteLine($"载入接口:{_container.ApiCollection.Apis.Count}个");
         }

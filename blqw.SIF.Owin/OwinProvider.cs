@@ -6,6 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using blqw.SIF.Services;
 using System.IO;
+using blqw.SIF.DataModification;
+using blqw.SIF.Filters;
+using blqw.SIF.Validation;
 
 namespace blqw.SIF.Owin
 {
@@ -15,7 +18,7 @@ namespace blqw.SIF.Owin
         public IApiSettingParser SettingParser => null;
 
         static readonly Lazy<IEnumerable<Type>> _typesLazy = new Lazy<IEnumerable<Type>>(GetTypes);
-        public IEnumerable<Type> ApiTypes => _typesLazy.Value;
+        public IEnumerable<Type> DefinedTypes => _typesLazy.Value;
 
         public string ContainerId => "Owin";
 
@@ -26,6 +29,18 @@ namespace blqw.SIF.Owin
         public IDictionary<string, object> Propertise { get; } = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
         public bool RequireClone => false;
+
+        public List<ApiFilterAttribute> GlobalFilters { get; set; } = new List<ApiFilterAttribute>();
+
+        public List<DataValidationAttribute> GlobalValidations { get; set; } = new List<DataValidationAttribute>();
+
+        public List<DataModificationAttribute> GlobalModifications { get; set; } = new List<DataModificationAttribute>();
+
+        IEnumerable<ApiFilterAttribute> IApiContainerServices.GlobalFilters => GlobalFilters;
+
+        IEnumerable<DataValidationAttribute> IApiContainerServices.GlobalValidations => GlobalValidations;
+
+        IEnumerable<DataModificationAttribute> IApiContainerServices.GlobalModifications => GlobalModifications;
 
         private static IEnumerable<Type> GetTypes()
         {

@@ -1,4 +1,7 @@
-﻿using blqw.SIF.Services;
+﻿using blqw.SIF.DataModification;
+using blqw.SIF.Filters;
+using blqw.SIF.Services;
+using blqw.SIF.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,9 +21,9 @@ namespace blqw.SIF
         string ContainerId { get; }
 
         /// <summary>
-        /// 所有可能存在API方法的类型
+        /// 获取定义类型的集合
         /// </summary>
-        IEnumerable<Type> ApiTypes { get; }
+        IEnumerable<Type> DefinedTypes { get; }
 
         /// <summary>
         /// 设置解析器
@@ -31,6 +34,12 @@ namespace blqw.SIF
         /// 类型转换器
         /// </summary>
         IConverter Converter { get; }
+        
+        IEnumerable<ApiFilterAttribute> GlobalFilters { get; }
+
+        IEnumerable<DataValidationAttribute> GlobalValidations { get; }
+
+        IEnumerable<DataModificationAttribute> GlobalModifications { get; }
 
     }
 }

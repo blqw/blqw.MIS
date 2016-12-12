@@ -39,5 +39,8 @@ namespace blqw.SIF.DataModification
                 arg = str.TrimEnd();
             }
         }
+
+        public override bool Match(DataModificationAttribute attribute)
+            => base.Match(attribute) || attribute.GetType() == typeof(NoTrimAttribute);
     }
 }

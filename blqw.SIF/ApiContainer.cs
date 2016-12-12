@@ -7,6 +7,7 @@ using blqw.SIF.Services;
 using System.Reflection;
 using blqw.SIF.DataModification;
 using blqw.SIF.Validation;
+using blqw.SIF.Filters;
 
 namespace blqw.SIF
 {
@@ -23,7 +24,33 @@ namespace blqw.SIF
         {
             ID = id;
             Services = serviceProvider;
-            ApiGlobal = new ApiGlobalProxy();
+            var filters = new List<ApiFilterAttribute>();
+            var validations = new List<DataValidationAttribute>();
+            var modifications = new List<DataModificationAttribute>();
+            if(serviceProvider.GlobalFilters!=null) filters.AddRange(serviceProvider.GlobalFilters);
+            if(serviceProvider.GlobalValidations != null) validations.AddRange(serviceProvider.GlobalValidations);
+            if(serviceProvider.GlobalModifications != null) modifications.AddRange(serviceProvider.GlobalModifications);
+            
+            var apiGlobalType = typeof(ApiGlobal).GetTypeInfo();
+            var apiGlobals = serviceProvider.DefinedTypes
+                                .Select(t => t.GetTypeInfo())
+                                .Where(t => t.IsAbstract == false)
+                                .Where(t => apiGlobalType.IsAssignableFrom(t))
+                                .Where(t => t.IsGenericType == false || t.IsGenericTypeDefinition == false)
+                                .Select(t => t.DeclaredConstructors.FirstOrDefault(c => c.GetParameters().Length == 0))
+                                .Where(c => c != null)
+                                .Select(c => (ApiGlobal)c.Invoke(null));
+
+            foreach (var apiGlobal in apiGlobals)
+            {
+                apiGlobal.Initialization();
+                if (apiGlobal.Filters != null) filters.AddRange(apiGlobal.Filters);
+                if (apiGlobal.Validations != null) validations.AddRange(apiGlobal.Validations);
+                if (apiGlobal.Modifications != null) modifications.AddRange(apiGlobal.Modifications);
+            }
+            Filters = filters.AsReadOnly();
+            Validations = validations.AsReadOnly();
+            Modifications = modifications.AsReadOnly();
             ApiCollection = new ApiCollection(this);
         }
 
@@ -39,10 +66,12 @@ namespace blqw.SIF
         /// </summary>
         public IApiContainerServices Services { get; }
 
-        /// <summary>
-        /// 全局操作
-        /// </summary>
-        public ApiGlobal ApiGlobal { get; private set; }
+
+        public IReadOnlyCollection<ApiFilterAttribute> Filters { get; }
+
+        public IReadOnlyCollection<DataValidationAttribute> Validations { get; }
+
+        public IReadOnlyCollection<DataModificationAttribute> Modifications { get; }
 
 
         /// <summary>

@@ -19,6 +19,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OwinHost", "OwinHost\OwinHo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blqw.SIF.Owin", "blqw.SIF.Owin\blqw.SIF.Owin.csproj", "{0D03B13D-F385-4D11-BDC8-CEDC2F74B4C8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWin", "OWin", "{CE38D687-8256-4BC5-B592-9BED5B2EB2BE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Wcf", "Wcf", "{9732E8A3-0D3F-46CA-9488-0A835D7AF3B3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MVC", "MVC", "{EEC8A895-9FF5-4005-AEBF-802F261F7A30}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +54,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2ABDDA39-E76C-48A0-B8E6-220C74C73DB3} = {CE38D687-8256-4BC5-B592-9BED5B2EB2BE}
+		{0D03B13D-F385-4D11-BDC8-CEDC2F74B4C8} = {CE38D687-8256-4BC5-B592-9BED5B2EB2BE}
 	EndGlobalSection
 EndGlobal

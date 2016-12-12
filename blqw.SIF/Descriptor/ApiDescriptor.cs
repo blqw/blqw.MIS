@@ -34,7 +34,7 @@ namespace blqw.SIF.Descriptor
             var filters = new List<ApiFilterAttribute>();
             foreach (ApiFilterAttribute filter in method.GetCustomAttributes<ApiFilterAttribute>().FiltrateAttribute(container.Services, true)
                         .Union(method.DeclaringType.GetTypeInfo().GetCustomAttributes<ApiFilterAttribute>().FiltrateAttribute(container.Services, true))
-                        .Union(container.ApiGlobal.Filters.FiltrateAttribute(container.Services, true)))
+                        .Union(container.Filters.FiltrateAttribute(container.Services, true)))
             {
                 if (filters.Any(a => a.Match(filter)) == false)
                 {
