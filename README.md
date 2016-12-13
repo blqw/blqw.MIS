@@ -31,9 +31,9 @@ Universal Interface Framework
 对于框架中特定行为的抽象,可重写,可替换
 
 # 待完成功能
+1. 设计会话保持实现
 1. 设计数据变更器描述属性
 1. 完成基本过滤器(Log,Authorization,User等)
-1. 设计会话保持实现
 1. 单元测试支持
 1. MVC支持
 1. WCF支持
@@ -43,6 +43,7 @@ Universal Interface Framework
 1. 日志记录
 1. 实体参数支持
 1. 自定义格式化参数支持
+1. 完整事件支持
 1. ~~完成基本数据变更器(Trim,Correct等)~~
 1. ~~实现 ApiGlobal~~
 
