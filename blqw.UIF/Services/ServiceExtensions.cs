@@ -21,7 +21,7 @@ namespace blqw.UIF
         /// <param name="provider">容器</param>
         /// <param name="hasGeneral">是否包含通用特性</param>
         /// <returns></returns>
-        public static IEnumerable<IApiAttribute> FiltrateAttribute(this IEnumerable<IApiAttribute> attributes, IApiContainerServices provider, bool hasGeneral)
+        public static IEnumerable<IApiAttribute> FiltrateAttribute(this IEnumerable<IApiAttribute> attributes, IApiContainerProvider provider, bool hasGeneral)
         {
             if (attributes == null)
             {
@@ -40,9 +40,12 @@ namespace blqw.UIF
         /// </summary>
         /// <param name="provider"></param>
         /// <param name="settingAttributes"></param>
+        /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        public static IDictionary<string, object> ParseSetting(this IApiContainerServices provider, IEnumerable<IApiAttribute> settingAttributes)
+        public static IDictionary<string, object> ParseSetting(this IApiContainerProvider provider, IEnumerable<IApiAttribute> settingAttributes)
         {
+            if (provider == null) throw new ArgumentNullException(nameof(provider));
+            if (settingAttributes == null) throw new ArgumentNullException(nameof(settingAttributes));
             var parser = GetUsableService(provider.SettingParser, false);
             settingAttributes = settingAttributes.FiltrateAttribute(provider, true);
             if (settingAttributes.Any() == false)
@@ -51,31 +54,35 @@ namespace blqw.UIF
             }
             if (parser == null || settingAttributes.Any(it => it.SettingString != null) == false)
             {
-                return new NameDictionary();
+                var settings = new NameDictionary();
+                settings.MakeReadOnly();
+                return settings;
             }
 
             var baseSetting = ParseGeneralSetting(settingAttributes);
 
-            var result = parser.Parse(settingAttributes.Where(a => a.Container != null));
-            if (result.Succeed)
+            var result = parser.Parse(settingAttributes.Where(a => a.Container != null).Select(a => a.SettingString));
+            if (result.Succeed == false)
             {
-                foreach (var set in result.Settings)
-                {
-                    baseSetting[set.Key] = set.Value;
-                }
-                return baseSetting;
+                throw new InvalidOperationException($"{parser}异常:{result.Error?.ToString() ?? "错误信息丢失"}");
             }
-            throw new InvalidOperationException($"{parser}异常:{result.Error ?? (object)"错误信息丢失"}");
+            foreach (var set in result.Settings)
+            {
+                baseSetting[set.Key] = set.Value;
+            }
+            baseSetting.MakeReadOnly();
+            return baseSetting;
         }
+
 
         /// <summary>
         /// 解析通用api特性中的设置
         /// </summary>
         /// <param name="settingAttributes">特性集合</param>
         /// <returns></returns>
-        private static IDictionary<string, object> ParseGeneralSetting(this IEnumerable<IApiAttribute> settingAttributes)
+        private static NameDictionary ParseGeneralSetting(this IEnumerable<IApiAttribute> settingAttributes)
         {
-            var dict = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            var dict = new NameDictionary();
             foreach (var attr in settingAttributes)
             {
                 if (attr.Container != null || string.IsNullOrWhiteSpace(attr.SettingString))
@@ -113,6 +120,7 @@ namespace blqw.UIF
                 yield return new KeyValuePair<string, string>(key, value);
             }
         }
+
 
         /// <summary>
         /// 获取可用服务
@@ -156,7 +164,7 @@ namespace blqw.UIF
         public static object SafeGet(this IDictionary<string, object> dictionary, string key, object defaultValue = null)
             => dictionary != null && dictionary.TryGetValue(key, out var value) ? value : defaultValue;
 
-   
+
 
         /// <summary>
         /// 转换当前集合为只读集合

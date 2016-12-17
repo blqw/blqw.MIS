@@ -14,11 +14,11 @@ namespace blqw.UIF
         /// <summary>
         /// Api结果
         /// </summary>
-        object Result { get; set; }
+        object Result { get; }
         /// <summary>
         /// Api异常
         /// </summary>
-        Exception Exception { get; set; }
+        Exception Exception { get; }
         /// <summary>
         /// Api是否有错误
         /// </summary>

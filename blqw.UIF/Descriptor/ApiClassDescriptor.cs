@@ -61,7 +61,7 @@ namespace blqw.UIF.Descriptor
 
             var classAttrs = typeInfo.GetCustomAttributes<ApiClassAttribute>().ToArray();
 
-            var settings = container.Services.ParseSetting(classAttrs) ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            var settings = container.Provider.ParseSetting(classAttrs) ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
             var apiclass = new ApiClassDescriptor(t, container, settings);
 
 

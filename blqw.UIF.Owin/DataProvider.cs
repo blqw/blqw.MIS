@@ -10,6 +10,8 @@ using System.IO;
 using blqw.IOC;
 using System.Diagnostics;
 using System.Collections;
+using blqw.SIF.Session;
+using blqw.UIF.NetFramework45;
 
 namespace blqw.UIF.Owin
 {
@@ -57,7 +59,7 @@ namespace blqw.UIF.Owin
             }
             throw new NotSupportedException("不支持的ContentType");
         }
-        
+
         private class InnerBody : IReadableStringCollection
         {
             private object _obj;
@@ -126,6 +128,7 @@ namespace blqw.UIF.Owin
         }
 
         static char[] _contentTypeSeparator = new[] { ' ', ';' };
+
         private string GetFormat(string contentType)
         {
             if (contentType == null)
@@ -243,5 +246,27 @@ namespace blqw.UIF.Owin
             }
         }
 
+        public ISession GetSession()
+        {
+            var sessionid = _context.Request.Cookies[SessionKey];
+            var expires = 3600;
+            return new MemorySession(sessionid, expires, CreateNewSesssionId);
+        }
+        private static Random _r = new Random();
+        private static string CreateNewSesssionId() => $"{Guid.NewGuid():n}{_r.NextDouble()}";
+
+        internal const string SessionKey = "owin.sid";
+
+        public void SaveSession(ISession session)
+        {
+            if (session?.IsNewSession == true)
+            {
+                _context.Response.Cookies.Append(SessionKey, session.SessionId, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = _context.Request.Uri.Scheme == Uri.UriSchemeHttps,
+                });
+            }
+        }
     }
 }

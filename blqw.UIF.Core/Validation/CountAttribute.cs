@@ -88,7 +88,7 @@ namespace blqw.UIF.Validation
             return null;
         }
 
-        static readonly SimplyMap<TypeInfo, Func<object, int>> _getCountFunctions = new SimplyMap<TypeInfo, Func<object, int>>();
+        static readonly ReadOnlyStore<TypeInfo, Func<object, int>> _getCountFunctions = new ReadOnlyStore<TypeInfo, Func<object, int>>();
 
         class GetCountService<T> : IServiceProvider
         {

@@ -51,15 +51,15 @@ namespace blqw.UIF
                 => (Func<object, object>)GetValue;
         }
 
-        private readonly SimplyMap<TKey, List<ValueCache>> _cache;
+        private readonly ReadOnlyStore<TKey, List<ValueCache>> _store;
         private object _locker;
         public AttributeCache()
         {
-            _cache = new SimplyMap<TKey, List<ValueCache>>();
+            _store = new ReadOnlyStore<TKey, List<ValueCache>>();
             _locker = new object();
         }
 
-        public List<ValueCache> this[TKey key] => _cache.GetOrAdd(key, CreateList);
+        public List<ValueCache> this[TKey key] => _store.GetOrAdd(key, CreateList);
 
         private List<ValueCache> CreateList(TKey key)
         {

@@ -42,7 +42,7 @@ namespace blqw.UIF.Descriptor
             }
 
             var attrs = parameter.GetCustomAttributes<ApiParameterAttribute>();
-            Settings = container.Services.ParseSetting(attrs) ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            Settings = container.Provider.ParseSetting(attrs) ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
 
             var validations = new List<DataValidationAttribute>();

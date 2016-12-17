@@ -73,12 +73,11 @@ namespace blqw.UIF
             return exception;
         }
 
-
         /// <summary>
         /// 同步调用api
         /// </summary>
-        /// <param name="api">接口对象</param>
-        /// <param name="dataProvider">Api数据提供程序</param>
+        /// <param name="apiDescriptor"> 接口描述 </param>
+        /// <param name="dataProvider"> Api数据提供程序 </param>
         /// <returns></returns>
         public static ApiCallContext Invoke(this ApiDescriptor apiDescriptor, IApiDataProvider dataProvider)
         {
@@ -113,7 +112,7 @@ namespace blqw.UIF
                 filter.OnExecuting(context, filterArgs);
             }
         }
-        
+
         /// <summary>
         /// 异步处理返回值
         /// </summary>

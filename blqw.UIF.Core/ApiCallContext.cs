@@ -1,41 +1,75 @@
-﻿using System;
+﻿using blqw.SIF.Session;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace blqw.UIF
 {
     /// <summary>
     /// 当前Api调用上下文
     /// </summary>
-    public class ApiCallContext
+    public sealed class ApiCallContext
     {
+        /// <summary>
+        /// 返回值提供程序
+        /// </summary>
         private readonly IResultProvider _resultProvider;
-        public ApiCallContext(
-            IResultProvider resultProvider,
-            object instance,
-            IDictionary<string, object> parameters,
-            IDictionary<string, object> properties)
+
+        /// <summary>
+        /// 初始化Api上下文
+        /// </summary>
+        /// <param name="instance"> api实例类 </param>
+        /// <param name="method"> api方法 </param>
+        /// <param name="resultProvider"> 返回值提供程序 </param>
+        /// <param name="session"> api回话信息 </param>
+        public ApiCallContext(object instance, MethodInfo method, IResultProvider resultProvider, ISession session)
         {
             _resultProvider = resultProvider ?? throw new ArgumentNullException(nameof(resultProvider));
-            Parameters = parameters ?? new NameDictionary();
-            Properties = properties ?? new NameDictionary();
             ApiInstance = instance ?? throw new ArgumentNullException(nameof(instance));
+            Method = method;
+            Session = session;
+            Parameters = new NameDictionary();
+            Properties = new NameDictionary();
             Data = new NameDictionary();
+            var s = instance as ISupportSession;
+            if (s != null) s.Session = session ?? throw ApiException.NotSupportedSession;
         }
 
+        /// <summary>
+        /// Api参数
+        /// </summary>
         public IDictionary<string, object> Parameters { get; }
+        /// <summary>
+        /// Api属性
+        /// </summary>
         public IDictionary<string, object> Properties { get; }
+        /// <summary>
+        /// Api上下文数据
+        /// </summary>
         public IDictionary<string, object> Data { get; }
-
+        /// <summary>
+        /// Api Session
+        /// </summary>
+        public ISession Session { get; }
+        /// <summary>
+        /// Api实例
+        /// </summary>
         public object ApiInstance { get; }
+        /// <summary>
+        /// Api方法
+        /// </summary>
         public MethodInfo Method { get; }
+        /// <summary>
+        /// Api返回值
+        /// </summary>
         public object Result => _resultProvider.Result;
+        /// <summary>
+        /// Api异常
+        /// </summary>
         public Exception Exception => _resultProvider.Exception;
-
+        /// <summary>
+        /// Api是否有错误
+        /// </summary>
         public bool IsError => _resultProvider.IsError;
-        
     }
 }

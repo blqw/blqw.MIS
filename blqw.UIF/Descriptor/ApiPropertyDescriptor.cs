@@ -91,12 +91,24 @@ namespace blqw.UIF.Descriptor
         /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// Api 属性类型
+        /// </summary>
         public Type PropertyType { get; set; }
 
+        /// <summary>
+        /// Api 容器
+        /// </summary>
         public ApiContainer Container { get; }
 
+        /// <summary>
+        /// Api 设置
+        /// </summary>
         public IDictionary<string, object> Settings { get; }
 
+        /// <summary>
+        /// Api 所在类
+        /// </summary>
         public ApiClassDescriptor ApiClass { get; }
 
 
@@ -114,7 +126,7 @@ namespace blqw.UIF.Descriptor
             if (p.CanWrite && p.SetMethod.IsPublic && p.GetIndexParameters().Length == 0)
             {
                 var attrs = p.GetCustomAttributes<ApiPropertyAttribute>();
-                var settings = container.Services.ParseSetting(attrs);
+                var settings = container.Provider.ParseSetting(attrs);
                 if (settings == null)
                 {
                     return null;
@@ -130,7 +142,8 @@ namespace blqw.UIF.Descriptor
             {
                 _set = (Action<I, V>)property.SetMethod.CreateDelegate(typeof(Action<I, V>));
             }
-            Action<I, V> _set;
+
+            private readonly Action<I, V> _set;
             private void SetValue(object instance, object value)
                 => _set((I)instance, (V)value);
 

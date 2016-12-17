@@ -9,7 +9,7 @@ namespace blqw.UIF
     /// <summary>
     /// 一种简单的Api结果提供程序
     /// </summary>
-    public sealed class ResultProvider : IResultProvider
+    public sealed class ResultProvider : IResultUpdater
     {
         public ResultProvider()
         {
@@ -24,11 +24,7 @@ namespace blqw.UIF
         /// <summary>
         /// Api异常
         /// </summary>
-        public Exception Exception
-        {
-            get => Result as Exception;
-            set => Result = value;
-        }
+        public Exception Exception => Result as Exception;
 
         /// <summary>
         /// Api是否有错误
@@ -40,5 +36,8 @@ namespace blqw.UIF
         /// </summary>
         public object Result { get; set; }
 
+        public void SetResult(object result) => Result = result;
+
+        public void SetException(Exception exception) => Result = exception;
     }
 }

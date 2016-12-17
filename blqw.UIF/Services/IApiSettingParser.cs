@@ -13,9 +13,9 @@ namespace blqw.UIF.Services
         /// <summary>
         /// 解析设置
         /// </summary>
-        /// <param name="settingAttributes"></param>
+        /// <param name="settings"> 待解析的字符串 </param>
         /// <returns></returns>
-        ParseResult Parse(IEnumerable<IApiAttribute> settingAttributes);
+        ParseResult Parse(IEnumerable<string> settings);
     }
 
     /// <summary>

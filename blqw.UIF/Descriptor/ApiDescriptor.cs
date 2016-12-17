@@ -32,9 +32,9 @@ namespace blqw.UIF.Descriptor
             _invoker = CreateInvoker(method);
 
             var filters = new List<ApiFilterAttribute>();
-            foreach (ApiFilterAttribute filter in method.GetCustomAttributes<ApiFilterAttribute>().FiltrateAttribute(container.Services, true)
-                        .Union(method.DeclaringType.GetTypeInfo().GetCustomAttributes<ApiFilterAttribute>().FiltrateAttribute(container.Services, true))
-                        .Union(container.Filters.FiltrateAttribute(container.Services, true)))
+            foreach (ApiFilterAttribute filter in method.GetCustomAttributes<ApiFilterAttribute>().FiltrateAttribute(container.Provider, true)
+                        .Union(method.DeclaringType.GetTypeInfo().GetCustomAttributes<ApiFilterAttribute>().FiltrateAttribute(container.Provider, true))
+                        .Union(container.Filters.FiltrateAttribute(container.Provider, true)))
             {
                 if (filters.Any(a => a.Match(filter)) == false)
                 {
@@ -79,7 +79,7 @@ namespace blqw.UIF.Descriptor
             if (m.IsPublic && m.IsGenericMethodDefinition == false)
             {
                 var attrs = m.GetCustomAttributes<ApiAttribute>();
-                var settings = container.Services.ParseSetting(attrs);
+                var settings = container.Provider.ParseSetting(attrs);
                 if (settings == null)
                 {
                     return null;

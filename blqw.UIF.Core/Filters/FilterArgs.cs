@@ -12,12 +12,15 @@ namespace blqw.UIF.Filters
     /// </summary>
     public sealed class FilterArgs
     {
-        private IResultProvider _resultProvider;
+        /// <summary>
+        /// 返回值更新程序
+        /// </summary>
+        private readonly IResultUpdater _resultUpdater;
 
-        public FilterArgs(ApiCallContext context, IResultProvider resultProvider)
+        public FilterArgs(ApiCallContext context, IResultUpdater resultUpdater)
         {
             Context = context;
-            _resultProvider = resultProvider;
+            _resultUpdater = resultUpdater;
         }
 
         /// <summary>
@@ -26,7 +29,7 @@ namespace blqw.UIF.Filters
         public ApiCallContext Context { get; }
 
         /// <summary>
-        /// 获取或设置过滤器的返回值
+        /// 获取或设置返回值，设置该属性会将 <see cref="Cancel"/> 属性设置为true
         /// </summary>
         public object Result
         {
@@ -34,12 +37,12 @@ namespace blqw.UIF.Filters
             set
             {
                 Cancel = true;
-                _resultProvider.Result = value;
+                _resultUpdater.SetResult(value);
             }
         }
 
         /// <summary>
-        /// 获取或设置过滤器的异常
+        /// 获取或设置异常，设置该属性会将 <see cref="Cancel"/> 属性设置为true
         /// </summary>
         public Exception Exception
         {
@@ -47,7 +50,7 @@ namespace blqw.UIF.Filters
             set
             {
                 Cancel = true;
-                _resultProvider.Exception = value;
+                _resultUpdater.SetException(value);
             }
         }
 

@@ -7,13 +7,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using blqw.UIF.Descriptor;
 
 namespace blqw.UIF
 {
     /// <summary>
     /// Api容器服务
     /// </summary>
-    public interface IApiContainerServices
+    public interface IApiContainerProvider
     {
         /// <summary>
         /// 容器ID
@@ -35,11 +36,25 @@ namespace blqw.UIF
         /// </summary>
         IConverter Converter { get; }
         
+        /// <summary>
+        /// 全局过滤器
+        /// </summary>
         IEnumerable<ApiFilterAttribute> GlobalFilters { get; }
 
+        /// <summary>
+        /// 全局验证器
+        /// </summary>
         IEnumerable<DataValidationAttribute> GlobalValidations { get; }
 
+        /// <summary>
+        /// 全局数据修改器
+        /// </summary>
         IEnumerable<DataModificationAttribute> GlobalModifications { get; }
 
+        /// <summary>
+        /// 创建返回值更新器
+        /// </summary>
+        /// <returns></returns>
+        IResultUpdater CreateResultUpdater();
     }
 }

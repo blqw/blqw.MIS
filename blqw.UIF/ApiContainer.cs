@@ -20,19 +20,20 @@ namespace blqw.UIF
         /// 初始化容器
         /// </summary>
         /// <param name="id">容器名称,唯一标识</param>
-        public ApiContainer(string id, IApiContainerServices serviceProvider)
+        /// <param name="provider">容器组件提供程序</param>
+        public ApiContainer(string id, IApiContainerProvider provider)
         {
             ID = id;
-            Services = serviceProvider;
+            Provider = provider;
             var filters = new List<ApiFilterAttribute>();
             var validations = new List<DataValidationAttribute>();
             var modifications = new List<DataModificationAttribute>();
-            if(serviceProvider.GlobalFilters!=null) filters.AddRange(serviceProvider.GlobalFilters);
-            if(serviceProvider.GlobalValidations != null) validations.AddRange(serviceProvider.GlobalValidations);
-            if(serviceProvider.GlobalModifications != null) modifications.AddRange(serviceProvider.GlobalModifications);
-            
+            if (provider.GlobalFilters != null) filters.AddRange(provider.GlobalFilters);
+            if (provider.GlobalValidations != null) validations.AddRange(provider.GlobalValidations);
+            if (provider.GlobalModifications != null) modifications.AddRange(provider.GlobalModifications);
+
             var apiGlobalType = typeof(ApiGlobal).GetTypeInfo();
-            var apiGlobals = serviceProvider.DefinedTypes
+            var apiGlobals = provider.DefinedTypes
                                 .Select(t => t.GetTypeInfo())
                                 .Where(t => t.IsAbstract == false)
                                 .Where(t => apiGlobalType.IsAssignableFrom(t))
@@ -67,7 +68,7 @@ namespace blqw.UIF
         /// <summary>
         /// 服务集合
         /// </summary>
-        public IApiContainerServices Services { get; }
+        public IApiContainerProvider Provider { get; }
 
         /// <summary>
         /// 全局过滤器
@@ -84,29 +85,29 @@ namespace blqw.UIF
         /// </summary>
         public IReadOnlyCollection<DataModificationAttribute> Modifications { get; }
 
-
         /// <summary>
         /// 创建上下文
         /// </summary>
-        /// <param name="apiDescriptor">api描述</param>
-        /// <param name="dataProvider">数据提供程序</param>
-        /// <param name="instance">api实例</param>
-        /// <param name="args">api参数</param>
+        /// <param name="apiDescriptor"> api描述 </param>
+        /// <param name="dataProvider"> 数据提供程序 </param>
+        /// <param name="resultUpdater"> 返回值更新程序 </param>
         /// <returns>如果编译失败,返回异常信息</returns>
-        public ApiCallContext CreateContext(ApiDescriptor apiDescriptor, IApiDataProvider dataProvider, out IResultProvider resultProvider)
+        public ApiCallContext CreateContext(ApiDescriptor apiDescriptor, IApiDataProvider dataProvider, out IResultUpdater resultUpdater)
         {
             if (ApiCollection.Apis.Contains(apiDescriptor) == false)
             {
-                throw new ArgumentException("Api描述无效", nameof(apiDescriptor));
+                throw new ArgumentException("Api描述不属于当前容器", nameof(apiDescriptor));
             }
             var instance = apiDescriptor.Method.IsStatic ? null : Activator.CreateInstance(apiDescriptor.ApiClass.Type);
-            var parameters = new NameDictionary();
-            var properties = new NameDictionary();
-            resultProvider = new ResultProvider();
-            var context = new ApiCallContext(resultProvider, instance, parameters, properties);
-            context.Data["$ResultProvider"] = resultProvider;
+            resultUpdater = Provider.CreateResultUpdater() ?? new ResultProvider();
+            var session = dataProvider.GetSession();
+            var context = new ApiCallContext(instance, apiDescriptor.Method, resultUpdater, session);
+            context.Data["$ResultProvider"] = resultUpdater;
             context.Data["$ApiContainer"] = this;
             context.Data["$ApiDescriptor"] = apiDescriptor;
+
+            var parameters = context.Parameters;
+            var properties = context.Properties;
             if (apiDescriptor.Method.IsStatic == false)
             {
                 //属性
@@ -117,7 +118,7 @@ namespace blqw.UIF
                     if (result.Error != null && result.Exists)
                     {
                         properties.Add(p.Name, result.Error);
-                        resultProvider.Exception = result.Error;
+                        resultUpdater.SetException(result.Error);
                         return context;
                     }
 
@@ -134,7 +135,7 @@ namespace blqw.UIF
                                         ?? Validator.IsValid(value, context, true); //数据验证
                             if (ex != null)
                             {
-                                resultProvider.Exception = ex;
+                                resultUpdater.SetException(ex);
                                 return context;
                             }
                         }
@@ -156,7 +157,7 @@ namespace blqw.UIF
                 if (result.Error != null && result.Exists)
                 {
                     parameters.Add(p.Name, result.Error);
-                    resultProvider.Exception = result.Error;
+                    resultUpdater.SetException(result.Error);
                     return context;
                 }
 
@@ -172,7 +173,7 @@ namespace blqw.UIF
                                     ?? Validator.IsValid(value, context, true); //数据验证
                         if (ex != null)
                         {
-                            resultProvider.Exception = ex;
+                            resultUpdater.SetException(ex);
                             return context;
                         }
                     }
@@ -185,14 +186,23 @@ namespace blqw.UIF
                 {
                     var ex = ApiException.ArgumentMissing(p.Name);
                     parameters.Add(p.Name, ex);
-                    resultProvider.Exception = ex;
+                    resultUpdater.SetException(ex);
                     return context;
                 }
             }
-
+            
             return context;
         }
 
+        /// <summary>
+        /// 将Api上下文中的 <see cref="Parameters"/> 和 <see cref="Properties"/> 变为只读集合
+        /// </summary>
+        /// <param name="context"> api上下文 </param>
+        public void MakeReadOnlyContext(ApiCallContext context)
+        {
+            ((NameDictionary)context?.Parameters).MakeReadOnly();
+            ((NameDictionary)context?.Properties).MakeReadOnly();
+        }
     }
 }
 

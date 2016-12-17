@@ -16,7 +16,7 @@ namespace blqw.UIF.Services
         /// <summary>
         /// 服务属性集
         /// </summary>
-        IDictionary<string, object> Propertise { get; }
+        IDictionary<string, object> Data { get; }
 
         /// <summary>
         /// 使用时是否必须克隆出新对象

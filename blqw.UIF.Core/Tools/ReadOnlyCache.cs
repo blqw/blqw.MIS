@@ -9,40 +9,47 @@ using System.Threading.Tasks;
 namespace blqw.UIF
 {
     /// <summary>
-    /// 线程同步,安全
+    /// 线程安全的只读存储
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class SimplyMap<TKey, TValue>
+    public class ReadOnlyStore<TKey, TValue>
     {
-        public SimplyMap()
+        /// <summary>
+        /// 初始化存储实例
+        /// </summary>
+        public ReadOnlyStore()
         {
             _innerDictionary = new Dictionary<TKey, TValue>();
             _locker = new object();
         }
 
-
-        public SimplyMap(IEqualityComparer<TKey> comparer)
+        /// <summary>
+        /// 初始化存储实例，并提供键的比较方法
+        /// </summary>
+        /// <param name="comparer"></param>
+        public ReadOnlyStore(IEqualityComparer<TKey> comparer)
         {
             _innerDictionary = new Dictionary<TKey, TValue>(comparer);
             _locker = new object();
         }
 
         private Dictionary<TKey, TValue> _innerDictionary;
-        private object _locker;
+        private readonly object _locker;
 
-        public TValue this[TKey key]
-        {
-            get
-            {
-                if (_innerDictionary.TryGetValue(key, out var value))
-                {
-                    return value;
-                }
-                return default(TValue);
-            }
-        }
+        /// <summary>
+        /// 获取键对应的值，如果对应值不存在，则返回 default(TValue)
+        /// </summary>
+        /// <param name="key">用于获取值的键</param>
+        /// <returns></returns>
+        public TValue this[TKey key] => _innerDictionary.TryGetValue(key, out var value) ? value : default(TValue);
 
+        /// <summary>
+        /// 获取或添加值到存储
+        /// </summary>
+        /// <param name="key">用于获取值的键</param>
+        /// <param name="getValue">当值不存在时用于生成值的方法</param>
+        /// <returns></returns>
         public TValue GetOrAdd(TKey key, Func<TKey, TValue> getValue)
         {
             if (_innerDictionary.TryGetValue(key, out var value))
@@ -63,6 +70,12 @@ namespace blqw.UIF
             return value;
         }
 
+        /// <summary>
+        /// 获取或添加值到存储
+        /// </summary>
+        /// <param name="key">用于获取值的键</param>
+        /// <param name="newValue">当值不存在时，将该值写入存储</param>
+        /// <returns></returns>
         public TValue GetOrAdd(TKey key, TValue newValue)
         {
             if (_innerDictionary.TryGetValue(key, out var value))
@@ -75,9 +88,7 @@ namespace blqw.UIF
                 {
                     return value;
                 }
-                var temp = new Dictionary<TKey, TValue>(_innerDictionary, _innerDictionary.Comparer);
-                temp.Add(key, newValue);
-                _innerDictionary = temp;
+                _innerDictionary = new Dictionary<TKey, TValue>(_innerDictionary, _innerDictionary.Comparer) { [key] = newValue };
             }
             return newValue;
         }

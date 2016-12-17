@@ -26,31 +26,40 @@ namespace blqw.UIF.Owin
             Console.WriteLine($"载入接口:{_container.ApiCollection.Apis.Count}个");
         }
 
-
         public override async Task Invoke(IOwinContext owin)
         {
             var api = _routeTable.Select(owin);
             if (api != null)
             {
-                var dataProvider = new DataProvider(owin);
-                var context = api.Invoke(dataProvider);
-                var ex = context.Exception ?? context.Result as Exception;
                 byte[] content;
-                if (ex == null)
+                try
                 {
-                    content = context.Result == null ? new byte[0] : Encoding.UTF8.GetBytes(Json.ToJsonString(context.Result));
-                    owin.Response.ContentType = "application/json;charset=utf-8";
-                    owin.Response.StatusCode = 200;
+                    var dataProvider = new DataProvider(owin);
+                    var context = api.Invoke(dataProvider);
+                    dataProvider.SaveSession(context.Session);
+                    var ex = context.Exception ?? context.Result as Exception;
+                    if (ex == null)
+                    {
+                        content = context.Result == null ? new byte[0] : Encoding.UTF8.GetBytes(Json.ToJsonString(context.Result));
+                        owin.Response.ContentType = "application/json;charset=utf-8";
+                        owin.Response.StatusCode = 200;
+                    }
+                    else if (ex is ApiException)
+                    {
+                        content = Encoding.UTF8.GetBytes(Json.ToJsonString(new { ErrorCode = ex.HResult, Message = ex.Message, DetailMessage = ex.InnerException?.ToString() }));
+                        owin.Response.ContentType = "application/json;charset=utf-8";
+                        owin.Response.StatusCode = 251;
+                    }
+                    else
+                    {
+                        content = Encoding.UTF8.GetBytes(context.Exception?.ToString());
+                        owin.Response.ContentType = "text/plain;charset=utf-8";
+                        owin.Response.StatusCode = 501;
+                    }
                 }
-                else if (ex is ApiException)
+                catch (Exception ex)
                 {
-                    content = Encoding.UTF8.GetBytes(Json.ToJsonString(new { ErrorCode = ex.HResult, Message = ex.Message, DetailMessage = ex.InnerException?.ToString() }));
-                    owin.Response.ContentType = "application/json;charset=utf-8";
-                    owin.Response.StatusCode = 251;
-                }
-                else
-                {
-                    content = Encoding.UTF8.GetBytes(context.Exception?.ToString());
+                    content = Encoding.UTF8.GetBytes(ex.ToString());
                     owin.Response.ContentType = "text/plain;charset=utf-8";
                     owin.Response.StatusCode = 500;
                 }
