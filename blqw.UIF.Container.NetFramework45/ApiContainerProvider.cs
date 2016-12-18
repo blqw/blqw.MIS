@@ -9,6 +9,7 @@ using blqw.UIF.DataModification;
 using blqw.UIF.Filters;
 using blqw.UIF.Services;
 using blqw.UIF.Validation;
+using System.Text.RegularExpressions;
 
 namespace blqw.UIF.NetFramework45
 {
@@ -18,7 +19,7 @@ namespace blqw.UIF.NetFramework45
     public class ApiContainerProvider : IApiContainerProvider
     {
         protected ApiContainerProvider(string containerId)
-            : this(containerId, GetTypes())
+            : this(containerId, GetTypes().ToList())
         {
 
         }
@@ -79,7 +80,7 @@ namespace blqw.UIF.NetFramework45
 
         private static IEnumerable<Type> GetTypes()
         {
-            var owinDomain = AppDomain.CreateDomain("Owin.UIF");
+            var tempDomain = AppDomain.CreateDomain("UIF");
 
             foreach (var file in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll", SearchOption.AllDirectories)
                                 .Union(Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.exe", SearchOption.AllDirectories)))
@@ -88,8 +89,8 @@ namespace blqw.UIF.NetFramework45
                 try
                 {
                     var bytes = File.ReadAllBytes(file);
-                    ass = owinDomain.Load(bytes);
-                    if (ass.IsDynamic)
+                    ass = tempDomain.Load(bytes);
+                    if (IsValid(ass) == false)
                     {
                         continue;
                     }
@@ -100,12 +101,52 @@ namespace blqw.UIF.NetFramework45
                     continue;
                 }
 
-                foreach (var t in ass.ExportedTypes)
+                foreach (var m in ass.Modules)
                 {
-                    yield return t;
+                    IEnumerable<Type> types;
+                    try
+                    {
+                        types = m.GetTypes();
+                    }
+                    catch (ReflectionTypeLoadException ex)
+                    {
+                        types = ex.Types;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw;
+                    }
+                    foreach (var t in types)
+                    {
+                        if (IsValid(t))
+                            yield return t;
+                    }
                 }
             }
         }
 
+        /// <summary>
+        /// 过滤系统组件,动态组件,全局缓存组件
+        /// </summary>
+        /// <param name="assembly"> </param>
+        /// <returns> </returns>
+        protected static bool IsValid(Assembly assembly)
+        {
+            return (assembly.IsDynamic == false)
+                    && (assembly.ManifestModule.Name != "<未知>")
+                    && (assembly.GlobalAssemblyCache == false)
+                    && (assembly.FullName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) == false)
+                    && (assembly.FullName.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase) == false);
+        }
+
+        protected static bool IsValid(Type type)
+        {
+            return (type?.FullName != null)
+                    && (type.FullName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) == false)
+                    && (type.FullName.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase) == false)
+                    && (_validChars.IsMatch(type.Name));
+        }
+
+        private static readonly Regex _validChars = new Regex("^[a-z][0-9a-z_]+$", RegexOptions.Compiled|RegexOptions.IgnoreCase);
     }
 }

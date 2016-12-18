@@ -268,5 +268,7 @@ namespace blqw.UIF.Owin
                 });
             }
         }
+
+        public object GetApiInstance(ApiDescriptor api) => null;
     }
 }

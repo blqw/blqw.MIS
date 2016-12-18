@@ -13,6 +13,13 @@ namespace blqw.UIF.Services
     public interface IApiDataProvider
     {
         /// <summary>
+        /// 获取api实例
+        /// </summary>
+        /// <param name="api">api描述</param>
+        /// <returns></returns>
+        object GetApiInstance(ApiDescriptor api);
+
+        /// <summary>
         /// 获取api参数
         /// </summary>
         /// <param name="parameter">参数描述</param>

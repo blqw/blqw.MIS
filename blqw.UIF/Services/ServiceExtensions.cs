@@ -21,7 +21,7 @@ namespace blqw.UIF
         /// <param name="provider">容器</param>
         /// <param name="hasGeneral">是否包含通用特性</param>
         /// <returns></returns>
-        public static IEnumerable<IApiAttribute> FiltrateAttribute(this IEnumerable<IApiAttribute> attributes, IApiContainerProvider provider, bool hasGeneral)
+        public static IList<IApiAttribute> FiltrateAttribute(this IEnumerable<IApiAttribute> attributes, IApiContainerProvider provider, bool hasGeneral)
         {
             if (attributes == null)
             {
@@ -30,9 +30,9 @@ namespace blqw.UIF
             var container = provider.ContainerId ?? throw new ArgumentNullException("provider.ContainerId");
             if (hasGeneral)
             {
-                return attributes.Where(it => it != null).Where(it => it.Container == null || string.Equals(it.Container, container, StringComparison.OrdinalIgnoreCase));
+                return attributes.Where(it => it != null).Where(it => it.Container == null || string.Equals(it.Container, container, StringComparison.OrdinalIgnoreCase)).ToList();
             }
-            return attributes.Where(it => it != null).Where(it => string.Equals(it.Container, container, StringComparison.OrdinalIgnoreCase));
+            return attributes.Where(it => it != null).Where(it => string.Equals(it.Container, container, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
         /// <summary>

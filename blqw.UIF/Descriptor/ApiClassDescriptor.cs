@@ -59,9 +59,16 @@ namespace blqw.UIF.Descriptor
                 return null;
             }
 
+            if (typeInfo.DeclaredMethods.Any(m => m.IsDefined(typeof(ApiAttribute))) == false)
+            {
+                return null;
+            }
+
             var classAttrs = typeInfo.GetCustomAttributes<ApiClassAttribute>().ToArray();
 
             var settings = container.Provider.ParseSetting(classAttrs) ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+
+
             var apiclass = new ApiClassDescriptor(t, container, settings);
 
 

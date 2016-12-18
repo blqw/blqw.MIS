@@ -98,7 +98,7 @@ namespace blqw.UIF
             {
                 throw new ArgumentException("Api描述不属于当前容器", nameof(apiDescriptor));
             }
-            var instance = apiDescriptor.Method.IsStatic ? null : Activator.CreateInstance(apiDescriptor.ApiClass.Type);
+            var instance = apiDescriptor.Method.IsStatic ? null : dataProvider.GetApiInstance(apiDescriptor) ?? Activator.CreateInstance(apiDescriptor.ApiClass.Type);
             resultUpdater = Provider.CreateResultUpdater() ?? new ResultProvider();
             var session = dataProvider.GetSession();
             var context = new ApiCallContext(instance, apiDescriptor.Method, resultUpdater, session);
@@ -190,7 +190,7 @@ namespace blqw.UIF
                     return context;
                 }
             }
-            
+
             return context;
         }
 
