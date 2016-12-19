@@ -29,7 +29,7 @@ namespace blqw.UIF
             ApiClasses = new ReadOnlyCollection<ApiClassDescriptor>(_types);
             Apis = new ReadOnlyCollection<ApiDescriptor>(_apis);
 
-            var types = ServiceExtensions.GetUsableService(container.Provider.DefinedTypes, true);
+            var types = container.Provider.DefinedTypes ?? throw new InvalidOperationException("Provider.DefinedTypes返回null");
 
             FindAllApis(types);
         }
