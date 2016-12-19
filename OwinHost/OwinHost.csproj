@@ -71,7 +71,7 @@
     </ProjectReference>
     <ProjectReference Include="..\blqw.UIF.Owin\blqw.UIF.OwinAdapter.csproj">
       <Project>{0d03b13d-f385-4d11-bdc8-cedc2f74b4c8}</Project>
-      <Name>blqw.SIF.OwinAdapter</Name>
+      <Name>blqw.UIF.OwinAdapter</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -56,21 +56,20 @@ namespace blqw.UIF
         public static Exception GetRealException(this Exception exception)
         {
             if (exception == null) return null;
-            var ex1 = exception as AggregateException;
-            if (ex1 != null)
+
+            switch (exception)
             {
-                if (ex1.InnerExceptions.Count == 1)
-                {
-                    return GetRealException(ex1.InnerException) ?? ex1;
-                }
-                return ex1;
+                case AggregateException ex:
+                    if (ex.InnerExceptions.Count == 1)
+                    {
+                        return GetRealException(ex.InnerException) ?? ex;
+                    }
+                    return ex;
+                case TargetInvocationException ex:
+                    return GetRealException(ex.InnerException) ?? ex;
+                default:
+                    return exception;
             }
-            var ex2 = exception as TargetInvocationException;
-            if (ex2 != null)
-            {
-                return GetRealException(ex2.InnerException) ?? ex2;
-            }
-            return exception;
         }
 
         /// <summary>
@@ -113,12 +112,14 @@ namespace blqw.UIF
             }
         }
 
+#pragma warning disable IDE1006 // 命名样式
         /// <summary>
         /// 异步处理返回值
         /// </summary>
         /// <param name="result">原始返回值</param>
         /// <returns>如果返回值是Task,则返回同步执行后的返回值</returns>
         private static async Task<object> AsyncProcess(this object result)
+#pragma warning restore IDE1006 // 命名样式
         {
             var task = result as Task;
             if (task == null)

@@ -26,8 +26,7 @@ namespace blqw.UIF.Validation
             {
                 return false;
             }
-            var str = value as string;
-            if (str != null)
+            if (value is string str)
             {
                 return str.Length > 0;
             }

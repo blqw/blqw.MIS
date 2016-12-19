@@ -7,8 +7,8 @@
     <ProjectGuid>{0D03B13D-F385-4D11-BDC8-CEDC2F74B4C8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>blqw.SIF.Owin</RootNamespace>
-    <AssemblyName>blqw.SIF.Owin</AssemblyName>
+    <RootNamespace>blqw.UIF.Owin</RootNamespace>
+    <AssemblyName>blqw.UIF.Owin</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,17 +30,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="blqw.Convert3, Version=3.0.4.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\blqw.Convert3.3.0.4.1\lib\net45\blqw.Convert3.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="blqw.Convert3, Version=3.0.5.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\blqw.Convert3.3.0.5.2\lib\net45\blqw.Convert3.dll</HintPath>
     </Reference>
-    <Reference Include="blqw.IOC, Version=1.3.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\blqw.IOC.1.3.6\lib\net45\blqw.IOC.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="blqw.IOC, Version=1.3.8.32545, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\blqw.IOC.1.3.8.4\lib\net45\blqw.IOC.dll</HintPath>
     </Reference>
-    <Reference Include="blqw.Json, Version=3.1.3.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\blqw.Json.3.1.3.1\lib\net45\blqw.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="blqw.Json, Version=3.1.3.32701, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\blqw.Json.3.1.3.3\lib\net45\blqw.Json.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>

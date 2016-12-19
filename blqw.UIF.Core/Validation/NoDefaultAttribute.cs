@@ -20,8 +20,7 @@ namespace blqw.UIF.Validation
 
         public override bool IsValid(object value, IDictionary<string, object> args)
         {
-            var v = value as ValueType;
-            if (v != null)
+            if (value is ValueType v)
             {
                 var defaultValue = Activator.CreateInstance(value.GetType());
                 return v.Equals(defaultValue) == false;

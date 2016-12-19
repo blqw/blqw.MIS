@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using blqw.UIF;
 using BizDemo;
 using blqw;
+using blqw.IOC;
 
 namespace UnitTestHost
 {
@@ -18,6 +19,7 @@ namespace UnitTestHost
                 throw r.Exception;
             }
             Console.WriteLine(r.Result.ToJsonString());
+            Console.WriteLine("1".To<int>());
         }
     }
 }

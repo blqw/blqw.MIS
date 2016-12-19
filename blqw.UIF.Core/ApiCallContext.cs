@@ -31,8 +31,8 @@ namespace blqw.UIF
             Parameters = new NameDictionary();
             Properties = new NameDictionary();
             Data = new NameDictionary();
-            var s = instance as ISupportSession;
-            if (s != null) s.Session = session ?? throw ApiException.NotSupportedSession;
+            if (instance is ISupportSession s)
+                s.Session = session ?? throw ApiException.NotSupportedSession;
         }
 
         /// <summary>
