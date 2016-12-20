@@ -73,7 +73,8 @@ namespace blqw.UIF.Validation
         /// <returns></returns>
         public static Exception IsValid(object instance, ApiCallContext context, bool lazy)
         {
-            if (instance == null) throw new ArgumentNullException(nameof(instance));
+            if (instance == null)
+                return null;
 
             List<Exception> errors = null;
             var props = TypeCache[instance.GetType()];

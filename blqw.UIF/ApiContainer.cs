@@ -128,8 +128,11 @@ namespace blqw.UIF
                         var value = result.Exists ? result.Value : null;
                         if (p.DataModifications.Count > 0) p.DataModifications.ForEach(it => it.Modifies(ref value, context)); //变更数据
                         Modifier.Modifies(value, context);
-                        properties.Add(p.Name, value);
-                        p.Setter(instance, value);
+                        if (result.Exists)
+                        {
+                            properties.Add(p.Name, value);
+                            p.Setter(instance, value);
+                        }
                         if (p.DataValidations.Count > 0)
                         {
                             var ex = p.DataValidations.FirstOrDefault(it => it.IsValid(value, context) == false)?.GetException(p.Name, value, context)

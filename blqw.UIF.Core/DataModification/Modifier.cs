@@ -43,7 +43,8 @@ namespace blqw.UIF.DataModification
 
         public static void Modifies(object instance, ApiCallContext context)
         {
-            if (instance == null) throw new ArgumentNullException(nameof(instance));
+            if (instance == null)
+                return;
             var props = TypeCache[instance.GetType()];
             for (var i = 0; i < props.Count; i++)
             {

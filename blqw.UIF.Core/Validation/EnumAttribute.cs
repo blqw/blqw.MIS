@@ -18,13 +18,7 @@ namespace blqw.UIF.Validation
         }
 
         public override string GetDescription(Type type)
-        {
-            if (type.GetTypeInfo().IsEnum)
-            {
-                return $"可选值:{string.Join(", ", Enum.GetNames(type))}";
-            }
-            return null;
-        }
+            => type.GetTypeInfo().IsEnum ? $"可选值:{string.Join(", ", Enum.GetNames(type))}" : null;
 
         public override bool IsValid(object value, IDictionary<string, object> args)
             => value is Enum && Enum.IsDefined(value.GetType(), value);

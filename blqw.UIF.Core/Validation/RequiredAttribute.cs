@@ -16,9 +16,11 @@ namespace blqw.UIF.Validation
 
         public override string GetDescription(Type type) => "不能为空";
 
-        /// <summary> 判断值是否非空
+        /// <summary>
+        /// 验证对象值是否有效
         /// </summary>
-        /// <param name="obj">待判断的值</param>
+        /// <param name="value">要验证的值</param>
+        /// <param name="args"> 参数列表 </param>
         /// <returns></returns>
         public override bool IsValid(object value, IDictionary<string, object> args)
         {
@@ -34,6 +36,7 @@ namespace blqw.UIF.Validation
             {
                 return true;
             }
+            
             return ((value as IEnumerable)?.GetEnumerator() ?? (value as IEnumerator))?.MoveNext() ?? true;
         }
     }
