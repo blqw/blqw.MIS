@@ -72,6 +72,11 @@ namespace blqw.UIF.NetFramework45
         IEnumerable<DataModificationAttribute> IApiContainerProvider.GlobalModifications => GlobalModifications;
 
         /// <summary>
+        /// 日志服务
+        /// </summary>
+        public virtual ILoggerService Logger => null;
+
+        /// <summary>
         /// 创建返回值更新器
         /// </summary>
         /// <returns></returns>

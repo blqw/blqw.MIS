@@ -49,6 +49,10 @@
     <Compile Include="Filters\ApiFilterAttribute.cs" />
     <Compile Include="Api\IApiAttribute.cs" />
     <Compile Include="Filters\FilterArgs.cs" />
+    <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="Logging\LogItem.cs" />
+    <Compile Include="Logging\LogLevel.cs" />
+    <Compile Include="Logging\LoggerExtensions.cs" />
     <Compile Include="ResultProvider\IResultProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultProvider\IResultUpdater.cs" />

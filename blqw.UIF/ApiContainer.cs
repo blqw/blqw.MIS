@@ -101,7 +101,8 @@ namespace blqw.UIF
             var instance = apiDescriptor.Method.IsStatic ? null : dataProvider.GetApiInstance(apiDescriptor) ?? Activator.CreateInstance(apiDescriptor.ApiClass.Type);
             resultUpdater = Provider.CreateResultUpdater() ?? new ResultProvider();
             var session = dataProvider.GetSession();
-            var context = new ApiCallContext(instance, apiDescriptor.Method, resultUpdater, session);
+            var logger = Provider.Logger.GetUsableService(false); //获取日志服务
+            var context = new ApiCallContext(instance, apiDescriptor.Method, resultUpdater, session, logger);
             context.Data["$ResultProvider"] = resultUpdater;
             context.Data["$ApiContainer"] = this;
             context.Data["$ApiDescriptor"] = apiDescriptor;

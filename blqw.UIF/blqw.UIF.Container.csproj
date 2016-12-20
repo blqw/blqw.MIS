@@ -56,6 +56,7 @@
     <Compile Include="Services\IApiSettingParser.cs" />
     <Compile Include="Services\IApiDataProvider.cs" />
     <Compile Include="Services\IConverter.cs" />
+    <Compile Include="Services\ILoggerService.cs" />
     <Compile Include="Services\IService.cs" />
     <Compile Include="Services\ServiceExtensions.cs" />
   </ItemGroup>

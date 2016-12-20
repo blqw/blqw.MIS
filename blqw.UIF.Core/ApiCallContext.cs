@@ -1,4 +1,5 @@
 ﻿using blqw.SIF.Session;
+using blqw.UIF.Logging;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -22,7 +23,8 @@ namespace blqw.UIF
         /// <param name="method"> api方法 </param>
         /// <param name="resultProvider"> 返回值提供程序 </param>
         /// <param name="session"> api回话信息 </param>
-        public ApiCallContext(object instance, MethodInfo method, IResultProvider resultProvider, ISession session)
+        /// <param name="logger"> 日志记录器 </param>
+        public ApiCallContext(object instance, MethodInfo method, IResultProvider resultProvider, ISession session, ILogger logger)
         {
             _resultProvider = resultProvider ?? throw new ArgumentNullException(nameof(resultProvider));
             ApiInstance = instance ?? throw new ArgumentNullException(nameof(instance));
@@ -31,9 +33,20 @@ namespace blqw.UIF
             Parameters = new NameDictionary();
             Properties = new NameDictionary();
             Data = new NameDictionary();
+            ID = Guid.NewGuid().ToString("n");
             if (instance is ISupportSession s)
                 s.Session = session ?? throw ApiException.NotSupportedSession;
         }
+
+        /// <summary>
+        /// 日志记录器
+        /// </summary>
+        public ILogger Logger { get; }
+
+        /// <summary>
+        /// 上下文ID
+        /// </summary>
+        public string ID { get; }
 
         /// <summary>
         /// Api参数

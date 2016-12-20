@@ -33,7 +33,7 @@ Universal Interface Framework
 # 待完成功能
 1. 设计数据变更器描述属性
 1. 完成基本过滤器(Log,Authorization,User等)
-~1. 单元测试支持~
+1. ~~单元测试支持~~
 1. 完整基本功能的单元测试
 1. MVC支持
 1. WCF支持
@@ -49,6 +49,9 @@ Universal Interface Framework
 1. ~~实现 ApiGlobal~~
 
 # 更新日志
+## [0.0.10] 2016.12.20
+* 日志记录方案确定
+
 ## [0.0.9] 2016.12.18
 * 单元测试支持完成
 

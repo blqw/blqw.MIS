@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using blqw.UIF.Descriptor;
+using blqw.UIF.Logging;
 
 namespace blqw.UIF
 {
@@ -35,7 +36,12 @@ namespace blqw.UIF
         /// 类型转换器
         /// </summary>
         IConverter Converter { get; }
-        
+
+        /// <summary>
+        /// 日志服务
+        /// </summary>
+        ILoggerService Logger { get; }
+
         /// <summary>
         /// 全局过滤器
         /// </summary>
@@ -56,5 +62,6 @@ namespace blqw.UIF
         /// </summary>
         /// <returns></returns>
         IResultUpdater CreateResultUpdater();
+        
     }
 }

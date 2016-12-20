@@ -129,7 +129,8 @@ namespace blqw.UIF
         /// <param name="service">原始服务</param>
         /// <param name="required">服务是否必须</param>
         /// <returns></returns>
-        public static T GetUsableService<T>(T service, bool required)
+        public static T GetUsableService<T>(this T service, bool required)
+            where T : IService
         {
             if (service == null)
             {
@@ -137,17 +138,12 @@ namespace blqw.UIF
                     throw new InvalidOperationException($"没有找到{typeof(T).Name}服务");
                 return service;
             }
-            var iservice = service as IService;
-            if (iservice == null)
+            if (service.RequireClone)
             {
-                return service;
-            }
-            if (iservice.RequireClone)
-            {
-                service = (T)iservice.Clone();
+                service = (T)service.Clone();
                 if (service == null && required)
                 {
-                    throw new InvalidOperationException($"{iservice}.Clone()返回值为null");
+                    throw new InvalidOperationException($"{service}.Clone()返回值为null");
                 }
             }
             return service;
