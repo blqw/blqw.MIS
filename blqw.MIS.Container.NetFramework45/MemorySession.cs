@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Caching;
 using System.Text;
 using System.Threading.Tasks;
-using blqw.SIF.Session;
+using blqw.MIS.Session;
 
 namespace blqw.MIS.NetFramework45
 {

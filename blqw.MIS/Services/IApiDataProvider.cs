@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using blqw.SIF.Session;
+using blqw.MIS.Session;
 
 namespace blqw.MIS.Services
 {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using blqw.MIS.Validation;
 
-namespace blqw.SIF.Session
+namespace blqw.MIS.Session
 {
     /// <summary>
     /// 表示会话数据

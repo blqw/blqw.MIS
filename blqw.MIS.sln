@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.26014.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blqw.MIS.Container", "blqw.MIS\blqw.MIS.Container.csproj", "{A54DF45F-52A2-4785-8E91-F80BE0556285}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5B066124-FAB8-435E-A86B-7E4D5B270650} = {5B066124-FAB8-435E-A86B-7E4D5B270650}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_files", "_files", "{5AD0237D-C0AF-4A3B-8FDE-1EB0BBAD37C8}"
 	ProjectSection(SolutionItems) = preProject
@@ -12,12 +15,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_files", "_files", "{5AD023
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizDemo", "BizDemo\BizDemo.csproj", "{46A94ACC-EDF2-42CC-BDE1-94A376D6F3D4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5B066124-FAB8-435E-A86B-7E4D5B270650} = {5B066124-FAB8-435E-A86B-7E4D5B270650}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blqw.MIS.Core", "blqw.MIS.Core\blqw.MIS.Core.csproj", "{5B066124-FAB8-435E-A86B-7E4D5B270650}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OwinHost", "OwinHost\OwinHost.csproj", "{2ABDDA39-E76C-48A0-B8E6-220C74C73DB3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0D03B13D-F385-4D11-BDC8-CEDC2F74B4C8} = {0D03B13D-F385-4D11-BDC8-CEDC2F74B4C8}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blqw.MIS.OwinAdapter", "blqw.MIS.Owin\blqw.MIS.OwinAdapter.csproj", "{0D03B13D-F385-4D11-BDC8-CEDC2F74B4C8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{008058B2-CFDA-4F78-9532-017F1C85B7F9} = {008058B2-CFDA-4F78-9532-017F1C85B7F9}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hosts", "Hosts", "{87F9E427-A83E-4FEF-AC91-33A7903CD3B3}"
 EndProject

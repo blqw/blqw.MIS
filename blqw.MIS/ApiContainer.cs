@@ -8,6 +8,8 @@ using System.Reflection;
 using blqw.MIS.DataModification;
 using blqw.MIS.Validation;
 using blqw.MIS.Filters;
+using blqw.MIS.Session;
+using blqw.MIS.Logging;
 
 namespace blqw.MIS
 {
@@ -85,6 +87,7 @@ namespace blqw.MIS
         /// </summary>
         public IReadOnlyCollection<DataModificationAttribute> Modifications { get; }
 
+
         /// <summary>
         /// 创建上下文
         /// </summary>
@@ -106,7 +109,7 @@ namespace blqw.MIS
             context.Data["$ResultProvider"] = resultUpdater;
             context.Data["$ApiContainer"] = this;
             context.Data["$ApiDescriptor"] = apiDescriptor;
-
+            
             var parameters = context.Parameters;
             var properties = context.Properties;
             if (apiDescriptor.Method.IsStatic == false)
@@ -156,6 +159,22 @@ namespace blqw.MIS
             //参数
             foreach (var p in apiDescriptor.Parameters)
             {
+                if (p.ParameterType == typeof(ISession))
+                {
+                    parameters.Add(p.Name, session);
+                    continue;
+                }
+                if (p.ParameterType == typeof(ApiCallContext))
+                {
+                    parameters.Add(p.Name, context);
+                    continue;
+                }
+                if (p.ParameterType == typeof(ILogger))
+                {
+                    parameters.Add(p.Name, logger);
+                    continue;
+                }
+
                 var result = dataProvider.GetParameter(p);
 
                 if (result.Error != null && result.Exists)

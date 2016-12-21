@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace blqw.SIF.Session
+namespace blqw.MIS.Session
 {
     /// <summary>
     /// 用于表示Api类支持 Session 接口

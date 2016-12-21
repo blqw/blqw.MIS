@@ -117,7 +117,7 @@ namespace blqw.MIS.NetFramework45
                     {
                         types = ex.Types;
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         throw;
                     }

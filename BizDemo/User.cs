@@ -6,26 +6,26 @@ using System.Threading.Tasks;
 using blqw.MIS;
 using blqw.MIS.DataModification;
 using blqw.MIS.Validation;
-using blqw.SIF.Session;
+using blqw.MIS.Session;
 
 namespace BizDemo
 {
-    public class User : ISupportSession
+    public class User //: ISupportSession
     {
         [ApiProperty]
         [Range(1, 1000)]
         public int X { get; set; }
 
-        public ISession Session { get; set; }
+        //public ISession Session { get; set; }
 
         [Api]
-        public void SetSession(string name, string value)
+        public void SetSession(string name, string value, ISession Session)
         {
             Session[name] = value;
         }
 
         [Api]
-        public object GetSession(string name)
+        public object GetSession(string name, ISession Session)
         {
             return Session[name];
         }

@@ -10,7 +10,7 @@ using System.IO;
 using blqw.IOC;
 using System.Diagnostics;
 using System.Collections;
-using blqw.SIF.Session;
+using blqw.MIS.Session;
 using blqw.MIS.NetFramework45;
 
 namespace blqw.MIS.OwinAdapter

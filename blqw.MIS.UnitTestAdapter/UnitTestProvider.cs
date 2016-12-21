@@ -34,7 +34,7 @@ namespace blqw.MIS
                     {
                         types = ex.Types;
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         throw;
                     }

@@ -9,7 +9,7 @@ namespace blqw.MIS.Validation
     /// </summary>
     public class RequiredAttribute : DataValidationAttribute
     {
-        protected RequiredAttribute(string errorMessageFormat = "参数 {name} 不能为空")
+        public RequiredAttribute(string errorMessageFormat = "参数 {name} 不能为空")
             : base(-109, errorMessageFormat ?? "参数 {name} 不能为空")
         {
         }
