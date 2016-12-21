@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using blqw.UIF;
-using blqw.UIF.DataModification;
-using blqw.UIF.Validation;
+using blqw.MIS;
+using blqw.MIS.DataModification;
+using blqw.MIS.Validation;
 using blqw.SIF.Session;
 
 namespace BizDemo

@@ -1,6 +1,6 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using blqw.UIF;
+using blqw.MIS;
 using BizDemo;
 using blqw;
 using blqw.IOC;

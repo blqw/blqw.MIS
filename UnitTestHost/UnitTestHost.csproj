@@ -70,9 +70,9 @@
       <Project>{46a94acc-edf2-42cc-bde1-94a376d6f3d4}</Project>
       <Name>BizDemo</Name>
     </ProjectReference>
-    <ProjectReference Include="..\blqw.UIF.UnitTestAdapter\blqw.UIF.UnitTestAdapter.csproj">
+    <ProjectReference Include="..\blqw.MIS.UnitTestAdapter\blqw.MIS.UnitTestAdapter.csproj">
       <Project>{d01a38c1-35e5-4a40-8c50-f6b1cee2ac9d}</Project>
-      <Name>blqw.UIF.UnitTestAdapter</Name>
+      <Name>blqw.MIS.UnitTestAdapter</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

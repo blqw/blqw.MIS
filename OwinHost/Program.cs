@@ -28,7 +28,7 @@ namespace OwinHost
 
         private static void Startup(Owin.IAppBuilder app)
         {
-            app.Use<blqw.UIF.Owin.UIFMiddleware>();
+            app.Use<blqw.MIS.OwinAdapter.MISMiddleware>();
         }
     }
 }

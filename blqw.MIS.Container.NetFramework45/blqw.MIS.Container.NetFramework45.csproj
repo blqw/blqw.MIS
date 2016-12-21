@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{46A94ACC-EDF2-42CC-BDE1-94A376D6F3D4}</ProjectGuid>
+    <ProjectGuid>{008058B2-CFDA-4F78-9532-017F1C85B7F9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BizDemo</RootNamespace>
-    <AssemblyName>BizDemo</AssemblyName>
+    <RootNamespace>blqw.MIS.NetFramework45</RootNamespace>
+    <AssemblyName>blqw.MIS.Container.NetFramework45</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -38,6 +38,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,25 +47,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Global.cs" />
+    <Compile Include="ApiContainerProvider.cs" />
+    <Compile Include="Convert3Proxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="User.cs" />
+    <Compile Include="MemorySession.cs" />
+    <Compile Include="SettingParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\blqw.MIS.Core\blqw.MIS.Core.csproj">
       <Project>{5b066124-fab8-435e-a86b-7e4d5b270650}</Project>
       <Name>blqw.MIS.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\blqw.MIS\blqw.MIS.Container.csproj">
+      <Project>{a54df45f-52a2-4785-8e91-f80be0556285}</Project>
+      <Name>blqw.MIS.Container</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

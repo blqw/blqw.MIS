@@ -1,6 +1,6 @@
-﻿using blqw.UIF;
-using blqw.UIF.DataModification;
-using blqw.UIF.Validation;
+﻿using blqw.MIS;
+using blqw.MIS.DataModification;
+using blqw.MIS.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;

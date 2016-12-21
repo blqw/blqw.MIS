@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{46A94ACC-EDF2-42CC-BDE1-94A376D6F3D4}</ProjectGuid>
+    <ProjectGuid>{0D03B13D-F385-4D11-BDC8-CEDC2F74B4C8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BizDemo</RootNamespace>
-    <AssemblyName>BizDemo</AssemblyName>
+    <RootNamespace>blqw.MIS.OwinAdapter</RootNamespace>
+    <AssemblyName>blqw.MIS.OwinAdapter</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -36,6 +36,25 @@
     <Reference Include="blqw.IOC, Version=1.3.8.32545, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\blqw.IOC.1.3.8.4\lib\net45\blqw.IOC.dll</HintPath>
     </Reference>
+    <Reference Include="blqw.Json, Version=3.1.3.32701, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\blqw.Json.3.1.3.3\lib\net45\blqw.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.HttpListener.3.0.1\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Hosting, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Hosting.3.0.1\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,25 +65,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Global.cs" />
+    <Compile Include="DataProvider.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="OwinProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="User.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\blqw.MIS.Core\blqw.MIS.Core.csproj">
-      <Project>{5b066124-fab8-435e-a86b-7e4d5b270650}</Project>
-      <Name>blqw.MIS.Core</Name>
-    </ProjectReference>
+    <Compile Include="RouteTable.cs" />
+    <Compile Include="MISMiddleware.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\blqw.MIS.Container.NetFramework45\blqw.MIS.Container.NetFramework45.csproj">
+      <Project>{008058b2-cfda-4f78-9532-017f1c85b7f9}</Project>
+      <Name>blqw.MIS.Container.NetFramework45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\blqw.MIS.Core\blqw.MIS.Core.csproj">
+      <Project>{5b066124-fab8-435e-a86b-7e4d5b270650}</Project>
+      <Name>blqw.MIS.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\blqw.MIS\blqw.MIS.Container.csproj">
+      <Project>{a54df45f-52a2-4785-8e91-f80be0556285}</Project>
+      <Name>blqw.MIS.Container</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
