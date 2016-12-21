@@ -21,6 +21,7 @@ namespace BizDemo
         [Api]
         public void SetSession(string name, string value, ISession Session)
         {
+            
             Session[name] = value;
         }
 
