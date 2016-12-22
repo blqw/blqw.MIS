@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -89,6 +90,38 @@ namespace blqw.MIS.Validation
         public virtual bool IsValid(object value, ApiCallContext context)
             => IsValid(value, context?.Parameters);
 
+
+        /// <summary>
+        /// 当前特性的允许使用类型
+        /// </summary>
+        protected virtual IEnumerable<Type> AllowTypes { get; } = new[] { typeof(object) };
+
+        /// <summary>
+        /// 返回指定类型对于当前特性是否有效
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public virtual bool IsAllowType(Type type)
+        {
+            if (AllowTypes == null || type == null)
+            {
+                return false;
+            }
+
+            var t = type.GetTypeInfo();
+            var ti = t.IsInterface;
+            var ci = CanInherited(t);
+            return AllowTypes.Any(allow);
+
+            bool allow(Type t1)
+            {
+                var t2 = t1.GetTypeInfo();
+                return t2.IsAssignableFrom(t) || (ti && CanInherited(t2)) || (ci && t2.IsInterface);
+            }
+        }
+
+        private bool CanInherited(TypeInfo type)
+            => type.IsSealed == false && type.IsValueType == false;
 
         /// <summary>
         /// 验证对象值是否有效

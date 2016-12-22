@@ -24,7 +24,7 @@ namespace blqw.MIS.Validation
         }
 
         public override string GetDescription(Type type)
-            => type == typeof(string) ? "必须是 Email 格式" : null;
+            => "必须是 Email 格式";
 
         public override bool IsValid(object value, IDictionary<string, object> args)
         {
@@ -35,5 +35,7 @@ namespace blqw.MIS.Validation
             }
             return _regexEmail.IsMatch(str);
         }
+
+        protected override IEnumerable<Type> AllowTypes { get; } = new[] { typeof(string) };
     }
 }

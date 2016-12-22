@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace blqw.MIS.Validation
 {
@@ -39,5 +40,8 @@ namespace blqw.MIS.Validation
             
             return ((value as IEnumerable)?.GetEnumerator() ?? (value as IEnumerator))?.MoveNext() ?? true;
         }
+
+        public override bool IsAllowType(Type type)
+            => type != null && type.GetTypeInfo().IsValueType == false;
     }
 }

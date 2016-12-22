@@ -61,5 +61,6 @@ namespace blqw.MIS.Validation
             }
             return str.Length >= _minLength && str.Length <= _maxLength ;
         }
+        protected override IEnumerable<Type> AllowTypes { get; } = new[] { typeof(string) };
     }
 }

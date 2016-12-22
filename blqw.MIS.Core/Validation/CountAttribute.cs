@@ -73,6 +73,8 @@ namespace blqw.MIS.Validation
             return true;
         }
 
+        protected override IEnumerable<Type> AllowTypes { get; } = new[] { typeof(IEnumerable) };
+
         static Func<object, int> CreateGetCountFunction(TypeInfo type)
         {
             var service = typeof(GetCountService<>).MakeGenericType(type.GenericTypeParameters[0]);
@@ -80,13 +82,7 @@ namespace blqw.MIS.Validation
         }
 
         public override string GetDescription(Type type)
-        {
-            if (typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
-            {
-                return MinCount <= 0 ? $"集合不能大于{MaxCount}" : $"集合不能大于{MaxCount}或小于{MinCount}";
-            }
-            return null;
-        }
+                => MinCount <= 0 ? $"集合不能大于{MaxCount}" : $"集合不能大于{MaxCount}或小于{MinCount}" ;
 
         static readonly ReadOnlyStore<TypeInfo, Func<object, int>> _getCountFunctions = new ReadOnlyStore<TypeInfo, Func<object, int>>();
 

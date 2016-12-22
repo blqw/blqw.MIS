@@ -50,7 +50,7 @@ namespace blqw.MIS.Descriptor
                         .Union(Parameter.Member.DeclaringType.GetTypeInfo().GetCustomAttributes<DataValidationAttribute>().Reverse())
                         .Union(container.Validations.Reverse()))
             {
-                if (validations.Any(a => a.Match(filter)) == false)
+                if (validations.Any(a => a.Match(filter)) == false && filter.IsAllowType(ParameterType))
                 {
                     validations.Add(filter);
                 }
@@ -63,7 +63,7 @@ namespace blqw.MIS.Descriptor
                         .Union(Parameter.Member.DeclaringType.GetTypeInfo().GetCustomAttributes<DataModificationAttribute>().Reverse())
                         .Union(container.Modifications.Reverse()))
             {
-                if (modifications.Any(a => a.Match(filter)) == false)
+                if (modifications.Any(a => a.Match(filter)) == false && filter.IsAllowType(ParameterType))
                 {
                     modifications.Add(filter);
                 }

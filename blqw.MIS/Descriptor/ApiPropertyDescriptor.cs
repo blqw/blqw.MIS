@@ -28,6 +28,7 @@ namespace blqw.MIS.Descriptor
             ApiClass = apiclass ?? throw new ArgumentNullException(nameof(apiclass));
 
             Name = property.Name;
+            PropertyType = property.PropertyType;
             var defattr = property.GetCustomAttribute<DefaultValueAttribute>(true);
             if (defattr != null)
             {
@@ -45,7 +46,7 @@ namespace blqw.MIS.Descriptor
                         .Union(property.DeclaringType.GetTypeInfo().GetCustomAttributes<DataValidationAttribute>().Reverse())
                         .Union(container.Validations.Reverse()))
             {
-                if (validations.Any(a => a.Match(filter)) == false)
+                if (validations.Any(a => a.Match(filter)) == false && filter.IsAllowType(PropertyType))
                 {
                     validations.Add(filter);
                 }
@@ -58,7 +59,7 @@ namespace blqw.MIS.Descriptor
                         .Union(property.DeclaringType.GetTypeInfo().GetCustomAttributes<DataModificationAttribute>().Reverse())
                         .Union(container.Modifications.Reverse()))
             {
-                if (modifications.Any(a => a.Match(filter)) == false)
+                if (modifications.Any(a => a.Match(filter)) == false && filter.IsAllowType(PropertyType))
                 {
                     modifications.Add(filter);
                 }

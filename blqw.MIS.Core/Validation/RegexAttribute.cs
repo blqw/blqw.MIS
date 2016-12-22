@@ -35,5 +35,6 @@ namespace blqw.MIS.Validation
             var str = value as string;
             return str == null || _regex.IsMatch(str);
         }
+        protected override IEnumerable<Type> AllowTypes { get; } = new[] { typeof(string) };
     }
 }

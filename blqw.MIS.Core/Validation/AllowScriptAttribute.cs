@@ -17,11 +17,13 @@ namespace blqw.MIS.Validation
 
         }
 
-        public override string GetDescription(Type type) => type == typeof(string) ? "允许包含脚本" : null;
+        public override string GetDescription(Type type) => "允许包含脚本";
 
         public override bool IsValid(object value, IDictionary<string, object> args) => true;
 
         public override bool Match(DataValidationAttribute attribute)
             => base.Match(attribute) || attribute?.GetType() == typeof(NoScriptAttribute);
+
+        protected override IEnumerable<Type> AllowTypes { get; } = new[] { typeof(string) };
     }
 }

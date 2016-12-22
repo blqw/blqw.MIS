@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -45,6 +46,20 @@ namespace blqw.MIS.Validation
             var zero = Convert.ChangeType("0", value.GetType());
             var result = comparable.CompareTo(zero);
             return AllowZero ? result >= 0 : result > 0;
+        }
+
+        public override bool IsAllowType(Type type)
+        {
+            try
+            {
+                if (type == typeof(bool)) return false;
+                Convert.ChangeType("0", type);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

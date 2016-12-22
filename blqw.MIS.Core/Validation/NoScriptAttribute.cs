@@ -20,7 +20,7 @@ namespace blqw.MIS.Validation
         {
         }
 
-        public override string GetDescription(Type type) => type == typeof(string) ? "不能包含脚本字符" : null;
+        public override string GetDescription(Type type) => "不能包含脚本字符";
 
         public override bool IsValid(object value, IDictionary<string, object> args)
         {
@@ -31,5 +31,6 @@ namespace blqw.MIS.Validation
             }
             return HasScript.IsMatch(str) == false;
         }
+        protected override IEnumerable<Type> AllowTypes { get; } = new[] { typeof(string) };
     }
 }

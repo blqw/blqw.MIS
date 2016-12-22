@@ -18,9 +18,12 @@ namespace blqw.MIS.Validation
         }
 
         public override string GetDescription(Type type)
-            => type.GetTypeInfo().IsEnum ? $"可选值:{string.Join(", ", Enum.GetNames(type))}" : null;
+            => IsAllowType(type) ? $"可选值:{string.Join(", ", Enum.GetNames(type))}" : null;
 
         public override bool IsValid(object value, IDictionary<string, object> args)
             => value is Enum && Enum.IsDefined(value.GetType(), value);
+
+        public override bool IsAllowType(Type type)
+            => type?.GetTypeInfo().IsEnum == true;
     }
 }

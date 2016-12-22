@@ -169,7 +169,7 @@ namespace blqw.MIS.DataModification
             _type = typeof(DateTime);
         }
 
-        
+
         public override void Modifies(ref object arg)
         {
             var value = arg as IComparable;
@@ -177,5 +177,21 @@ namespace blqw.MIS.DataModification
             if (value.CompareTo(_min) < 0) arg = _min;
             else if (value.CompareTo(_max) > 0) arg = _max;
         }
+        protected override IEnumerable<Type> AllowTypes { get; } 
+            = new[]
+            {
+                typeof(double),
+                typeof(long),
+                typeof(uint),
+                typeof(ulong),
+                typeof(float),
+                typeof(decimal),
+                typeof(byte),
+                typeof(sbyte),
+                typeof(short),
+                typeof(ushort),
+                typeof(int),
+                typeof(DateTime),
+            };
     }
 }

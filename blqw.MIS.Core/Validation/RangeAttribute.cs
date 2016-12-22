@@ -63,7 +63,6 @@ namespace blqw.MIS.Validation
             if (value is IComparable == false) return double.NaN;
             if (value is ushort) return (double)(ushort)value;
             if (value is decimal) return (double)(decimal)value;
-            if (value is decimal) return (double)(decimal)value;
             if (value is double) return (double)value;
             if (value is int) return (double)(int)value;
             if (value is float) return (double)(float)value;
@@ -77,5 +76,22 @@ namespace blqw.MIS.Validation
             if (value is DateTime) return (double)((DateTime)value).Ticks;
             return double.NaN;
         }
+        protected override IEnumerable<Type> AllowTypes { get; }
+           = new[]
+           {
+                typeof(double),
+                typeof(long),
+                typeof(uint),
+                typeof(ulong),
+                typeof(float),
+                typeof(decimal),
+                typeof(int),
+                typeof(byte),
+                typeof(sbyte),
+                typeof(short),
+                typeof(ushort),
+                typeof(char),
+                typeof(DateTime),
+           };
     }
 }

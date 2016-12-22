@@ -18,5 +18,7 @@ namespace blqw.MIS.DataModification
 
         public override bool Match(DataModificationAttribute attribute)
             => base.Match(attribute) || attribute.GetType() == typeof(TrimAttribute);
+
+        protected override IEnumerable<Type> AllowTypes { get; } = new[] { typeof(string) };
     }
 }
