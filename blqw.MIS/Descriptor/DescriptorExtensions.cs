@@ -81,19 +81,51 @@ namespace blqw.MIS
         public static ApiCallContext Invoke(this ApiDescriptor apiDescriptor, IApiDataProvider dataProvider)
         {
             if (dataProvider == null) throw new ArgumentNullException(nameof(dataProvider));
-            var context = apiDescriptor.Container.CreateContext(apiDescriptor, dataProvider, out var resultProvider);
+            var container = apiDescriptor.Container;
+            var context = container.CreateContext(apiDescriptor, dataProvider, out var resultProvider);
             if (context.IsError) return context;
-
-            var instance = context.ApiInstance;
-            var filterArgs = new FilterArgs(context, resultProvider);
-            apiDescriptor.FiltrationOnExecuting(context, filterArgs); //执行前置过滤器
-            if (filterArgs.Cancel == false)
+            try
             {
-                filterArgs.Result = apiDescriptor.Invoke(instance, context.Parameters.Values.ToArray()).SyncProcess(); //执行方法
+                var instance = context.ApiInstance;
+                var filterArgs = new FilterArgs(context, resultProvider);
+                apiDescriptor.FiltrationOnExecuting(context, filterArgs); //执行前置过滤器
+                if (filterArgs.Cancel == false)
+                {
+                    container.EventCaller.Invoke(GlobalEvents.OnBeginInvokeMethod, context);
+                    filterArgs.Result = apiDescriptor.Invoke(instance, context.Parameters.Values.ToArray()).SyncProcess(); //执行方法
+                }
+                filterArgs.Cancel = false;
+                apiDescriptor.FiltrationOnExecuted(context, filterArgs); //执行后置过滤器
+                container.EventCaller.Invoke(GlobalEvents.OnBeginResponse, context);
+                return context;
             }
-            filterArgs.Cancel = false;
-            apiDescriptor.FiltrationOnExecuted(context, filterArgs); //执行后置过滤器
-            return context;
+            catch (Exception ex)
+            {
+                context.Error(ex, "系统异常");
+                container.EventCaller.Invoke(GlobalEvents.OnUnprocessException, context);
+                throw;
+            }
+            finally
+            {
+                if (context?.IsError == true)
+                {
+                    var ex = context.Exception.GetRealException();
+                    if (ex is ApiException e)
+                    {
+                        context.Warning(e.Message, "逻辑异常");
+                        if (e.InnerException != null)
+                        {
+                            context.Warning(e.InnerException, "内部逻辑异常");
+                        }
+                        container.EventCaller.Invoke(GlobalEvents.OnApiException, context);
+                    }
+                    else
+                    {
+                        context.Error(context.Exception, "服务器内部错误");
+                        container.EventCaller.Invoke(GlobalEvents.OnUnprocessException, context);
+                    }
+                }
+            }
         }
 
         private static void FiltrationOnExecuted(this ApiDescriptor apiDescriptor, ApiCallContext context, FilterArgs filterArgs)
@@ -152,19 +184,52 @@ namespace blqw.MIS
         public static async Task<ApiCallContext> InvokeAsync(this ApiDescriptor apiDescriptor, IApiDataProvider dataProvider)
         {
             if (dataProvider == null) throw new ArgumentNullException(nameof(dataProvider));
-            var context = apiDescriptor.Container.CreateContext(apiDescriptor, dataProvider, out var resultProvider);
+            var container = apiDescriptor.Container;
+            var context = container.CreateContext(apiDescriptor, dataProvider, out var resultProvider);
             if (context.IsError) return context;
 
-            var instance = context.ApiInstance;
-            var filterArgs = new FilterArgs(context, resultProvider);
-            await apiDescriptor.FiltrationOnExecutingAsync(context, filterArgs); //执行前置过滤器
-            if (filterArgs.Cancel == false)
+            try
             {
-                filterArgs.Result = await apiDescriptor.Invoke(instance, context.Parameters.Values.ToArray()).AsyncProcess(); //执行方法
+                var instance = context.ApiInstance;
+                var filterArgs = new FilterArgs(context, resultProvider);
+                await apiDescriptor.FiltrationOnExecutingAsync(context, filterArgs); //执行前置过滤器
+                if (filterArgs.Cancel == false)
+                {
+                    container.EventCaller.Invoke(GlobalEvents.OnBeginInvokeMethod, context);
+                    filterArgs.Result = await apiDescriptor.Invoke(instance, context.Parameters.Values.ToArray()).AsyncProcess(); //执行方法
+                }
+                filterArgs.Cancel = false;
+                await apiDescriptor.FiltrationOnExecutedAsync(context, filterArgs); //执行后置过滤器
+                container.EventCaller.Invoke(GlobalEvents.OnBeginResponse, context);
+                return context;
             }
-            filterArgs.Cancel = false;
-            await apiDescriptor.FiltrationOnExecutedAsync(context, filterArgs); //执行后置过滤器
-            return context;
+            catch (Exception ex)
+            {
+                context.Error(ex, "系统异常");
+                container.EventCaller.Invoke(GlobalEvents.OnUnprocessException, context);
+                throw;
+            }
+            finally
+            {
+                if (context?.IsError == true)
+                {
+                    var ex = context.Exception.GetRealException();
+                    if (ex is ApiException e)
+                    {
+                        context.Warning(e.Message, "逻辑异常");
+                        if (e.InnerException != null)
+                        {
+                            context.Warning(e.InnerException, "内部逻辑异常");
+                        }
+                        container.EventCaller.Invoke(GlobalEvents.OnApiException, context);
+                    }
+                    else
+                    {
+                        context.Error(context.Exception, "服务器内部错误");
+                        container.EventCaller.Invoke(GlobalEvents.OnUnprocessException, context);
+                    }
+                }
+            }
         }
 
         private static async Task FiltrationOnExecutedAsync(this ApiDescriptor apiDescriptor, ApiCallContext context, FilterArgs filterArgs)

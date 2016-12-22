@@ -7,6 +7,7 @@ using blqw.MIS.Services;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using blqw.MIS.DataModification;
+using blqw.MIS.Events;
 using blqw.MIS.Validation;
 using blqw.MIS.Filters;
 using blqw.MIS.Session;
@@ -43,7 +44,8 @@ namespace blqw.MIS
                                 .Where(t => t.IsGenericType == false || t.IsGenericTypeDefinition == false)
                                 .Select(t => t.DeclaredConstructors.FirstOrDefault(c => c.GetParameters().Length == 0))
                                 .Where(c => c != null)
-                                .Select(c => (ApiGlobal)c.Invoke(null));
+                                .Select(c => (ApiGlobal)c.Invoke(null))
+                                .ToArray();
 
             foreach (var apiGlobal in apiGlobals)
             {
@@ -56,7 +58,10 @@ namespace blqw.MIS
             Validations = validations.AsReadOnly();
             Modifications = modifications.AsReadOnly();
             ApiCollection = new ApiCollection(this);
+            EventCaller = new EventCaller(apiGlobals);
         }
+
+        internal EventCaller EventCaller { get; }
 
         /// <summary>
         /// 容器id
@@ -106,13 +111,26 @@ namespace blqw.MIS
             ApiCallContext context = null;
             try
             {
-                var instance = apiDescriptor.Method.IsStatic ? null : dataProvider.GetApiInstance(apiDescriptor) ?? Activator.CreateInstance(apiDescriptor.ApiClass.Type);
+                logger?.Append(new LogItem()
+                {
+                    Context = context,
+                    Level = LogLevel.Debug,
+                    Message = "收到服务请求",
+                    Title = "系统",
+                });
+
+                var instance = apiDescriptor.Method.IsStatic
+                    ? null
+                    : dataProvider.GetApiInstance(apiDescriptor) ??
+                      Activator.CreateInstance(apiDescriptor.ApiClass.Type);
                 resultUpdater = Provider.CreateResultUpdater() ?? new ResultProvider();
                 var session = dataProvider.GetSession();
                 context = new ApiCallContext(instance, apiDescriptor.Method, resultUpdater, session, logger);
                 context.Data["$ResultProvider"] = resultUpdater;
                 context.Data["$ApiContainer"] = this;
                 context.Data["$ApiDescriptor"] = apiDescriptor;
+
+                if (session != null) EventCaller.Invoke(GlobalEvents.OnBeginRequest, context);
 
                 var parameters = context.Parameters;
                 var properties = context.Properties;
@@ -133,7 +151,8 @@ namespace blqw.MIS
                         if (result.Exists || p.HasDefaultValue == false)
                         {
                             var value = result.Exists ? result.Value : null;
-                            if (p.DataModifications.Count > 0) p.DataModifications.ForEach(it => it.Modifies(ref value, context)); //变更数据
+                            if (p.DataModifications.Count > 0)
+                                p.DataModifications.ForEach(it => it.Modifies(ref value, context)); //变更数据
                             Modifier.Modifies(value, context);
                             if (result.Exists)
                             {
@@ -142,8 +161,9 @@ namespace blqw.MIS
                             }
                             if (p.DataValidations.Count > 0)
                             {
-                                var ex = p.DataValidations.FirstOrDefault(it => it.IsValid(value, context) == false)?.GetException(p.Name, value, context)
-                                            ?? Validator.IsValid(value, context, true); //数据验证
+                                var ex = p.DataValidations.FirstOrDefault(it => it.IsValid(value, context) == false)?
+                                             .GetException(p.Name, value, context)
+                                         ?? Validator.IsValid(value, context, true); //数据验证
                                 if (ex != null)
                                 {
                                     resultUpdater.SetException(ex);
@@ -191,13 +211,14 @@ namespace blqw.MIS
                     if (result.Exists)
                     {
                         var value = result.Value;
-                        if (p.DataModifications.Count > 0) p.DataModifications.ForEach(it => it.Modifies(ref value, context)); //变更数据
+                        if (p.DataModifications.Count > 0)
+                            p.DataModifications.ForEach(it => it.Modifies(ref value, context)); //变更数据
                         Modifier.Modifies(value, context);
                         parameters.Add(p.Name, value);
                         if (p.DataValidations.Count > 0)
                         {
                             var ex = p.DataValidations.FirstOrDefault(it => it.IsValid(value, context) == false)?.GetException(p.Name, value, context)
-                                        ?? Validator.IsValid(value, context, true); //数据验证
+                                     ?? Validator.IsValid(value, context, true); //数据验证
                             if (ex != null)
                             {
                                 resultUpdater.SetException(ex);
@@ -218,19 +239,42 @@ namespace blqw.MIS
                     }
                 }
 
+                EventCaller.Invoke(GlobalEvents.OnApiDataParsed, context);
                 return context;
             }
             catch (Exception ex)
             {
-                logger.Append(new LogItem()
+                logger?.Append(new LogItem()
                 {
                     Context = context,
                     Exception = ex,
                     Level = LogLevel.Critical,
                     Message = "未处理异常",
-                    Title = "未处理异常",
+                    Title = "系统",
                 });
+                EventCaller.Invoke(GlobalEvents.OnUnprocessException, context);
                 throw;
+            }
+            finally
+            {
+                if (context?.IsError == true)
+                {
+                    var ex = context.Exception.GetRealException();
+                    if (ex is ApiException e)
+                    {
+                        context.Warning(e.Message, "逻辑异常");
+                        if (e.InnerException != null)
+                        {
+                            context.Warning(e.InnerException, "内部逻辑异常");
+                        }
+                        EventCaller.Invoke(GlobalEvents.OnApiException, context);
+                    }
+                    else
+                    {
+                        context.Error(context.Exception, "服务器内部错误");
+                        EventCaller.Invoke(GlobalEvents.OnUnprocessException, context);
+                    }
+                }
             }
         }
 
@@ -243,6 +287,18 @@ namespace blqw.MIS
             ((NameDictionary)context?.Parameters).MakeReadOnly();
             ((NameDictionary)context?.Properties).MakeReadOnly();
         }
+
+
+        /// <summary>
+        /// 请求开始
+        /// </summary>
+        public void OnBeginRequest() => EventCaller.Invoke(GlobalEvents.OnBeginRequest, null);
+
+        /// <summary>
+        /// 请求结束
+        /// </summary>
+        /// <param name="context"></param>
+        public void OnEndRequest(ApiCallContext context) => EventCaller.Invoke(GlobalEvents.OnBeginRequest, context);
     }
 }
 

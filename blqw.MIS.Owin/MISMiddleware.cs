@@ -32,10 +32,12 @@ namespace blqw.MIS.OwinAdapter
             if (api != null)
             {
                 byte[] content;
+                ApiCallContext context = null;
                 try
                 {
+                    _container.OnBeginRequest();
                     var dataProvider = new DataProvider(owin);
-                    var context = api.Invoke(dataProvider);
+                    context = api.Invoke(dataProvider);
                     dataProvider.SaveSession(context.Session);
                     var ex = context.Exception ?? context.Result as Exception;
                     if (ex == null)
@@ -66,6 +68,7 @@ namespace blqw.MIS.OwinAdapter
                 owin.Response.ContentLength = content.Length;
                 owin.Response.Expires = DateTimeOffset.Now;
                 await owin.Response.WriteAsync(content);
+                _container.OnEndRequest(context);
             }
             else
             {

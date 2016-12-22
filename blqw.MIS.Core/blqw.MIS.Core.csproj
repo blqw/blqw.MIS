@@ -34,6 +34,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ApiCallContext.cs" />
+    <Compile Include="Events\ApiEventArgs.cs" />
+    <Compile Include="Events\ApiEventBinds.cs" />
     <Compile Include="ApiExceptions.cs" />
     <Compile Include="ApiGlobal.cs" />
     <Compile Include="Api\ApiAttribute.cs" />

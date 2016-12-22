@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using blqw.MIS.Events;
 
 namespace BizDemo
 {
@@ -14,6 +15,11 @@ namespace BizDemo
         public override void Initialization()
         {
             base.Validations.Add(new NoScriptAttribute());
+        }
+
+        protected override void OnBeginRequest(ApiEventArgs e)
+        {
+            base.OnBeginRequest(e);
         }
     }
 }

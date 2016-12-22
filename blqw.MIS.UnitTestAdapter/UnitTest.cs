@@ -13,18 +13,27 @@ namespace blqw.MIS
 
         public static UnitTestResult Call(Expression<Action> testCase)
         {
-            var result = ExpressionParser.Parse(testCase);
-            var api = _container.ApiCollection.Apis.FirstOrDefault(a => a.Method == result.Method);
-            if (api == null)
+            _container.OnBeginRequest();
+            ApiCallContext context = null;
+            try
             {
-                throw new InvalidOperationException("无效api方法");
+                var result = ExpressionParser.Parse(testCase);
+                var api = _container.ApiCollection.Apis.FirstOrDefault(a => a.Method == result.Method);
+                if (api == null)
+                {
+                    throw new InvalidOperationException("无效api方法");
+                }
+                context = api.Invoke(new DataProvider(result));
+                if (context.IsError)
+                {
+                    return new UnitTestResult(context.Exception);
+                }
+                return new UnitTestResult();
             }
-            var context = api.Invoke(new DataProvider(result));
-            if (context.IsError)
+            finally
             {
-                return new UnitTestResult(context.Exception);
+                _container.OnEndRequest(context);
             }
-            return new UnitTestResult();
         }
 
         public static UnitTestResult<T> Call<T>(Expression<Func<T>> testCase)

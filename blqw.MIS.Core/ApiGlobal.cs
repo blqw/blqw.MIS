@@ -12,7 +12,7 @@ namespace blqw.MIS
     /// <summary>
     /// Api全局操作基类
     /// </summary>
-    public abstract class ApiGlobal
+    public abstract partial class ApiGlobal
     {
         public abstract void Initialization();
 
@@ -21,5 +21,6 @@ namespace blqw.MIS
         public ICollection<DataValidationAttribute> Validations { get; } = new List<DataValidationAttribute>();
 
         public ICollection<DataModificationAttribute> Modifications { get; } = new List<DataModificationAttribute>();
+
     }
 }
