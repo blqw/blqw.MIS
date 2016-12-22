@@ -61,7 +61,10 @@ namespace blqw.MIS
             EventCaller = new EventCaller(apiGlobals);
         }
 
-        internal EventCaller EventCaller { get; }
+        /// <summary>
+        /// 事件处理器
+        /// </summary>
+        public EventCaller EventCaller { get; }
 
         /// <summary>
         /// 容器id
@@ -111,14 +114,6 @@ namespace blqw.MIS
             ApiCallContext context = null;
             try
             {
-                logger?.Append(new LogItem()
-                {
-                    Context = context,
-                    Level = LogLevel.Debug,
-                    Message = "收到服务请求",
-                    Title = "系统",
-                });
-
                 var instance = apiDescriptor.Method.IsStatic
                     ? null
                     : dataProvider.GetApiInstance(apiDescriptor) ??
@@ -130,13 +125,22 @@ namespace blqw.MIS
                 context.Data["$ApiContainer"] = this;
                 context.Data["$ApiDescriptor"] = apiDescriptor;
 
+                logger?.Append(new LogItem()
+                {
+                    Context = context,
+                    Level = LogLevel.Debug,
+                    Message = "创建上下文",
+                    Title = "系统",
+                });
+
                 if (session != null) EventCaller.Invoke(GlobalEvents.OnBeginRequest, context);
 
                 var parameters = context.Parameters;
                 var properties = context.Properties;
+
+                //属性
                 if (apiDescriptor.Method.IsStatic == false)
                 {
-                    //属性
                     foreach (var p in apiDescriptor.Properties)
                     {
                         var result = dataProvider.GetProperty(p);

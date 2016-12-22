@@ -8,7 +8,7 @@ using blqw.MIS.Events;
 
 namespace blqw.MIS.Services
 {
-    internal sealed class EventCaller
+    public sealed class EventCaller
     {
         private readonly ApiGlobal[] _globals;
 
@@ -53,7 +53,7 @@ namespace blqw.MIS.Services
             return method.DeclaringType != typeof(ApiGlobal);
         }
 
-        public void Invoke(GlobalEvents @event, ApiCallContext context)
+        internal void Invoke(GlobalEvents @event, ApiCallContext context)
         {
             var i = (int)@event;
             if (i < 0 || i >= _events.Length) return;

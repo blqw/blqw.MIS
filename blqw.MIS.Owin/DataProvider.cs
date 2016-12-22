@@ -17,6 +17,10 @@ namespace blqw.MIS.OwinAdapter
 {
     class DataProvider : IApiDataProvider
     {
+        static DataProvider()
+        {
+            var t = typeof(MEF);
+        }  
         IReadableStringCollection _query;
         IReadableStringCollection _body;
         IHeaderDictionary _header;
@@ -170,9 +174,8 @@ namespace blqw.MIS.OwinAdapter
             {
                 return Encoding.GetEncoding(contentType.Substring(i, e - i));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Logger.Source.Write(TraceEventType.Error, $"未知的编码名称'{contentType.Substring(i, e - i)}'", ex);
                 throw;
             }
         }
