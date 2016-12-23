@@ -59,6 +59,11 @@ namespace blqw.MIS.DataModification
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         private bool CanInherited(TypeInfo type)
             => type.IsSealed == false && type.IsValueType == false;
 

@@ -7,7 +7,11 @@ using System.Threading.Tasks;
 
 namespace blqw.MIS.DataModification
 {
-    public class CorrectAttribute : DataModificationAttribute
+    /// <summary>
+    /// 溢出检查特性 <para/>
+    /// 当数值超过上下限时修正为最大值或最小值
+    /// </summary>
+    public class CheckedAttribute : DataModificationAttribute
     {
         /// <summary>
         /// 允许的最大值
@@ -22,11 +26,11 @@ namespace blqw.MIS.DataModification
         private readonly Type _type;
 
         /// <summary>
-        ///     判断参数是否超出范围
+        ///     设置溢出检查的最大值与最小值
         /// </summary>
         /// <param name="min">最小值(包含)</param>
         /// <param name="max">最大值(包含)</param>
-        public CorrectAttribute(double min, double max)
+        public CheckedAttribute(double min, double max)
         {
             _min = min;
             _max = max;
@@ -34,11 +38,11 @@ namespace blqw.MIS.DataModification
         }
 
         /// <summary>
-        ///     判断参数是否超出范围
+        ///     设置溢出检查的最大值与最小值
         /// </summary>
         /// <param name="min">最小值(包含)</param>
         /// <param name="max">最大值(包含)</param>
-        public CorrectAttribute(long min, long max)
+        public CheckedAttribute(long min, long max)
         {
             _min = min;
             _max = max;
@@ -46,11 +50,11 @@ namespace blqw.MIS.DataModification
         }
 
         /// <summary>
-        ///     判断参数是否超出范围
+        ///     设置溢出检查的最大值与最小值
         /// </summary>
         /// <param name="min">最小值(包含)</param>
         /// <param name="max">最大值(包含)</param>
-        public CorrectAttribute(uint min, uint max)
+        public CheckedAttribute(uint min, uint max)
         {
             _min = min;
             _max = max;
@@ -58,11 +62,11 @@ namespace blqw.MIS.DataModification
         }
 
         /// <summary>
-        ///     判断参数是否超出范围
+        ///     设置溢出检查的最大值与最小值
         /// </summary>
         /// <param name="min">最小值(包含)</param>
         /// <param name="max">最大值(包含)</param>
-        public CorrectAttribute(ulong min, ulong max)
+        public CheckedAttribute(ulong min, ulong max)
         {
             _min = min;
             _max = max;
@@ -70,11 +74,11 @@ namespace blqw.MIS.DataModification
         }
 
         /// <summary>
-        ///     判断参数是否超出范围
+        ///     设置溢出检查的最大值与最小值
         /// </summary>
         /// <param name="min">最小值(包含)</param>
         /// <param name="max">最大值(包含)</param>
-        public CorrectAttribute(float min, float max)
+        public CheckedAttribute(float min, float max)
         {
             _min = min;
             _max = max;
@@ -82,11 +86,11 @@ namespace blqw.MIS.DataModification
         }
 
         /// <summary>
-        ///     判断参数是否超出范围
+        ///     设置溢出检查的最大值与最小值
         /// </summary>
         /// <param name="min">最小值(包含)</param>
         /// <param name="max">最大值(包含)</param>
-        public CorrectAttribute(decimal min, decimal max)
+        public CheckedAttribute(decimal min, decimal max)
         {
             _min = min;
             _max = max;
@@ -94,11 +98,11 @@ namespace blqw.MIS.DataModification
         }
 
         /// <summary>
-        ///     判断参数是否超出范围
+        ///     设置溢出检查的最大值与最小值
         /// </summary>
         /// <param name="min">最小值(包含)</param>
         /// <param name="max">最大值(包含)</param>
-        public CorrectAttribute(byte min, byte max)
+        public CheckedAttribute(byte min, byte max)
         {
             _min = min;
             _max = max;
@@ -106,11 +110,11 @@ namespace blqw.MIS.DataModification
         }
 
         /// <summary>
-        ///     判断参数是否超出范围
+        ///     设置溢出检查的最大值与最小值
         /// </summary>
         /// <param name="min">最小值(包含)</param>
         /// <param name="max">最大值(包含)</param>
-        public CorrectAttribute(sbyte min, sbyte max)
+        public CheckedAttribute(sbyte min, sbyte max)
         {
             _min = min;
             _max = max;
@@ -118,11 +122,11 @@ namespace blqw.MIS.DataModification
         }
 
         /// <summary>
-        ///     判断参数是否超出范围
+        ///     设置溢出检查的最大值与最小值
         /// </summary>
         /// <param name="min">最小值(包含)</param>
         /// <param name="max">最大值(包含)</param>
-        public CorrectAttribute(short min, short max)
+        public CheckedAttribute(short min, short max)
         {
             _min = min;
             _max = max;
@@ -130,11 +134,11 @@ namespace blqw.MIS.DataModification
         }
 
         /// <summary>
-        ///     判断参数是否超出范围
+        ///     设置溢出检查的最大值与最小值
         /// </summary>
         /// <param name="min">最小值(包含)</param>
         /// <param name="max">最大值(包含)</param>
-        public CorrectAttribute(ushort min, ushort max)
+        public CheckedAttribute(ushort min, ushort max)
         {
             _min = min;
             _max = max;
@@ -142,11 +146,11 @@ namespace blqw.MIS.DataModification
         }
 
         /// <summary>
-        ///     判断 int 类型参数是否超出范围
+        ///     设置溢出检查的最大值与最小值
         /// </summary>
         /// <param name="min">最小值(包含)</param>
         /// <param name="max">最大值(包含)</param>
-        public CorrectAttribute(int min, int max)
+        public CheckedAttribute(int min, int max)
         {
             _min = min;
             _max = max;
@@ -154,11 +158,11 @@ namespace blqw.MIS.DataModification
         }
 
         /// <summary>
-        ///     判断 DateTime 类型参数是否超出范围
+        ///     设置溢出检查的最大值与最小值
         /// </summary>
         /// <param name="min">最小时间(包含)</param>
         /// <param name="max">最大时间(包含)</param>
-        public CorrectAttribute(string min, string max)
+        public CheckedAttribute(string min, string max)
         {
             if (DateTime.TryParse(min, out var time) == false)
                 throw new FormatException(min + " 不是有效的时间值");
@@ -170,6 +174,11 @@ namespace blqw.MIS.DataModification
         }
 
 
+        /// <summary>
+        ///     如果值溢出，则改为有效的值
+        /// </summary>
+        /// <param name="arg">待修改的值</param>
+        /// <returns></returns>
         public override void Modifies(ref object arg)
         {
             var value = arg as IComparable;
@@ -177,7 +186,11 @@ namespace blqw.MIS.DataModification
             if (value.CompareTo(_min) < 0) arg = _min;
             else if (value.CompareTo(_max) > 0) arg = _max;
         }
-        protected override IEnumerable<Type> AllowTypes { get; } 
+
+        /// <summary>
+        /// 当前特性的允许类型
+        /// </summary>
+        protected override IEnumerable<Type> AllowTypes { get; }
             = new[]
             {
                 typeof(double),

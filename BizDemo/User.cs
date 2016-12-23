@@ -32,7 +32,7 @@ namespace BizDemo
         }
 
         [Api]
-        public object Get([Range(1, 2)]long id, string name, [Correct(1, 100)]int page = 1)
+        public object Get([Range(1, 2)]long id, string name, [Checked(1, 100)]int page = 1)
         {
             return new { id = id, name = name, created_time = DateTime.Now, page };
         }

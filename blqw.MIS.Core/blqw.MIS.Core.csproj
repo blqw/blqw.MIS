@@ -43,7 +43,7 @@
     <Compile Include="ApiException.cs" />
     <Compile Include="Api\ApiParameterAttribute.cs" />
     <Compile Include="Api\ApiPropertyAttribute.cs" />
-    <Compile Include="DataModification\CorrectAttribute.cs" />
+    <Compile Include="DataModification\CheckedAttribute.cs" />
     <Compile Include="DataModification\DataModificationAttribute.cs" />
     <Compile Include="DataModification\Modifier.cs" />
     <Compile Include="DataModification\NoTrimAttribute.cs" />

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace blqw.MIS
 {
@@ -15,18 +12,13 @@ namespace blqw.MIS
         /// <summary>
         /// 初始化接口特性
         /// </summary>
-        public ApiPropertyAttribute()
-        {
-
-        }
+        public ApiPropertyAttribute() { }
         /// <summary>
         /// 使用指定设置字符串初始化接口特性
         /// </summary>
         /// <param name="settingString">接口设置</param>
         public ApiPropertyAttribute(string settingString)
-        {
-            SettingString = settingString;
-        }
+            => SettingString = settingString;
 
         /// <summary>
         /// 初始化针对特定容器的接口特性
@@ -34,10 +26,9 @@ namespace blqw.MIS
         /// <param name="container">指定容器</param>
         /// <param name="settingString">接口设置</param>
         public ApiPropertyAttribute(string container, string settingString)
-        {
-            Container = container;
-            SettingString = settingString;
-        }
+            : this(settingString)
+            => Container = container;
+
         /// <summary>
         /// 容器ID
         /// </summary>

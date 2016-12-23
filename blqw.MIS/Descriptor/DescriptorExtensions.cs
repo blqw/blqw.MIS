@@ -94,6 +94,10 @@ namespace blqw.MIS
                     container.EventCaller.Invoke(GlobalEvents.OnBeginInvokeMethod, context);
                     filterArgs.Result = apiDescriptor.Invoke(instance, context.Parameters.Values.ToArray()).SyncProcess(); //执行方法
                 }
+                else
+                {
+                    context.Debug("前置过滤器截断");
+                }
                 filterArgs.Cancel = false;
                 apiDescriptor.FiltrationOnExecuted(context, filterArgs); //执行后置过滤器
                 container.EventCaller.Invoke(GlobalEvents.OnBeginResponse, context);
@@ -198,6 +202,10 @@ namespace blqw.MIS
                     container.EventCaller.Invoke(GlobalEvents.OnBeginInvokeMethod, context);
                     filterArgs.Result = await apiDescriptor.Invoke(instance, context.Parameters.Values.ToArray()).AsyncProcess(); //执行方法
                 }
+                else
+                {
+                    context.Debug("前置过滤器截断");
+                }
                 filterArgs.Cancel = false;
                 await apiDescriptor.FiltrationOnExecutedAsync(context, filterArgs); //执行后置过滤器
                 container.EventCaller.Invoke(GlobalEvents.OnBeginResponse, context);
@@ -249,58 +257,5 @@ namespace blqw.MIS
                 if (task != null) await task;
             }
         }
-
-        //public static async Task<object> InvokeAsync(this ApiDescriptor apiDescriptor, IApiDataProvider dataProvider)
-        //{
-        //    if (dataProvider == null) throw new ArgumentNullException(nameof(dataProvider));
-        //    var error = Build(apiDescriptor, dataProvider, out var instance, out var args); //编译api实例和方法参数
-        //    if (error != null) return error.GetException();
-        //    error = Validator.IsValid(apiDescriptor.Method, args, false);  //验证参数有效性
-        //    if (error != null) return error.GetException();
-
-        //    var filterArgs = new Filters.FilterArgs(apiDescriptor.Method, args);
-        //    var result = await instance.FiltrationOnBegin(filterArgs).GetResultAsync(); //执行前置过滤器
-        //    if (result == null)
-        //    {
-        //        result = await apiDescriptor.Invoke(instance, args.Values.ToArray()).GetResultAsync(); //执行方法
-        //    }
-        //    filterArgs.Result = result;
-        //    result = await instance.FiltrationOnEnd(filterArgs).GetResultAsync(); //执行后置过滤器
-        //    return result ?? filterArgs.Result;
-        //}
-
-
-        //private static async Task<object> GetResultAsync(this object result)
-        //{
-        //    var task = result as Task;
-        //    if (task == null)
-        //    {
-        //        var ex = result as Exception;
-        //        if (ex != null)
-        //        {
-        //            return ex.GetException();
-        //        }
-        //        return result;
-        //    }
-        //    if (task.Status == TaskStatus.Created)
-        //    {
-        //        task.Start();
-        //    }
-        //    try
-        //    {
-        //        task.Wait();
-        //    }
-        //    catch
-        //    {
-        //        return task.Exception.GetException();
-        //    }
-        //    var t = task.GetType().GetTypeInfo();
-        //    if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Task<>))
-        //    {
-        //        return GetResult(t.GetDeclaredProperty("Result").GetValue(task));
-        //    }
-        //    return null;
-        //}
-
     }
 }

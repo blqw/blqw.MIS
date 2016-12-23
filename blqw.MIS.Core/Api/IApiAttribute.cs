@@ -9,10 +9,10 @@
         /// 容器ID
         /// </summary>
         string Container { get;}
+
         /// <summary>
         /// 设置字符串
         /// </summary>
         string SettingString { get; }
-        
     }
 }
