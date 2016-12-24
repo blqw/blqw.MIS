@@ -94,21 +94,30 @@ namespace blqw.MIS.Descriptor
         /// 参数类型
         /// </summary>
         public Type ParameterType { get; }
-                
+        /// <summary>
+        /// API类描述
+        /// </summary>
         public ApiClassDescriptor ApiClass { get; }
 
+        /// <summary>
+        /// API容器
+        /// </summary>
         public ApiContainer Container { get; }
 
+        /// <summary>
+        /// API设置
+        /// </summary>
         public IDictionary<string, object> Settings { get; }
 
         /// <summary>
-        /// 数据验证规则
+        /// 数据验证只读规则
         /// </summary>
-        public ICollection<DataValidationAttribute> DataValidations { get; }
+        public IReadOnlyList<DataValidationAttribute> DataValidations { get; }
+
         /// <summary>
-        /// 数据更改规则
+        /// 数据更改只读规则
         /// </summary>
-        public ICollection<DataModificationAttribute> DataModifications { get; }
+        public IReadOnlyList<DataModificationAttribute> DataModifications { get; }
 
     }
 }

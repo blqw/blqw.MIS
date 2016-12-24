@@ -1,53 +1,18 @@
 ﻿using blqw.MIS.Descriptor;
+using blqw.MIS.Filters;
 using blqw.MIS.Services;
-using blqw.MIS.Validation;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using blqw.MIS.Filters;
 
 namespace blqw.MIS
 {
     /// <summary>
-    /// 用户描述的拓展方法
+    /// 用于描述的拓展方法
     /// </summary>
     public static class DescriptorExtensions
     {
-        /// <summary>
-        /// 同步处理返回值
-        /// </summary>
-        /// <param name="result">原始返回值</param>
-        /// <returns>如果返回值是Task,则返回同步执行后的返回值</returns>
-        private static object SyncProcess(this object result)
-        {
-            var task = result as Task;
-            if (task == null)
-            {
-                return (result as Exception)?.GetRealException() ?? result;
-            }
-            try
-            {
-                if (task.Status == TaskStatus.Created)
-                    task.RunSynchronously(); //如果任务尚未执行,则立即执行
-                else
-                    task.Wait(); //同步等待返回值
-            }
-            catch
-            {
-                return task.Exception.GetRealException();
-            }
-
-            var t = task.GetType().GetTypeInfo();
-            if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Task<>))
-            {
-                return t.GetDeclaredProperty("Result").GetValue(task)?.SyncProcess(); //如果是泛型任务,获得Result值
-            }
-            return null;
-        }
-
         /// <summary>
         /// 获取真实的异常信息
         /// </summary>
@@ -72,10 +37,45 @@ namespace blqw.MIS
             }
         }
 
+
+        #region sync
+
+        /// <summary>
+        /// 同步处理返回值
+        /// </summary>
+        /// <param name="result">原始返回值</param>
+        /// <returns>如果返回值是Task,则返回同步执行后的返回值</returns>
+        private static object ProcessResult(this object result)
+        {
+            var task = result as Task;
+            if (task == null)
+            {
+                return (result as Exception)?.GetRealException() ?? result;
+            }
+            try
+            {
+                if (task.Status == TaskStatus.Created)
+                    task.RunSynchronously(); //如果任务尚未执行,则立即执行
+                else
+                    task.Wait(); //同步等待返回值
+            }
+            catch
+            {
+                return task.Exception.GetRealException();
+            }
+
+            var t = task.GetType().GetTypeInfo();
+            if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Task<>))
+            {
+                return t.GetDeclaredProperty("Result").GetValue(task)?.ProcessResult(); //如果是泛型任务,获得Result值
+            }
+            return null;
+        }
+
         /// <summary>
         /// 同步调用api
         /// </summary>
-        /// <param name="apiDescriptor"> 接口描述 </param>
+        /// <param name="apiDescriptor"> API描述 </param>
         /// <param name="dataProvider"> API数据提供程序 </param>
         /// <returns></returns>
         public static ApiCallContext Invoke(this ApiDescriptor apiDescriptor, IApiDataProvider dataProvider)
@@ -92,7 +92,7 @@ namespace blqw.MIS
                 if (filterArgs.Cancel == false)
                 {
                     container.EventCaller.Invoke(GlobalEvents.OnBeginInvokeMethod, context);
-                    filterArgs.Result = apiDescriptor.Invoke(instance, context.Parameters.Values.ToArray()).SyncProcess(); //执行方法
+                    filterArgs.Result = apiDescriptor.Invoke(instance, context.Parameters.Values.ToArray()).ProcessResult(); //执行方法
                 }
                 else
                 {
@@ -132,6 +132,12 @@ namespace blqw.MIS
             }
         }
 
+        /// <summary>
+        /// 同步执行后置过滤器
+        /// </summary>
+        /// <param name="apiDescriptor"> API描述 </param>
+        /// <param name="context"> 上下文 </param>
+        /// <param name="filterArgs"> 过滤器集合 </param>
         private static void FiltrationOnExecuted(this ApiDescriptor apiDescriptor, ApiCallContext context, FilterArgs filterArgs)
         {
             foreach (var filter in apiDescriptor.Filters)
@@ -140,6 +146,12 @@ namespace blqw.MIS
             }
         }
 
+        /// <summary>
+        /// 同步执行前置过滤器
+        /// </summary>
+        /// <param name="apiDescriptor"> API描述 </param>
+        /// <param name="context"> 上下文 </param>
+        /// <param name="filterArgs"> 过滤器集合 </param>
         private static void FiltrationOnExecuting(this ApiDescriptor apiDescriptor, ApiCallContext context, FilterArgs filterArgs)
         {
             foreach (var filter in apiDescriptor.Filters)
@@ -148,14 +160,17 @@ namespace blqw.MIS
             }
         }
 
-#pragma warning disable IDE1006 // 命名样式
+        #endregion
+
+
+        #region async
+
         /// <summary>
         /// 异步处理返回值
         /// </summary>
         /// <param name="result">原始返回值</param>
         /// <returns>如果返回值是Task,则返回同步执行后的返回值</returns>
-        private static async Task<object> AsyncProcess(this object result)
-#pragma warning restore IDE1006 // 命名样式
+        private static async Task<object> ProcessResultAsync(this object result)
         {
             var task = result as Task;
             if (task == null)
@@ -174,16 +189,16 @@ namespace blqw.MIS
             var t = task.GetType().GetTypeInfo();
             if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Task<>))
             {
-                return await t.GetDeclaredProperty("Result").GetValue(task)?.AsyncProcess(); //如果是泛型任务,获得Result值
+                return await t.GetDeclaredProperty("Result").GetValue(task)?.ProcessResultAsync(); //如果是泛型任务,获得Result值
             }
             return null;
         }
 
         /// <summary>
-        /// 异步调用api
+        /// 异步调用API
         /// </summary>
-        /// <param name="api">接口对象</param>
-        /// <param name="dataProvider">API数据提供程序</param>
+        /// <param name="api"> API描述 </param>
+        /// <param name="dataProvider"> API数据提供程序 </param>
         /// <returns></returns>
         public static async Task<ApiCallContext> InvokeAsync(this ApiDescriptor apiDescriptor, IApiDataProvider dataProvider)
         {
@@ -200,7 +215,7 @@ namespace blqw.MIS
                 if (filterArgs.Cancel == false)
                 {
                     container.EventCaller.Invoke(GlobalEvents.OnBeginInvokeMethod, context);
-                    filterArgs.Result = await apiDescriptor.Invoke(instance, context.Parameters.Values.ToArray()).AsyncProcess(); //执行方法
+                    filterArgs.Result = await apiDescriptor.Invoke(instance, context.Parameters.Values.ToArray()).ProcessResultAsync(); //执行方法
                 }
                 else
                 {
@@ -240,6 +255,12 @@ namespace blqw.MIS
             }
         }
 
+        /// <summary>
+        /// 异步执行后置过滤器
+        /// </summary>
+        /// <param name="apiDescriptor"> API描述 </param>
+        /// <param name="context"> 上下文 </param>
+        /// <param name="filterArgs"> 过滤器集合 </param>
         private static async Task FiltrationOnExecutedAsync(this ApiDescriptor apiDescriptor, ApiCallContext context, FilterArgs filterArgs)
         {
             foreach (var filter in apiDescriptor.Filters)
@@ -249,6 +270,12 @@ namespace blqw.MIS
             }
         }
 
+        /// <summary>
+        /// 异步执行后置过滤器
+        /// </summary>
+        /// <param name="apiDescriptor"> API描述 </param>
+        /// <param name="context"> 上下文 </param>
+        /// <param name="filterArgs"> 过滤器集合 </param>
         private static async Task FiltrationOnExecutingAsync(this ApiDescriptor apiDescriptor, ApiCallContext context, FilterArgs filterArgs)
         {
             foreach (var filter in apiDescriptor.Filters)
@@ -257,5 +284,7 @@ namespace blqw.MIS
                 if (task != null) await task;
             }
         }
+
+        #endregion
     }
 }

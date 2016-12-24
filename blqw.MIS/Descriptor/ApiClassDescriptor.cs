@@ -77,14 +77,14 @@ namespace blqw.MIS.Descriptor
         public IDictionary<string, object> Settings { get; }
 
         /// <summary>
-        /// 构建一个ApiClass描述,如果<paramref name="t"/>不是ApiClass则返回null
+        /// 构建一个ApiClass描述,如果<paramref name="type"/>不是ApiClass则返回null
         /// </summary>
-        /// <param name="t"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
-        internal static ApiClassDescriptor Create(Type t, ApiContainer container)
+        internal static ApiClassDescriptor Create(Type type, ApiContainer container)
         {
-            var typeInfo = t.GetTypeInfo();
-            if (typeInfo.IsAbstract || typeInfo.IsGenericTypeDefinition) //排除抽象类和泛型定义类型
+            var typeInfo = type.GetTypeInfo();
+            if (!typeInfo.IsClass || typeInfo.IsAbstract || typeInfo.IsGenericTypeDefinition) //排除抽象类和泛型定义类型
             {
                 return null;
             }
@@ -98,7 +98,7 @@ namespace blqw.MIS.Descriptor
 
             var settings = container.Provider.ParseSetting(classAttrs) ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
-            var apiclass = new ApiClassDescriptor(t, container, settings);
+            var apiclass = new ApiClassDescriptor(type, container, settings);
 
             var propAttrs = typeInfo.DeclaredProperties
                                 .Select(it => ApiPropertyDescriptor.Create(it, apiclass))

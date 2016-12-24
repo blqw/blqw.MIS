@@ -1,12 +1,10 @@
-﻿using blqw.MIS.Services;
+﻿using blqw.MIS.DataModification;
+using blqw.MIS.Validation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using blqw.MIS.Validation;
-using blqw.MIS.DataModification;
 
 namespace blqw.MIS.Descriptor
 {
@@ -37,7 +35,7 @@ namespace blqw.MIS.Descriptor
             }
             
 
-            var setter = (IServiceProvider)Activator.CreateInstance(typeof(SetProvider<,>).GetTypeInfo().MakeGenericType(property.DeclaringType, property.PropertyType), property);
+            var setter = (IServiceProvider)Activator.CreateInstance(typeof(SetterProvider<,>).GetTypeInfo().MakeGenericType(property.DeclaringType, property.PropertyType), property);
             Setter = (Action<object, object>)setter.GetService(typeof(Action<object, object>));
 
 
@@ -69,13 +67,14 @@ namespace blqw.MIS.Descriptor
         }
 
         /// <summary>
-        ///     接口属性
+        /// 接口属性
         /// </summary>
         public PropertyInfo Property { get; }
 
-
-        internal readonly Action<object, object> Setter;
-
+        /// <summary>
+        /// API属性的设置值
+        /// </summary>
+        internal Action<object, object> Setter { get; }
 
         /// <summary>
         /// 属性默认值
@@ -95,7 +94,7 @@ namespace blqw.MIS.Descriptor
         /// <summary>
         /// API 属性类型
         /// </summary>
-        public Type PropertyType { get; set; }
+        public Type PropertyType { get; }
 
         /// <summary>
         /// API 容器
@@ -112,39 +111,47 @@ namespace blqw.MIS.Descriptor
         /// </summary>
         public ApiClassDescriptor ApiClass { get; }
 
-
         /// <summary>
         /// 数据验证规则
         /// </summary>
-        public ICollection<DataValidationAttribute> DataValidations { get; }
+        public IReadOnlyList<DataValidationAttribute> DataValidations { get; }
+
         /// <summary>
         /// 数据更改规则
         /// </summary>
-        public ICollection<DataModificationAttribute> DataModifications { get; }
+        public IReadOnlyList<DataModificationAttribute> DataModifications { get; }
 
+        /// <summary>
+        /// 创建API属性描述,如果属性不是API属性,则返null
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="apiclass"></param>
+        /// <returns></returns>
         internal static ApiPropertyDescriptor Create(PropertyInfo property, ApiClassDescriptor apiclass)
         {
             if (property.CanWrite && property.SetMethod.IsPublic && property.GetIndexParameters().Length == 0)
             {
                 var attrs = property.GetCustomAttributes<ApiPropertyAttribute>();
+                if (attrs.Any() == false) return null;
                 var settings = apiclass.Container.Provider.ParseSetting(attrs);
-                if (settings == null)
-                {
-                    return null;
-                }
                 return new ApiPropertyDescriptor(property, apiclass, settings);
             }
             return null;
         }
 
-        class SetProvider<I, V> : IServiceProvider
+        /// <summary>
+        /// 属性设置委托的提供程序
+        /// </summary>
+        /// <typeparam name="I"></typeparam>
+        /// <typeparam name="V"></typeparam>
+        private class SetterProvider<I, V> : IServiceProvider
         {
-            public SetProvider(PropertyInfo property)
-            {
-                _set = (Action<I, V>)property.SetMethod.CreateDelegate(typeof(Action<I, V>));
-            }
 
+            public SetterProvider(PropertyInfo property)
+                => _set = (Action<I, V>)property.SetMethod.CreateDelegate(typeof(Action<I, V>));
+            
             private readonly Action<I, V> _set;
+
             private void SetValue(object instance, object value)
                 => _set((I)instance, (V)value);
 

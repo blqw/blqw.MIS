@@ -2,17 +2,24 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 
 namespace blqw.MIS.Descriptor
 {
     /// <summary>
     /// 用于描述一个命名空间
     /// </summary>
-    public class NamespaceDescriptor:IDescriptor
+    public class NamespaceDescriptor : IDescriptor
     {
+        /// <summary>
+        /// API类型描述
+        /// </summary>
         private readonly List<ApiClassDescriptor> _types;
 
+        /// <summary>
+        /// 实例化命名空间
+        /// </summary>
+        /// <param name="namespace">命名空间完整名称</param>
+        /// <param name="container">API容器</param>
         public NamespaceDescriptor(string @namespace, ApiContainer container)
         {
             FullName = @namespace ?? throw new ArgumentNullException(nameof(@namespace));
@@ -31,10 +38,20 @@ namespace blqw.MIS.Descriptor
         /// 命名空间完整名称
         /// </summary>
         public string FullName { get; }
-        public ReadOnlyCollection<ApiClassDescriptor> Types { get; }
 
+        /// <summary>
+        /// API类型只读集合
+        /// </summary>
+        public IReadOnlyList<ApiClassDescriptor> Types { get; }
+
+        /// <summary>
+        /// API容器
+        /// </summary>
         public ApiContainer Container { get; }
 
+        /// <summary>
+        /// API设置
+        /// </summary>
         public IDictionary<string, object> Settings { get; }
 
         /// <summary>
