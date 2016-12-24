@@ -20,12 +20,12 @@ namespace blqw.MIS.Descriptor
         /// </summary>
         /// <param name="api"></param>
         /// <param name="property"></param>
-        private ApiPropertyDescriptor(ApiClassDescriptor apiclass, PropertyInfo property, ApiContainer container, IDictionary<string, object> settings)
+        private ApiPropertyDescriptor(PropertyInfo property, ApiClassDescriptor apiclass, IDictionary<string, object> settings)
         {
             Property = property ?? throw new ArgumentNullException(nameof(property));
-            Container = container ?? throw new ArgumentNullException(nameof(container));
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
             ApiClass = apiclass ?? throw new ArgumentNullException(nameof(apiclass));
+            Container = apiclass.Container;
 
             Name = property.Name;
             PropertyType = property.PropertyType;
@@ -44,7 +44,7 @@ namespace blqw.MIS.Descriptor
             var validations = new List<DataValidationAttribute>();
             foreach (DataValidationAttribute filter in property.GetCustomAttributes<DataValidationAttribute>().Reverse()
                         .Union(property.DeclaringType.GetTypeInfo().GetCustomAttributes<DataValidationAttribute>().Reverse())
-                        .Union(container.Validations.Reverse()))
+                        .Union(Container.Validations.Reverse()))
             {
                 if (validations.Any(a => a.Match(filter)) == false && filter.IsAllowType(PropertyType))
                 {
@@ -57,7 +57,7 @@ namespace blqw.MIS.Descriptor
             var modifications = new List<DataModificationAttribute>();
             foreach (DataModificationAttribute filter in property.GetCustomAttributes<DataModificationAttribute>().Reverse()
                         .Union(property.DeclaringType.GetTypeInfo().GetCustomAttributes<DataModificationAttribute>().Reverse())
-                        .Union(container.Modifications.Reverse()))
+                        .Union(Container.Modifications.Reverse()))
             {
                 if (modifications.Any(a => a.Match(filter)) == false && filter.IsAllowType(PropertyType))
                 {
@@ -122,17 +122,17 @@ namespace blqw.MIS.Descriptor
         /// </summary>
         public ICollection<DataModificationAttribute> DataModifications { get; }
 
-        internal static ApiPropertyDescriptor Create(PropertyInfo p, ApiContainer container, ApiClassDescriptor apiclass)
+        internal static ApiPropertyDescriptor Create(PropertyInfo property, ApiClassDescriptor apiclass)
         {
-            if (p.CanWrite && p.SetMethod.IsPublic && p.GetIndexParameters().Length == 0)
+            if (property.CanWrite && property.SetMethod.IsPublic && property.GetIndexParameters().Length == 0)
             {
-                var attrs = p.GetCustomAttributes<ApiPropertyAttribute>();
-                var settings = container.Provider.ParseSetting(attrs);
+                var attrs = property.GetCustomAttributes<ApiPropertyAttribute>();
+                var settings = apiclass.Container.Provider.ParseSetting(attrs);
                 if (settings == null)
                 {
                     return null;
                 }
-                return new ApiPropertyDescriptor(apiclass, p, container, settings);
+                return new ApiPropertyDescriptor(property, apiclass, settings);
             }
             return null;
         }

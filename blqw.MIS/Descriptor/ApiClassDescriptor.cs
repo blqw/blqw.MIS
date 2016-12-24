@@ -101,7 +101,7 @@ namespace blqw.MIS.Descriptor
             var apiclass = new ApiClassDescriptor(t, container, settings);
 
             var propAttrs = typeInfo.DeclaredProperties
-                                .Select(it => ApiPropertyDescriptor.Create(it, container, apiclass))
+                                .Select(it => ApiPropertyDescriptor.Create(it, apiclass))
                                 .Where(it => it != null);
             apiclass._properties.AddRange(propAttrs);
 

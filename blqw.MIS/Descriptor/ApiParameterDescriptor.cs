@@ -1,11 +1,10 @@
-﻿using System;
+﻿using blqw.MIS.DataModification;
+using blqw.MIS.Validation;
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using blqw.MIS.Validation;
-using blqw.MIS.DataModification;
 
 namespace blqw.MIS.Descriptor
 {
@@ -20,11 +19,11 @@ namespace blqw.MIS.Descriptor
         /// </summary>
         /// <param name="api"></param>
         /// <param name="parameter"></param>
-        public ApiParameterDescriptor(ApiClassDescriptor apiclass, ParameterInfo parameter, ApiContainer container)
+        public ApiParameterDescriptor(ParameterInfo parameter, ApiClassDescriptor apiclass)
         {
             Parameter = parameter ?? throw new ArgumentNullException(nameof(parameter));
-            Container = container ?? throw new ArgumentNullException(nameof(container));
             ApiClass = apiclass ?? throw new ArgumentNullException(nameof(apiclass));
+            Container = apiclass.Container;
 
             Name = parameter.Name;
             ParameterType = parameter.ParameterType;
@@ -42,13 +41,13 @@ namespace blqw.MIS.Descriptor
             }
 
             var attrs = parameter.GetCustomAttributes<ApiParameterAttribute>();
-            Settings = container.Provider.ParseSetting(attrs) ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            Settings = Container.Provider.ParseSetting(attrs) ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
 
             var validations = new List<DataValidationAttribute>();
             foreach (DataValidationAttribute filter in parameter.GetCustomAttributes<DataValidationAttribute>().Reverse()
                         .Union(Parameter.Member.DeclaringType.GetTypeInfo().GetCustomAttributes<DataValidationAttribute>().Reverse())
-                        .Union(container.Validations.Reverse()))
+                        .Union(Container.Validations.Reverse()))
             {
                 if (validations.Any(a => a.Match(filter)) == false && filter.IsAllowType(ParameterType))
                 {
@@ -61,7 +60,7 @@ namespace blqw.MIS.Descriptor
             var modifications = new List<DataModificationAttribute>();
             foreach (DataModificationAttribute filter in parameter.GetCustomAttributes<DataModificationAttribute>().Reverse()
                         .Union(Parameter.Member.DeclaringType.GetTypeInfo().GetCustomAttributes<DataModificationAttribute>().Reverse())
-                        .Union(container.Modifications.Reverse()))
+                        .Union(Container.Modifications.Reverse()))
             {
                 if (modifications.Any(a => a.Match(filter)) == false && filter.IsAllowType(ParameterType))
                 {

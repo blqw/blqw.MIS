@@ -18,20 +18,20 @@ namespace BizDemo
 
         //public ISession Session { get; set; }
 
-        [API]
+        [Api]
         public void SetSession(string name, string value, ISession Session)
         {
             
             Session[name] = value;
         }
 
-        [API]
+        [Api]
         public object GetSession(string name, ISession Session)
         {
             return Session[name];
         }
 
-        [API]
+        [Api]
         public object Get([Range(1, 2)]long id, string name, [Checked(1, 100)]int page = 1)
         {
             return new { id = id, name = name, created_time = DateTime.Now, page };

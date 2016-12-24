@@ -21,26 +21,27 @@ namespace blqw.MIS.Descriptor
         /// </summary>
         /// <param name="type"></param>
         /// <param name="method"></param>
-        public ApiDescriptor(ApiClassDescriptor apiClass, MethodInfo method, ApiContainer container, IDictionary<string, object> settings)
+        public ApiDescriptor(MethodInfo method, ApiClassDescriptor apiClass, IDictionary<string, object> settings)
         {
             ApiClass = apiClass ?? throw new ArgumentNullException(nameof(apiClass));
             Method = method ?? throw new ArgumentNullException(nameof(method));
-            Parameters = new ReadOnlyCollection<ApiParameterDescriptor>(method.GetParameters().Select(it => new ApiParameterDescriptor(apiClass, it, container)).ToList());
-            Container = container ?? throw new ArgumentNullException(nameof(container));
+            Parameters = new ReadOnlyCollection<ApiParameterDescriptor>(method.GetParameters().Select(it => new ApiParameterDescriptor(it, apiClass)).ToList());
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            Container = apiClass.Container;
             Name = method.Name;
             _invoker = CreateInvoker(method);
 
             var filters = new List<ApiFilterAttribute>();
-            foreach (ApiFilterAttribute filter in method.GetCustomAttributes<ApiFilterAttribute>().FiltrateAttribute(container.Provider, true)
-                        .Union(method.DeclaringType.GetTypeInfo().GetCustomAttributes<ApiFilterAttribute>().FiltrateAttribute(container.Provider, true))
-                        .Union(container.Filters.FiltrateAttribute(container.Provider, true)))
+            foreach (ApiFilterAttribute filter in method.GetCustomAttributes<ApiFilterAttribute>().FiltrateAttribute(Container.Provider, true)
+                        .Union(method.DeclaringType.GetTypeInfo().GetCustomAttributes<ApiFilterAttribute>().FiltrateAttribute(Container.Provider, true))
+                        .Union(Container.Filters.FiltrateAttribute(Container.Provider, true)))
             {
                 if (filters.Any(a => a.Match(filter)) == false)
                 {
                     filters.Add(filter);
                 }
             }
+
             filters.Sort((a, b) => a.OrderNumber.CompareTo(b.OrderNumber));
             Filters = new ReadOnlyCollection<ApiFilterAttribute>(filters);
         }
@@ -106,7 +107,7 @@ namespace blqw.MIS.Descriptor
                 {
                     return null;
                 }
-                return new ApiDescriptor(apiclass, method, apiclass.Container, settings);
+                return new ApiDescriptor(method, apiclass, settings);
             }
             return null;
         }
