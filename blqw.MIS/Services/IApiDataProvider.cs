@@ -8,7 +8,7 @@ using blqw.MIS.Session;
 namespace blqw.MIS.Services
 {
     /// <summary>
-    /// Api数据提供程序
+    /// API数据提供程序
     /// </summary>
     public interface IApiDataProvider
     {

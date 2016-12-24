@@ -17,7 +17,7 @@ namespace blqw.MIS.DataModification
         /// 将一个值更改为类型相同的新值
         /// </summary>
         /// <param name="arg">待修改的值</param>
-        /// <param name="context"> Api调用上下文 </param>
+        /// <param name="context"> API调用上下文 </param>
         /// <returns></returns>
         public virtual void Modifies(ref object arg, ApiCallContext context)
             => Modifies(ref arg);

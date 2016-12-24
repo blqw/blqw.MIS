@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace blqw.MIS
 {
     /// <summary>
-    /// 一种简单的Api结果提供程序
+    /// 一种简单的API结果提供程序
     /// </summary>
     public sealed class ResultProvider : IResultUpdater
     {
@@ -22,17 +22,17 @@ namespace blqw.MIS
         }
 
         /// <summary>
-        /// Api异常
+        /// API异常
         /// </summary>
         public Exception Exception => Result as Exception;
 
         /// <summary>
-        /// Api是否有错误
+        /// API是否有错误
         /// </summary>
         public bool IsError => Result is Exception;
 
         /// <summary>
-        /// Api结果
+        /// API结果
         /// </summary>
         public object Result { get; set; }
 

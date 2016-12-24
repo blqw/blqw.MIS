@@ -34,7 +34,7 @@ namespace blqw.MIS
         protected virtual void OnApiDataParsed(ApiEventArgs e) { }
 
         /// <summary>
-        /// 准备调用Api方法时触发
+        /// 准备调用API方法时触发
         /// </summary>
         /// <param name="e"></param>
         protected virtual void OnBeginInvokeMethod(ApiEventArgs e) { }

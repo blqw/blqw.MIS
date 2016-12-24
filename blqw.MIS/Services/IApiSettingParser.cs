@@ -6,7 +6,7 @@ using System.Text;
 namespace blqw.MIS.Services
 {
     /// <summary>
-    /// Api设置解释器
+    /// API设置解释器
     /// </summary>
     public interface IApiSettingParser : IService
     {

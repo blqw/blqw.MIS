@@ -11,7 +11,7 @@ using blqw.MIS.DataModification;
 namespace blqw.MIS.Descriptor
 {
     /// <summary>
-    /// 用于描述一个Api属性
+    /// 用于描述一个API属性
     /// </summary>
     public sealed class ApiPropertyDescriptor : IDescriptor
     {
@@ -93,22 +93,22 @@ namespace blqw.MIS.Descriptor
         public string Name { get; }
 
         /// <summary>
-        /// Api 属性类型
+        /// API 属性类型
         /// </summary>
         public Type PropertyType { get; set; }
 
         /// <summary>
-        /// Api 容器
+        /// API 容器
         /// </summary>
         public ApiContainer Container { get; }
 
         /// <summary>
-        /// Api 设置
+        /// API 设置
         /// </summary>
         public IDictionary<string, object> Settings { get; }
 
         /// <summary>
-        /// Api 所在类
+        /// API 所在类
         /// </summary>
         public ApiClassDescriptor ApiClass { get; }
 

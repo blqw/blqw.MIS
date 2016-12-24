@@ -13,7 +13,7 @@ using blqw.MIS.Logging;
 namespace blqw.MIS
 {
     /// <summary>
-    /// Api容器服务
+    /// API容器服务
     /// </summary>
     public interface IApiContainerProvider
     {

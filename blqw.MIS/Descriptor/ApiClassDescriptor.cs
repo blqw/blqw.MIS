@@ -9,13 +9,25 @@ using System.Collections.ObjectModel;
 namespace blqw.MIS.Descriptor
 {
     /// <summary>
-    /// 表示一个Api类
+    /// 表示一个API类
     /// </summary>
     public class ApiClassDescriptor : IDescriptor
     {
+        /// <summary>
+        /// API描述集合
+        /// </summary>
         private readonly List<ApiDescriptor> _apis;
+        /// <summary>
+        /// 属性描述集合
+        /// </summary>
         private readonly List<ApiPropertyDescriptor> _properties;
 
+        /// <summary>
+        /// API类初始化
+        /// </summary>
+        /// <param name="type">API类型对应的<see cref="Type"/></param>
+        /// <param name="container">API容器</param>
+        /// <param name="settings">API设置</param>
         private ApiClassDescriptor(Type type, ApiContainer container, IDictionary<string, object> settings)
         {
             Type = type ?? throw new ArgumentNullException(nameof(type));
@@ -27,23 +39,41 @@ namespace blqw.MIS.Descriptor
             FullName = GetFullName(type);
         }
 
+        /// <summary>
+        /// 获取类的完整类型名
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <returns></returns>
         private static string GetFullName(Type type)
             => type.IsNested ? $"{GetFullName(type.DeclaringType)}.{type.Name}" : type.Name;
 
+        /// <summary>
+        /// 当前API类对应的 <see cref="Type"/> 对象
+        /// </summary>
         public Type Type { get; }
         /// <summary>
-        /// 当前Api类的类名
+        /// 当前API类的类名
         /// </summary>
         public string Name { get; }
         /// <summary>
-        /// 当前Api类的完整类名
+        /// 当前API类的完整类名
         /// </summary>
         public string FullName { get; }
-        public ICollection<ApiDescriptor> Apis { get; }
-        public ICollection<ApiPropertyDescriptor> Properties { get; }
-
+        /// <summary>
+        /// API描述只读集合
+        /// </summary>
+        public IReadOnlyList<ApiDescriptor> Apis { get; }
+        /// <summary>
+        /// 属性描述只读集合
+        /// </summary>
+        public IReadOnlyList<ApiPropertyDescriptor> Properties { get; }
+        /// <summary>
+        /// API容器
+        /// </summary>
         public ApiContainer Container { get; }
-
+        /// <summary>
+        /// API类设置
+        /// </summary>
         public IDictionary<string, object> Settings { get; }
 
         /// <summary>
@@ -68,9 +98,7 @@ namespace blqw.MIS.Descriptor
 
             var settings = container.Provider.ParseSetting(classAttrs) ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
-
             var apiclass = new ApiClassDescriptor(t, container, settings);
-
 
             var propAttrs = typeInfo.DeclaredProperties
                                 .Select(it => ApiPropertyDescriptor.Create(it, container, apiclass))
@@ -78,7 +106,7 @@ namespace blqw.MIS.Descriptor
             apiclass._properties.AddRange(propAttrs);
 
             var apis = typeInfo.DeclaredMethods
-                                .Select(it => ApiDescriptor.Create(apiclass, it, container))
+                                .Select(it => ApiDescriptor.Create(it, apiclass))
                                 .Where(it => it != null);
 
             apiclass._apis.AddRange(apis);

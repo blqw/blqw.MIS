@@ -108,7 +108,7 @@ namespace blqw.MIS
         {
             if (ApiCollection.Apis.Contains(apiDescriptor ?? throw new ArgumentNullException(nameof(apiDescriptor))) == false)
             {
-                throw new ArgumentException("Api描述不属于当前容器", nameof(apiDescriptor));
+                throw new ArgumentException("API描述不属于当前容器", nameof(apiDescriptor));
             }
             var logger = Provider.Logger.GetUsableService(false); //获取日志服务
             ApiCallContext context = null;
@@ -283,7 +283,7 @@ namespace blqw.MIS
         }
 
         /// <summary>
-        /// 将Api上下文中的 <see cref="Parameters"/> 和 <see cref="Properties"/> 变为只读集合
+        /// 将API上下文中的 <see cref="Parameters"/> 和 <see cref="Properties"/> 变为只读集合
         /// </summary>
         /// <param name="context"> api上下文 </param>
         public void MakeReadOnlyContext(ApiCallContext context)

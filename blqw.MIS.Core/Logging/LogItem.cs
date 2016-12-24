@@ -12,7 +12,7 @@ namespace blqw.MIS.Logging
     public struct LogItem
     {
         /// <summary>
-        /// Api上下文
+        /// API上下文
         /// </summary>
         public ApiCallContext Context { get; set; }
         /// <summary>

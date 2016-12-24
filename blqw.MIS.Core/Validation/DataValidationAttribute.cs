@@ -46,7 +46,7 @@ namespace blqw.MIS.Validation
         /// </summary>
         /// <param name="name">参数名</param>
         /// <param name="value">验证失败的值</param>
-        /// <param name="context"> Api调用上下文 </param>
+        /// <param name="context"> API调用上下文 </param>
         /// <returns></returns>
         public virtual Exception GetException(string name, object value, ApiCallContext context)
             => GetException(name, value, context?.Parameters);
@@ -85,7 +85,7 @@ namespace blqw.MIS.Validation
         /// 验证对象值是否有效
         /// </summary>
         /// <param name="value">要验证的值</param>
-        /// <param name="context"> Api调用上下文 </param>
+        /// <param name="context"> API调用上下文 </param>
         /// <returns></returns>
         public virtual bool IsValid(object value, ApiCallContext context)
             => IsValid(value, context?.Parameters);

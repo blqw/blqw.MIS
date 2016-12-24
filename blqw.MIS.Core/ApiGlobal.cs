@@ -10,7 +10,7 @@ using blqw.MIS.Validation;
 namespace blqw.MIS
 {
     /// <summary>
-    /// Api全局操作基类
+    /// API全局操作基类
     /// </summary>
     public abstract partial class ApiGlobal
     {

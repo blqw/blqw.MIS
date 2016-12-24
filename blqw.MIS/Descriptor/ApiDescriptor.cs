@@ -56,39 +56,67 @@ namespace blqw.MIS.Descriptor
         public ApiClassDescriptor ApiClass { get; }
 
         /// <summary>
-        /// 参数描述集合
+        /// 参数描述只读集合
         /// </summary>
-        public ICollection<ApiParameterDescriptor> Parameters { get; }
+        public IReadOnlyList<ApiParameterDescriptor> Parameters { get; }
 
         /// <summary>
-        /// 属性描述集合
+        /// 属性描述只读集合
         /// </summary>
-        public ICollection<ApiPropertyDescriptor> Properties => ApiClass.Properties;
+        public IReadOnlyList<ApiPropertyDescriptor> Properties => ApiClass.Properties;
 
-        public ICollection<ApiFilterAttribute> Filters { get; }
+        /// <summary>
+        /// 过滤器只读集合
+        /// </summary>
+        public IReadOnlyList<ApiFilterAttribute> Filters { get; }
 
+        /// <summary>
+        /// 名称
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// API容器
+        /// </summary>
         public ApiContainer Container { get; }
 
+        /// <summary>
+        /// API设置
+        /// </summary>
         public IDictionary<string, object> Settings { get; }
 
+        /// <summary>
+        /// 用于调用API方法的委托
+        /// </summary>
         private Func<object, object[], object> _invoker;
-        internal static ApiDescriptor Create(ApiClassDescriptor apiclass, MethodInfo m, ApiContainer container)
+
+        /// <summary>
+        /// 创建API描述,如果方法不是API则返回null
+        /// </summary>
+        /// <param name="method">同于创建API的方法</param>
+        /// <param name="apiclass">方法所在类的描述</param>
+        /// <returns></returns>
+        internal static ApiDescriptor Create(MethodInfo method, ApiClassDescriptor apiclass)
         {
-            if (m.IsPublic && m.IsGenericMethodDefinition == false)
+            if (method.IsPublic && method.IsGenericMethodDefinition == false)
             {
-                var attrs = m.GetCustomAttributes<ApiAttribute>();
-                var settings = container.Provider.ParseSetting(attrs);
+                var attrs = method.GetCustomAttributes<ApiAttribute>();
+                var settings = apiclass.Container.Provider.ParseSetting(attrs);
                 if (settings == null)
                 {
                     return null;
                 }
-                return new ApiDescriptor(apiclass, m, container, settings);
+                return new ApiDescriptor(apiclass, method, apiclass.Container, settings);
             }
             return null;
         }
 
+        /// <summary>
+        /// 调用API方法
+        /// </summary>
+        /// <param name="instance">API方法的实例</param>
+        /// <param name="args">调用API方法所使用的参数</param>
+        /// <returns></returns>
         internal object Invoke(object instance, object[] args)
         {
             if (args?.Length == Parameters.Count)
@@ -104,7 +132,12 @@ namespace blqw.MIS.Descriptor
             }
             return new ArgumentException("");
         }
-
+        
+        /// <summary>
+        /// 创建指定方法的调用委托
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
         private Func<object, object[], object> CreateInvoker(MethodInfo method)
         {
             var instance = Expression.Parameter(typeof(object), "instance");

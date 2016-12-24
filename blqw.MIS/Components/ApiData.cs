@@ -6,7 +6,7 @@ using System.Text;
 namespace blqw.MIS
 {
     /// <summary>
-    /// Api数据
+    /// API数据
     /// </summary>
     public struct ApiData
     {

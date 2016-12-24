@@ -16,8 +16,14 @@ namespace blqw.MIS.Descriptor
         /// </summary>
         string Name { get; }
 
+        /// <summary>
+        /// API容器
+        /// </summary>
         ApiContainer Container { get; }
 
+        /// <summary>
+        /// API设置
+        /// </summary>
         IDictionary<string, object> Settings { get; }
     }
 }

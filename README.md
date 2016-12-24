@@ -11,7 +11,7 @@ Method Is Service
 同一套业务代码可以同时寄存于wcf,iis,以及各种rpc和aoc容器运行  
 
 # 概念
-## 1. 接口(Api)  
+## 1. 接口(API)  
 对应代码中的一个被`ApiAttribute`特性标注的公开实例方法
 ## 2. 容器(Container)  
 服务与接口的集合  
@@ -89,8 +89,8 @@ Method Is Service
 * 删除`ApiSetting`类,改为使用拓展方法提供字典操作的支持
 * 增加过滤器`ApiFilterAttribute`
 * 增加数据变更器`DataModification`
-* 增加Api调用上下文`ApiCallContext`
-* 增加Api全局操作`ApiGlobal`
+* 增加API调用上下文`ApiCallContext`
+* 增加API全局操作`ApiGlobal`
 
 ## [0.0.2] 2016.12.04
 * 优化文件结构,框架拆分为2个项目,一个提供特性描述,另一个提供容器操作

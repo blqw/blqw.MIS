@@ -4,7 +4,7 @@ namespace blqw.MIS
 {
 
     /// <summary>
-    /// 表示Api属性
+    /// 表示API属性
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = false)]
     public sealed class ApiPropertyAttribute : Attribute, IApiAttribute

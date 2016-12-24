@@ -8,7 +8,7 @@ using blqw.MIS.Events;
 namespace blqw.MIS
 {
     /// <summary>
-    /// 当前Api调用上下文
+    /// 当前API调用上下文
     /// </summary>
     public sealed class ApiCallContext
     {
@@ -18,7 +18,7 @@ namespace blqw.MIS
         private readonly IResultProvider _resultProvider;
 
         /// <summary>
-        /// 初始化Api上下文
+        /// 初始化API上下文
         /// </summary>
         /// <param name="instance"> api实例类 </param>
         /// <param name="method"> api方法 </param>
@@ -50,39 +50,39 @@ namespace blqw.MIS
         public string ID { get; }
 
         /// <summary>
-        /// Api参数
+        /// API参数
         /// </summary>
         public IDictionary<string, object> Parameters { get; }
         /// <summary>
-        /// Api属性
+        /// API属性
         /// </summary>
         public IDictionary<string, object> Properties { get; }
         /// <summary>
-        /// Api上下文数据
+        /// API上下文数据
         /// </summary>
         public IDictionary<string, object> Data { get; }
         /// <summary>
-        /// Api Session
+        /// API Session
         /// </summary>
         public ISession Session { get; }
         /// <summary>
-        /// Api实例
+        /// API实例
         /// </summary>
         public object ApiInstance { get; }
         /// <summary>
-        /// Api方法
+        /// API方法
         /// </summary>
         public MethodInfo Method { get; }
         /// <summary>
-        /// Api返回值
+        /// API返回值
         /// </summary>
         public object Result => _resultProvider.Result;
         /// <summary>
-        /// Api异常
+        /// API异常
         /// </summary>
         public Exception Exception => _resultProvider.Exception;
         /// <summary>
-        /// Api是否有错误
+        /// API是否有错误
         /// </summary>
         public bool IsError => _resultProvider.IsError;
     }

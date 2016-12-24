@@ -76,7 +76,7 @@ namespace blqw.MIS
         /// 同步调用api
         /// </summary>
         /// <param name="apiDescriptor"> 接口描述 </param>
-        /// <param name="dataProvider"> Api数据提供程序 </param>
+        /// <param name="dataProvider"> API数据提供程序 </param>
         /// <returns></returns>
         public static ApiCallContext Invoke(this ApiDescriptor apiDescriptor, IApiDataProvider dataProvider)
         {
@@ -183,7 +183,7 @@ namespace blqw.MIS
         /// 异步调用api
         /// </summary>
         /// <param name="api">接口对象</param>
-        /// <param name="dataProvider">Api数据提供程序</param>
+        /// <param name="dataProvider">API数据提供程序</param>
         /// <returns></returns>
         public static async Task<ApiCallContext> InvokeAsync(this ApiDescriptor apiDescriptor, IApiDataProvider dataProvider)
         {

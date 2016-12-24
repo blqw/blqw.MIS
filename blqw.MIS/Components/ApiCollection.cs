@@ -10,7 +10,7 @@ using blqw.MIS.Services;
 namespace blqw.MIS
 {
     /// <summary>
-    /// Api集合
+    /// API集合
     /// </summary>
     public sealed class ApiCollection
     {
