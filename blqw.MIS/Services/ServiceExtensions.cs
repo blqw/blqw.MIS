@@ -1,11 +1,9 @@
 ﻿using blqw.MIS.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.RegularExpressions;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace blqw.MIS
 {
@@ -167,15 +165,19 @@ namespace blqw.MIS
         /// </summary>
         /// <param name="enumerable">枚举器</param>
         /// <returns></returns>
-        internal static ReadOnlyCollection<T> AsReadOnly<T>(this IEnumerable<T> enumerable) => new ReadOnlyCollection<T>(enumerable.ToList());
+        internal static IReadOnlyList<T> AsReadOnly<T>(this IEnumerable<T> enumerable)
+            => enumerable as IReadOnlyList<T> ?? new ReadOnlyCollection<T>(enumerable.ToList());
 
+        /// <summary>
+        /// 使用集合中的所有元素执行指定委托
+        /// </summary>
+        /// <typeparam name="T">泛型集合元素类型</typeparam>
+        /// <param name="enumerable">泛型集合</param>
+        /// <param name="action">需要执行的指定委托</param>
         internal static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
         {
-            if (action == null) return;
-            foreach (var item in enumerable)
-            {
-                action(item);
-            }
+            if (action == null || enumerable == null) return;
+            foreach (var item in enumerable) action(item);
         }
 
     }

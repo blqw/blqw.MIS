@@ -1,22 +1,19 @@
-﻿using System;
+﻿using blqw.MIS.DataModification;
+using blqw.MIS.Descriptor;
+using blqw.MIS.Filters;
+using blqw.MIS.Logging;
+using blqw.MIS.Services;
+using blqw.MIS.Session;
+using blqw.MIS.Validation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using blqw.MIS.Descriptor;
-using blqw.MIS.Services;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using blqw.MIS.DataModification;
-using blqw.MIS.Events;
-using blqw.MIS.Validation;
-using blqw.MIS.Filters;
-using blqw.MIS.Session;
-using blqw.MIS.Logging;
 
 namespace blqw.MIS
 {
     /// <summary>
-    /// 容器
+    /// API容器
     /// </summary>
     public sealed class ApiContainer
     {
@@ -292,14 +289,13 @@ namespace blqw.MIS
             ((NameDictionary)context?.Properties).MakeReadOnly();
         }
 
-
         /// <summary>
-        /// 请求开始
+        /// 触发请求开始事件
         /// </summary>
         public void OnBeginRequest() => EventCaller.Invoke(GlobalEvents.OnBeginRequest, null);
 
         /// <summary>
-        /// 请求结束
+        /// 触发请求结束事件
         /// </summary>
         /// <param name="context"></param>
         public void OnEndRequest(ApiCallContext context) => EventCaller.Invoke(GlobalEvents.OnBeginRequest, context);

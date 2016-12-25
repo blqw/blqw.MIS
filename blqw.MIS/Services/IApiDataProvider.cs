@@ -1,8 +1,4 @@
 ﻿using blqw.MIS.Descriptor;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using blqw.MIS.Session;
 
 namespace blqw.MIS.Services
