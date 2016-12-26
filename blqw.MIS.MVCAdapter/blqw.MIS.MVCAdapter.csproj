@@ -50,11 +50,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiExtensions.cs" />
     <Compile Include="DataProvider.cs" />
+    <Compile Include="ParameterGetters\IParameterGetter.cs" />
     <Compile Include="MISRoute.cs" />
-    <Compile Include="MISHttpHandler.cs" />
-    <Compile Include="MISRouteHandler.cs" />
+    <Compile Include="HttpRouteHandler.cs" />
     <Compile Include="MVC5Provider.cs" />
+    <Compile Include="ParameterGetters\FormGetter.cs" />
+    <Compile Include="ParameterGetters\JsonGetter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

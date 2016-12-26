@@ -19,11 +19,11 @@ namespace blqw.MIS.Descriptor
         /// </summary>
         /// <param name="api"></param>
         /// <param name="parameter"></param>
-        public ApiParameterDescriptor(ParameterInfo parameter, ApiClassDescriptor apiclass)
+        public ApiParameterDescriptor(ParameterInfo parameter, ApiDescriptor api)
         {
             Parameter = parameter ?? throw new ArgumentNullException(nameof(parameter));
-            ApiClass = apiclass ?? throw new ArgumentNullException(nameof(apiclass));
-            Container = apiclass.Container;
+            Api = api ?? throw new ArgumentNullException(nameof(api));
+            Container = api.Container;
 
             Name = parameter.Name;
             ParameterType = parameter.ParameterType;
@@ -95,9 +95,9 @@ namespace blqw.MIS.Descriptor
         /// </summary>
         public Type ParameterType { get; }
         /// <summary>
-        /// API类描述
+        /// API描述
         /// </summary>
-        public ApiClassDescriptor ApiClass { get; }
+        public ApiDescriptor Api { get; }
 
         /// <summary>
         /// API容器

@@ -22,7 +22,7 @@ namespace blqw.MIS.Descriptor
         {
             ApiClass = apiClass ?? throw new ArgumentNullException(nameof(apiClass));
             Method = method ?? throw new ArgumentNullException(nameof(method));
-            Parameters = new ReadOnlyCollection<ApiParameterDescriptor>(method.GetParameters().Select(it => new ApiParameterDescriptor(it, apiClass)).ToList());
+            Parameters = method.GetParameters().Select(it => new ApiParameterDescriptor(it, this)).AsReadOnly();
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
             Container = apiClass.Container;
             Name = method.Name;

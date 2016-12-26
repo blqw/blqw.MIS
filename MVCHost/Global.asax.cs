@@ -1,4 +1,5 @@
-﻿using blqw.MIS.MVCAdapter;
+﻿using blqw.MIS;
+using blqw.MIS.MVCAdapter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
