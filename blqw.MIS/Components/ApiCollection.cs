@@ -25,9 +25,9 @@ namespace blqw.MIS
             _types = new List<ApiClassDescriptor>();
             _apis = new List<ApiDescriptor>();
 
-            Namespaces = new ReadOnlyCollection<NamespaceDescriptor>(_namespaces);
-            ApiClasses = new ReadOnlyCollection<ApiClassDescriptor>(_types);
-            Apis = new ReadOnlyCollection<ApiDescriptor>(_apis);
+            Namespaces = _namespaces.AsReadOnly();
+            ApiClasses = _types.AsReadOnly();
+            Apis = _apis.AsReadOnly();
 
             var types = container.Provider.DefinedTypes ?? throw new InvalidOperationException("Provider.DefinedTypes返回null");
 
@@ -58,9 +58,9 @@ namespace blqw.MIS
         }
 
 
-        public ICollection<NamespaceDescriptor> Namespaces { get; }
-        public ICollection<ApiClassDescriptor> ApiClasses { get; }
-        public ICollection<ApiDescriptor> Apis { get; }
+        public IReadOnlyList<NamespaceDescriptor> Namespaces { get; }
+        public IReadOnlyList<ApiClassDescriptor> ApiClasses { get; }
+        public IReadOnlyList<ApiDescriptor> Apis { get; }
         public ApiContainer Container { get; }
 
     }

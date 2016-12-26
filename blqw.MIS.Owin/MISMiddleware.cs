@@ -21,7 +21,7 @@ namespace blqw.MIS.OwinAdapter
             var owin = new OwinProvider();
             owin.GlobalModifications.Add(new TrimAttribute());
 
-            _container = new ApiContainer("Owin", owin);
+            _container = new ApiContainer(owin);
             _routeTable = new RouteTable(_container.ApiCollection);
             Console.WriteLine($"载入接口:{_container.ApiCollection.Apis.Count}个");
         }

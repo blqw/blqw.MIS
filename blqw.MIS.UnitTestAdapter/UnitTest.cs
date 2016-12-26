@@ -9,7 +9,7 @@ namespace blqw.MIS
 {
     public static class UnitTest
     {
-        static ApiContainer _container = new ApiContainer("UnitTest", new UnitTestProvider());
+        static ApiContainer _container = new ApiContainer(new UnitTestProvider());
 
         public static UnitTestResult Call(Expression<Action> testCase)
         {

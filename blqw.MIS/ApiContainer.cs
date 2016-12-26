@@ -20,12 +20,12 @@ namespace blqw.MIS
         /// <summary>
         /// 初始化容器
         /// </summary>
-        /// <param name="id">容器名称,唯一标识</param>
         /// <param name="provider">容器组件提供程序</param>
-        public ApiContainer(string id, IApiContainerProvider provider)
+        /// 
+        public ApiContainer(IApiContainerProvider provider)
         {
-            ID = id ?? throw new ArgumentNullException(nameof(id));
             Provider = provider ?? throw new ArgumentNullException(nameof(provider));
+            ID = provider.ContainerId ?? throw new ArgumentNullException(nameof(provider.ContainerId));
             var filters = new List<ApiFilterAttribute>();
             var validations = new List<DataValidationAttribute>();
             var modifications = new List<DataModificationAttribute>();

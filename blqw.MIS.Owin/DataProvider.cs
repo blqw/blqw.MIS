@@ -251,23 +251,23 @@ namespace blqw.MIS.OwinAdapter
 
         public ISession GetSession()
         {
-            var sessionid = _context.Request.Cookies[SessionKey];
+            var sessionid = _context.Request.Cookies[SESSION_KEY];
             var expires = 3600;
             return new MemorySession(sessionid, expires, CreateNewSesssionId);
         }
         private static Random _r = new Random();
         private static string CreateNewSesssionId() => $"{Guid.NewGuid():n}{_r.NextDouble()}";
 
-        internal const string SessionKey = "owin.sid";
+        private const string SESSION_KEY = "mis.owin.sid";
 
         public void SaveSession(ISession session)
         {
             if (session?.IsNewSession == true)
             {
-                _context.Response.Cookies.Append(SessionKey, session.SessionId, new CookieOptions
+                _context.Response.Cookies.Append(SESSION_KEY, session.SessionId, new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = _context.Request.Uri.Scheme == Uri.UriSchemeHttps,
+                    Secure = _context.Request.IsSecure,
                 });
             }
         }
