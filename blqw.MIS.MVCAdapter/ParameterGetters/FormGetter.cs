@@ -9,7 +9,7 @@ using System.Collections.Specialized;
 
 namespace blqw.MIS.MVCAdapter
 {
-    class FormGetter : IParameterGetter
+    internal class FormGetter : IParameterGetter
     {
         private readonly HttpContext _context;
         private readonly NameValueCollection _query;
@@ -22,7 +22,7 @@ namespace blqw.MIS.MVCAdapter
             _query = context.Request.QueryString;
         }
 
-        public ApiData Get(ApiParameterDescriptor parameter)
+        public virtual ApiData Get(ApiParameterDescriptor parameter)
         {
             var value = (object)_body.Get(parameter.Name) ?? _query.Get(parameter.Name);
             if (value == null)

@@ -58,6 +58,7 @@
     <Compile Include="MVC5Provider.cs" />
     <Compile Include="ParameterGetters\FormGetter.cs" />
     <Compile Include="ParameterGetters\JsonGetter.cs" />
+    <Compile Include="ParameterGetters\MultipartGetter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

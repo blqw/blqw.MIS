@@ -57,10 +57,7 @@ namespace blqw.MIS.MVCAdapter
             } while (count > 0);
             return bytes.ToArray();
         }
-
-
-
-
+        
         public ApiData Get(ApiParameterDescriptor parameter)
         {
             var value = (object)_query.Get(parameter.Name); //优先从get中获取
@@ -94,34 +91,24 @@ namespace blqw.MIS.MVCAdapter
                 }
                 return ApiData.NotFound;
             }
-            
-            if (_jsonString != null || _entity != null)
+            if (_entity == null)
             {
-                if (_entity == null)
-                {
-                    _entity = Json.ToDynamic(_jsonString);
-                }
-                value = _entity[parameter.ParameterType];
-                if (value != null)
-                {
-                    _jsonString = null;
-                }
+                _entity = Json.ToDynamic(_jsonString);
             }
-
             try
             {
-                //                value = 
+                value = _entity[parameter.ParameterType];
+                if (value == null)
+                {
+                    return ApiData.NotFound;
+                }
+                value = value.To(parameter.ParameterType);
+                return new ApiData(value);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return new ApiData(ex);
             }
-
-
-
-
-            throw new NotImplementedException();
         }
     }
 }
