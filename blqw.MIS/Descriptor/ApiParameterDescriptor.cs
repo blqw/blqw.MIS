@@ -21,9 +21,9 @@ namespace blqw.MIS.Descriptor
         /// <param name="parameter"></param>
         public ApiParameterDescriptor(ParameterInfo parameter, ApiDescriptor api)
         {
-            Parameter = parameter ?? throw new ArgumentNullException(nameof(parameter));
             Api = api ?? throw new ArgumentNullException(nameof(api));
             Container = api.Container;
+            Parameter = parameter ?? throw new ArgumentNullException(nameof(parameter));
 
             Name = parameter.Name;
             ParameterType = parameter.ParameterType;

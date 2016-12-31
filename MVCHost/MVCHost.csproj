@@ -108,9 +108,21 @@
       <Project>{46a94acc-edf2-42cc-bde1-94a376d6f3d4}</Project>
       <Name>BizDemo</Name>
     </ProjectReference>
+    <ProjectReference Include="..\blqw.MIS.Container.NetFramework45\blqw.MIS.Container.NetFramework45.csproj">
+      <Project>{008058b2-cfda-4f78-9532-017f1c85b7f9}</Project>
+      <Name>blqw.MIS.Container.NetFramework45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\blqw.MIS.Core\blqw.MIS.Core.csproj">
+      <Project>{5b066124-fab8-435e-a86b-7e4d5b270650}</Project>
+      <Name>blqw.MIS.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\blqw.MIS.MVCAdapter\blqw.MIS.MVCAdapter.csproj">
       <Project>{77F693A5-0D3E-4DFE-B92A-DDE6FB4CE974}</Project>
       <Name>blqw.MIS.MVCAdapter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\blqw.MIS\blqw.MIS.Container.csproj">
+      <Project>{a54df45f-52a2-4785-8e91-f80be0556285}</Project>
+      <Name>blqw.MIS.Container</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

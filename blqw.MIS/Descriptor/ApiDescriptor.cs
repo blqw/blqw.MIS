@@ -21,10 +21,10 @@ namespace blqw.MIS.Descriptor
         public ApiDescriptor(MethodInfo method, ApiClassDescriptor apiClass, IDictionary<string, object> settings)
         {
             ApiClass = apiClass ?? throw new ArgumentNullException(nameof(apiClass));
-            Method = method ?? throw new ArgumentNullException(nameof(method));
-            Parameters = method.GetParameters().Select(it => new ApiParameterDescriptor(it, this)).AsReadOnly();
-            Settings = settings ?? throw new ArgumentNullException(nameof(settings));
             Container = apiClass.Container;
+            Method = method ?? throw new ArgumentNullException(nameof(method));
+            Settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            Parameters = method.GetParameters().Select(it => new ApiParameterDescriptor(it, this)).AsReadOnly();
             Name = method.Name;
             _invoker = CreateInvoker(method);
 

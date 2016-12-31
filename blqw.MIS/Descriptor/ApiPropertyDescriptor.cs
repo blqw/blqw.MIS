@@ -20,10 +20,10 @@ namespace blqw.MIS.Descriptor
         /// <param name="property"></param>
         private ApiPropertyDescriptor(PropertyInfo property, ApiClassDescriptor apiclass, IDictionary<string, object> settings)
         {
-            Property = property ?? throw new ArgumentNullException(nameof(property));
-            Settings = settings ?? throw new ArgumentNullException(nameof(settings));
             ApiClass = apiclass ?? throw new ArgumentNullException(nameof(apiclass));
             Container = apiclass.Container;
+            Settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            Property = property ?? throw new ArgumentNullException(nameof(property));
 
             Name = property.Name;
             PropertyType = property.PropertyType;
