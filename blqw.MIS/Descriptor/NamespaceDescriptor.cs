@@ -28,6 +28,7 @@ namespace blqw.MIS.Descriptor
             Settings = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
             _types = new List<ApiClassDescriptor>();
             Types = new ReadOnlyCollection<ApiClassDescriptor>(_types);
+            IFormattable
         }
         /// <summary>
         /// 命名空间名称

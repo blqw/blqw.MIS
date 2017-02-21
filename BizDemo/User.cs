@@ -28,11 +28,11 @@ namespace BizDemo
         [Api]
         public object GetSession(string name, ISession Session)
         {
-            return Session[name];
+            return Session[name];Activator.CreateInstance<>()
         }
 
         [Api]
-        public object Get([Range(1, 2)]long id, string name, [Checked(1, 100)]int page = 1)
+        public object Get([Range(1, 2),Positive()]long id, string name, [Checked(1, 100)]int page = 1)
         {
             return new { id = id, name = name, created_time = DateTime.Now, page };
         }
