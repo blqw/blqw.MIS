@@ -16,17 +16,17 @@ namespace blqw.MIS
         /// <summary>
         /// 使用指定设置字符串初始化接口特性
         /// </summary>
-        /// <param name="settingString">接口设置</param>
-        public ApiClassAttribute(string settingString)
-            => SettingString = settingString;
+        /// <param name="initializeData">初始化数据</param>
+        public ApiClassAttribute(string initializeData)
+            => InitializeData = initializeData;
 
         /// <summary>
         /// 初始化针对特定容器的接口特性
         /// </summary>
         /// <param name="container">指定容器</param>
-        /// <param name="settingString">接口设置</param>
-        public ApiClassAttribute(string container, string settingString)
-            : this(settingString)
+        /// <param name="initializeData">接口设置</param>
+        public ApiClassAttribute(string container, string initializeData)
+            : this(initializeData)
             => Container = container;
 
         /// <summary>
@@ -35,8 +35,8 @@ namespace blqw.MIS
         public string Container { get; }
 
         /// <summary>
-        /// 设置字符串
+        /// 初始化数据
         /// </summary>
-        public string SettingString { get; }
+        public string InitializeData { get; }
     }
 }

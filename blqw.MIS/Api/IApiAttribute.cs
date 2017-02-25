@@ -11,8 +11,8 @@
         string Container { get;}
 
         /// <summary>
-        /// 设置字符串
+        /// 初始化数据
         /// </summary>
-        string SettingString { get; }
+        string InitializeData { get; }
     }
 }
