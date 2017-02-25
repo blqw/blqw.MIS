@@ -10,7 +10,7 @@ namespace blqw.MIS
     ///     <para></para>
     ///     当key不存在时返回null
     /// </summary>
-    public class NameDictionary : IDictionary<string, object>
+    internal class NameDictionary : IDictionary<string, object>
     {
         /// <summary>
         /// 内部存储
