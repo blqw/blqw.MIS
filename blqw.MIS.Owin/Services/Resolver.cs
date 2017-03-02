@@ -1,10 +1,6 @@
-﻿using System;
+﻿using blqw.MIS.Services;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using blqw.MIS.Owin.Exceptions;
-using blqw.MIS.Services;
 
 namespace blqw.MIS.Owin.Services
 {
@@ -61,7 +57,7 @@ namespace blqw.MIS.Owin.Services
                     }
                     else
                     {
-                        throw new RequestArgumentNotFoundException(p.Name);
+                        throw new ApiRequestArgumentNotFoundException(p.Name);
                     }
                 }
                 else
@@ -74,7 +70,7 @@ namespace blqw.MIS.Owin.Services
                     {
                         var e = ex;
                         while (e.InnerException != null) e = e.InnerException;
-                        throw new RequestArgumentCastException(p.Name, detail: e.Message, innerException: ex);
+                        throw new ApiRequestArgumentCastException(p.Name, detail: e.Message, innerException: ex);
                     }
                     yield return new ApiArgument(p.Parameter, value);
                 }
@@ -97,7 +93,7 @@ namespace blqw.MIS.Owin.Services
                 if (value == null)
                 {
                     if (p.HasDefaultValue == false)
-                        throw new RequestArgumentNotFoundException(p.Name);
+                        throw new ApiRequestArgumentNotFoundException(p.Name);
                     yield return new ApiProperty(p.Property, p.DefaultValue);
                 }
                 else
@@ -108,7 +104,7 @@ namespace blqw.MIS.Owin.Services
                     }
                     catch (Exception ex)
                     {
-                        throw new RequestArgumentCastException(p.Name, detail: ex.Message, innerException: ex);
+                        throw new ApiRequestArgumentCastException(p.Name, detail: ex.Message, innerException: ex);
                     }
                     yield return new ApiProperty(p.Property, value);
                 }

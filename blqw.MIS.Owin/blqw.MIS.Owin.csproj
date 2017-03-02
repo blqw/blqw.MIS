@@ -66,11 +66,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Exceptions\OwinException.cs" />
-    <Compile Include="Exceptions\RequestArgumentCastException.cs" />
-    <Compile Include="Exceptions\RequestArgumentException.cs" />
-    <Compile Include="Exceptions\RequestArgumentNotFoundException.cs" />
-    <Compile Include="Exceptions\RequestException.cs" />
     <Compile Include="RequestParams.cs" />
     <Compile Include="Services\RequestSetter.cs" />
     <Compile Include="Services\Resolver.cs" />

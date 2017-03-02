@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace blqw.MIS.Owin.Exceptions
+namespace blqw.MIS
 {
     /// <summary>
     /// 请求错误
     /// </summary>
-    public class RequestException : OwinException
+    public class ApiRequestException : ApiException
     {
-        public RequestException(int statusCode, string message, Exception innerException)
+        public ApiRequestException(int statusCode, string message, Exception innerException)
             : base(message, innerException)
         {
             ResponseStatusCode = statusCode;

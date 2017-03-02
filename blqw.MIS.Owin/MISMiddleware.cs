@@ -1,13 +1,8 @@
-﻿using Microsoft.Owin;
+﻿using blqw.MIS.Owin.Services;
+using Microsoft.Owin;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using blqw.MIS.Owin.Exceptions;
-using blqw.MIS.Owin.Services;
 
 namespace blqw.MIS.Owin
 {
@@ -35,7 +30,7 @@ namespace blqw.MIS.Owin
                     await Next.Invoke(owin);
                 }
             }
-            catch (RequestException ex)
+            catch (ApiRequestException ex)
             {
                 owin.Response.ContentType = "text/json;charset=utf-8";
                 owin.Response.StatusCode = ex.ResponseStatusCode;
