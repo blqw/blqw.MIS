@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 
 namespace blqw.MIS.Descriptors
@@ -35,6 +37,11 @@ namespace blqw.MIS.Descriptors
                 DefaultValue = parameter.DefaultValue;
                 HasDefaultValue = true;
             }
+            IsEntity = ParameterType.Namespace != "System";
+            if (IsEntity)
+            {
+                Properties = ParameterType.GetRuntimeProperties().Select(p => new ApiPropertyDescriptor(p, Container)).AsReadOnly();
+            }
         }
 
         /// <summary>
@@ -62,5 +69,14 @@ namespace blqw.MIS.Descriptors
         /// </summary>
         public ApiDescriptor Api { get; }
         
+        /// <summary>
+        /// 参数是否为一个实体
+        /// </summary>
+        public bool IsEntity { get; }
+
+        /// <summary>
+        /// 属性描述只读集合
+        /// </summary>
+        public IReadOnlyList<ApiPropertyDescriptor> Properties { get; }
     }
 }

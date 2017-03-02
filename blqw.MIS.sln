@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26014.0
+VisualStudioVersion = 15.0.26206.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blqw.MIS.Container", "blqw.MIS\blqw.MIS.Container.csproj", "{A54DF45F-52A2-4785-8E91-F80BE0556285}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blqw.MIS.Container", "blqw.MIS.Container\blqw.MIS.Container.csproj", "{A54DF45F-52A2-4785-8E91-F80BE0556285}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5B066124-FAB8-435E-A86B-7E4D5B270650} = {5B066124-FAB8-435E-A86B-7E4D5B270650}
 	EndProjectSection
@@ -26,7 +26,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OwinHost", "OwinHost\OwinHo
 		{0D03B13D-F385-4D11-BDC8-CEDC2F74B4C8} = {0D03B13D-F385-4D11-BDC8-CEDC2F74B4C8}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blqw.MIS.OwinAdapter", "blqw.MIS.Owin\blqw.MIS.OwinAdapter.csproj", "{0D03B13D-F385-4D11-BDC8-CEDC2F74B4C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blqw.MIS.Owin", "blqw.MIS.Owin\blqw.MIS.Owin.csproj", "{0D03B13D-F385-4D11-BDC8-CEDC2F74B4C8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{008058B2-CFDA-4F78-9532-017F1C85B7F9} = {008058B2-CFDA-4F78-9532-017F1C85B7F9}
 	EndProjectSection
@@ -46,6 +46,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCHost", "MVCHost\MVCHost.csproj", "{768D8C2E-3368-4F4B-A0F8-2164FC68E2AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blqw.MIS.MVCAdapter", "blqw.MIS.MVCAdapter\blqw.MIS.MVCAdapter.csproj", "{77F693A5-0D3E-4DFE-B92A-DDE6FB4CE974}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blqw.MIS", "blqw.MIS\blqw.MIS.csproj", "{1A953B40-4F0A-48C3-84E6-DE5E061F8391}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blqw.MIS.Abstract", "blqw.MIS.Abstract\blqw.MIS.Abstract.csproj", "{731EBA63-A20E-4E73-A350-3A04BF8675A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,6 +97,14 @@ Global
 		{77F693A5-0D3E-4DFE-B92A-DDE6FB4CE974}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77F693A5-0D3E-4DFE-B92A-DDE6FB4CE974}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77F693A5-0D3E-4DFE-B92A-DDE6FB4CE974}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A953B40-4F0A-48C3-84E6-DE5E061F8391}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A953B40-4F0A-48C3-84E6-DE5E061F8391}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A953B40-4F0A-48C3-84E6-DE5E061F8391}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A953B40-4F0A-48C3-84E6-DE5E061F8391}.Release|Any CPU.Build.0 = Release|Any CPU
+		{731EBA63-A20E-4E73-A350-3A04BF8675A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{731EBA63-A20E-4E73-A350-3A04BF8675A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{731EBA63-A20E-4E73-A350-3A04BF8675A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{731EBA63-A20E-4E73-A350-3A04BF8675A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,5 +119,7 @@ Global
 		{00343343-0A1B-4655-81EF-E6308ACFA65D} = {87F9E427-A83E-4FEF-AC91-33A7903CD3B3}
 		{768D8C2E-3368-4F4B-A0F8-2164FC68E2AC} = {87F9E427-A83E-4FEF-AC91-33A7903CD3B3}
 		{77F693A5-0D3E-4DFE-B92A-DDE6FB4CE974} = {53731146-4813-434E-B043-A9D0259FCE02}
+		{1A953B40-4F0A-48C3-84E6-DE5E061F8391} = {B4D9E9A9-C39C-4C13-A193-386C5E7D52E0}
+		{731EBA63-A20E-4E73-A350-3A04BF8675A5} = {B4D9E9A9-C39C-4C13-A193-386C5E7D52E0}
 	EndGlobalSection
 EndGlobal

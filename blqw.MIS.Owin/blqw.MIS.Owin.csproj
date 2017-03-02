@@ -7,10 +7,11 @@
     <ProjectGuid>{0D03B13D-F385-4D11-BDC8-CEDC2F74B4C8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>blqw.MIS.OwinAdapter</RootNamespace>
-    <AssemblyName>blqw.MIS.OwinAdapter</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>blqw.MIS.Owin</RootNamespace>
+    <AssemblyName>blqw.MIS.Owin</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -65,27 +66,39 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataProvider.cs" />
-    <Compile Include="OwinProvider.cs" />
+    <Compile Include="Exceptions\OwinException.cs" />
+    <Compile Include="Exceptions\RequestArgumentCastException.cs" />
+    <Compile Include="Exceptions\RequestArgumentException.cs" />
+    <Compile Include="Exceptions\RequestArgumentNotFoundException.cs" />
+    <Compile Include="Exceptions\RequestException.cs" />
+    <Compile Include="RequestParams.cs" />
+    <Compile Include="Services\RequestSetter.cs" />
+    <Compile Include="Services\Resolver.cs" />
+    <Compile Include="Services\Response.cs" />
+    <Compile Include="Services\Selector.cs" />
+    <Compile Include="Services\ServiceEntry.cs" />
+    <Compile Include="Tools\ParamValue.cs" />
+    <Compile Include="Tools\ExportedTypes.cs" />
+    <Compile Include="Tools\NameDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RouteTable.cs" />
+    <Compile Include="Tools\RouteTable.cs" />
     <Compile Include="MISMiddleware.cs" />
+    <Compile Include="Services\Request.cs" />
+    <Compile Include="Tools\StringBuilderPool.cs" />
+    <Compile Include="Tools\ToolExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\blqw.MIS.Container.NetFramework45\blqw.MIS.Container.NetFramework45.csproj">
-      <Project>{008058b2-cfda-4f78-9532-017f1c85b7f9}</Project>
-      <Name>blqw.MIS.Container.NetFramework45</Name>
+    <ProjectReference Include="..\blqw.MIS.Abstract\blqw.MIS.Abstract.csproj">
+      <Project>{731eba63-a20e-4e73-a350-3a04bf8675a5}</Project>
+      <Name>blqw.MIS.Abstract</Name>
     </ProjectReference>
-    <ProjectReference Include="..\blqw.MIS.Core\blqw.MIS.Core.csproj">
-      <Project>{5b066124-fab8-435e-a86b-7e4d5b270650}</Project>
-      <Name>blqw.MIS.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\blqw.MIS\blqw.MIS.Container.csproj">
-      <Project>{a54df45f-52a2-4785-8e91-f80be0556285}</Project>
-      <Name>blqw.MIS.Container</Name>
+    <ProjectReference Include="..\blqw.MIS\blqw.MIS.csproj">
+      <Project>{1a953b40-4f0a-48c3-84e6-de5e061f8391}</Project>
+      <Name>blqw.MIS</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

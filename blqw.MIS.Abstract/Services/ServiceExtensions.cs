@@ -45,8 +45,11 @@ namespace blqw.MIS
         /// <param name="enumerable">枚举器</param>
         /// <returns></returns>
         public static IReadOnlyList<T> AsReadOnly<T>(this IEnumerable<T> enumerable)
-            => enumerable as IReadOnlyList<T> ?? new ReadOnlyCollection<T>(enumerable as IList<T> ?? enumerable.ToList());
-        
+        {
+            if (enumerable == null) return null;
+            return enumerable as IReadOnlyList<T> ?? new ReadOnlyCollection<T>(enumerable as IList<T> ?? enumerable.ToList());
+        }
+
         /// <summary>
         /// 获取真实的异常信息
         /// </summary>

@@ -18,12 +18,23 @@ namespace blqw.MIS.Descriptors
         /// <param name="property"></param>
         /// <param name="apiclass"></param>
         public ApiPropertyDescriptor(PropertyInfo property, ApiClassDescriptor apiclass)
-            : base((apiclass ?? throw new ArgumentNullException(nameof(apiclass))).Container)
+            : this(property, (apiclass ?? throw new ArgumentNullException(nameof(apiclass))).Container)
         {
             ApiClass = apiclass;
+        }
+
+        /// <summary>
+        /// 初始化属性描述
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="container"></param>
+        public ApiPropertyDescriptor(PropertyInfo property, ApiContainer container)
+            : base(container)
+        {
             CheckProperty(property, true);
             Property = property;
             Name = property.Name;
+            FullName = $"{property.DeclaringType.FullName}.{Name}";
             PropertyType = property.PropertyType;
             var defattr = property.GetCustomAttribute<DefaultValueAttribute>(true);
             if (defattr != null)
@@ -32,10 +43,17 @@ namespace blqw.MIS.Descriptors
                 HasDefaultValue = true;
             }
 
-
             var setter = (IServiceProvider)Activator.CreateInstance(typeof(SetterProvider<,>).GetTypeInfo().MakeGenericType(property.DeclaringType, property.PropertyType), property);
             Setter = (Action<object, object>)setter.GetService(typeof(Action<object, object>));
+            IsEntity = PropertyType.Namespace != "System";
+            if (IsEntity)
+            {
+                Properties = PropertyType.GetRuntimeProperties().Select(p => new ApiPropertyDescriptor(p, container)).AsReadOnly();
+            }
         }
+
+        public string FullName { get; set; }
+
 
         /// <summary>
         /// 接口属性
@@ -46,6 +64,24 @@ namespace blqw.MIS.Descriptors
         /// API属性的设置值
         /// </summary>
         internal Action<object, object> Setter { get; }
+
+        /// <summary>
+        /// 设置属性值
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="value"></param>
+        public void SetValue(object instance, object value)
+        {
+            try
+            {
+                Setter(instance, value);
+            }
+            catch (Exception e)
+            {
+                e = e.ProcessException();
+                throw new InvalidOperationException($"{FullName} 属性设置失败:{e.Message}", e);
+            }
+        }
 
         /// <summary>
         /// 属性默认值
@@ -117,6 +153,17 @@ namespace blqw.MIS.Descriptors
         /// <returns></returns>
         internal static ApiPropertyDescriptor Create(PropertyInfo property, ApiClassDescriptor apiclass)
             => CheckProperty(property, false) ? new ApiPropertyDescriptor(property, apiclass) : null;
+
+
+        /// <summary>
+        /// 参数是否为一个实体
+        /// </summary>
+        public bool IsEntity { get; }
+
+        /// <summary>
+        /// 属性描述只读集合
+        /// </summary>
+        public IReadOnlyList<ApiPropertyDescriptor> Properties { get; }
 
         /// <summary>
         /// 属性设置委托的提供程序

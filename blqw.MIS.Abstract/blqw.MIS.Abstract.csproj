@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiContainer.cs" />
+    <Compile Include="DefaultServices\DefaultInvoker.cs" />
     <Compile Include="Descriptors\ApiClassDescriptor.cs" />
     <Compile Include="Descriptors\ApiDescriptor.cs" />
     <Compile Include="Descriptors\ApiParameterDescriptor.cs" />
@@ -48,14 +49,18 @@
     <Compile Include="Descriptors\DescriptorBase.cs" />
     <Compile Include="Descriptors\IDescriptor.cs" />
     <Compile Include="Descriptors\NamespaceDescriptor.cs" />
+    <Compile Include="Scheduler.cs" />
+    <Compile Include="IRequestSetter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IServiceEntry.cs" />
+    <Compile Include="Tools\IRequestBase.cs" />
     <Compile Include="Services\IApiClassDescriptorFactory.cs" />
     <Compile Include="Services\IInvoker.cs" />
     <Compile Include="Services\IResolver.cs" />
     <Compile Include="Services\ISelector.cs" />
     <Compile Include="Services\IService.cs" />
     <Compile Include="Services\ServiceExtensions.cs" />
-    <Compile Include="Tools\DefaultIApiClassDescriptorFactory.cs" />
+    <Compile Include="DefaultServices\DefaultIApiClassDescriptorFactory.cs" />
     <Compile Include="Tools\NameDictionary.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

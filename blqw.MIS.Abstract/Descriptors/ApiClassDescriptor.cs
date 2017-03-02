@@ -32,6 +32,7 @@ namespace blqw.MIS.Descriptors
             CheckType(type.GetTypeInfo(), true);
             Apis = _apis.AsReadOnly();
             Properties = _properties.AsReadOnly();
+            Name = type.Name;
             FullName = GetFullName(type);
         }
 
@@ -107,19 +108,21 @@ namespace blqw.MIS.Descriptors
         internal static ApiClassDescriptor Create(Type type, ApiContainer container)
         {
             var typeInfo = type.GetTypeInfo();
-            if (CheckType(typeInfo, false))
+            if (CheckType(typeInfo, false) == false)
             {
                 return null;
             }
 
-            if (typeInfo.DeclaredMethods.Any(m => m.IsDefined(typeof(ApiAttribute))) == false)
+            var methods = typeInfo.DeclaredMethods.Where(m => m.IsDefined(typeof(ApiAttribute)));
+
+            if (methods.Any() == false)
             {
                 return null;
             }
 
             var apiclass = new ApiClassDescriptor(type, container);
 
-            apiclass._apis.AddRange(typeInfo.DeclaredMethods
+            apiclass._apis.AddRange(methods
                 .Select(it => ApiDescriptor.Create(it, apiclass))
                 .Where(it => it != null));
             if (apiclass._apis.Count == 0)
@@ -128,9 +131,10 @@ namespace blqw.MIS.Descriptors
             }
 
             apiclass._properties.AddRange(typeInfo.DeclaredProperties
+                .Where(it => it.IsDefined(typeof(ApiPropertyAttribute)))
                 .Select(it => ApiPropertyDescriptor.Create(it, apiclass))
                 .Where(it => it != null));
-            
+
             return apiclass;
         }
     }

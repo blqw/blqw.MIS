@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 
 namespace blqw.MIS.Services
 {
@@ -12,13 +13,19 @@ namespace blqw.MIS.Services
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        IDictionary<string, object> ParseArguments(IRequest request);
+        IEnumerable<ApiArgument> ParseArguments(IRequest request);
         /// <summary>
         /// 解析属性
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        IDictionary<string, object> ParseProperties(IRequest request);
+        IEnumerable<ApiProperty> ParseProperties(IRequest request);
+        /// <summary>
+        /// 创建Api所属类的实例
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        object CreateApiClassInstance(IRequest request);
         /// <summary>
         /// 获取响应体
         /// </summary>

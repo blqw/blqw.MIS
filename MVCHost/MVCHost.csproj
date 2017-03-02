@@ -120,7 +120,7 @@
       <Project>{77F693A5-0D3E-4DFE-B92A-DDE6FB4CE974}</Project>
       <Name>blqw.MIS.MVCAdapter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\blqw.MIS\blqw.MIS.Container.csproj">
+    <ProjectReference Include="..\blqw.MIS.Container\blqw.MIS.Container.csproj">
       <Project>{a54df45f-52a2-4785-8e91-f80be0556285}</Project>
       <Name>blqw.MIS.Container</Name>
     </ProjectReference>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace blqw.MIS
 {
@@ -12,16 +13,16 @@ namespace blqw.MIS
         /// 获取真实响应对象
         /// </summary>
         /// <returns></returns>
-        object GetActualResponse();
+        Task<object> GetActualResponseAsync();
         /// <summary>
         /// 请求
         /// </summary>
         IRequest Request { get; }
         /// <summary>
-        /// 获取请求流
+        /// 获取数据
         /// </summary>
         /// <returns></returns>
-        Stream GetStream();
+        Task<byte[]> GetDataAsync();
         /// <summary>
         /// 返回请求的等效字符串
         /// </summary>

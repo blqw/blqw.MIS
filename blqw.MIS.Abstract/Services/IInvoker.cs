@@ -1,7 +1,7 @@
 ﻿namespace blqw.MIS.Services
 {
     /// <summary>
-    /// 提供指定API方法的功能定义
+    /// 提供执行API方法的功能定义
     /// </summary>
     public interface IInvoker : IService
     {

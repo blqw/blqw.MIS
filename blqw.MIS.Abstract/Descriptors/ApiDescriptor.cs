@@ -89,7 +89,7 @@ namespace blqw.MIS.Descriptors
         /// <param name="method">同于创建API的方法</param>
         /// <param name="apiclass">方法所在类的描述</param>
         /// <returns></returns>
-        internal static ApiDescriptor Create(MethodInfo method, ApiClassDescriptor apiclass) 
+        internal static ApiDescriptor Create(MethodInfo method, ApiClassDescriptor apiclass)
             => CheckMethod(method, false) ? new ApiDescriptor(method, apiclass) : null;
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace blqw.MIS.Descriptors
         /// <param name="instance">API方法的实例</param>
         /// <param name="args">调用API方法所使用的参数</param>
         /// <returns></returns>
-        internal object Invoke(object instance, object[] args)
+        public object Invoke(object instance, object[] args)
         {
             try
             {
@@ -106,11 +106,12 @@ namespace blqw.MIS.Descriptors
             }
             catch (Exception ex)
             {
-                return ex;
+                ex = ex.ProcessException();
+                return new InvalidOperationException("API调用失败:" + ex.Message, ex);
             }
         }
 
-        
+
         /// <summary>
         /// 创建指定方法的调用委托
         /// </summary>

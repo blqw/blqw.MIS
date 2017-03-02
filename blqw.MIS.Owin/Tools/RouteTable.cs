@@ -1,22 +1,18 @@
-﻿using blqw.MIS.Descriptor;
+﻿using blqw.MIS.Descriptors;
+using Microsoft.Owin;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections;
-using Microsoft.Owin;
 
-namespace blqw.MIS.OwinAdapter
+namespace blqw.MIS.Owin
 {
     public class RouteTable
     {
         Dictionary<string, ApiDescriptor> _static;
 
-        public RouteTable(ApiCollection apiCollection)
+        public RouteTable(IReadOnlyList<ApiDescriptor> apis)
         {
             _static = new Dictionary<string, ApiDescriptor>(StringComparer.OrdinalIgnoreCase);
-            foreach (var api in apiCollection.Apis)
+            foreach (var api in apis)
             {
                 _static[$"/{api.ApiClass.Name}/{api.Name}"] = api;
             }

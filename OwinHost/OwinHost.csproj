@@ -8,8 +8,9 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>OwinHost</RootNamespace>
     <AssemblyName>OwinHost</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -65,9 +66,9 @@
       <Project>{46a94acc-edf2-42cc-bde1-94a376d6f3d4}</Project>
       <Name>BizDemo</Name>
     </ProjectReference>
-    <ProjectReference Include="..\blqw.MIS.Owin\blqw.MIS.OwinAdapter.csproj">
+    <ProjectReference Include="..\blqw.MIS.Owin\blqw.MIS.Owin.csproj">
       <Project>{0d03b13d-f385-4d11-bdc8-cedc2f74b4c8}</Project>
-      <Name>blqw.MIS.OwinAdapter</Name>
+      <Name>blqw.MIS.Owin</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

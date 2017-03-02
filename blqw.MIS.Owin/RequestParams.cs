@@ -1,37 +1,29 @@
-﻿using blqw.MIS.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using blqw.MIS.Descriptor;
+﻿using blqw.IOC;
+using blqw.MIS.Descriptors;
 using Microsoft.Owin;
-using System.IO;
-using blqw.IOC;
-using System.Diagnostics;
+using System;
 using System.Collections;
-using blqw.MIS.Session;
-using blqw.MIS.NetFramework45;
+using System.Collections.Generic;
+using System.Text;
 
-namespace blqw.MIS.OwinAdapter
+namespace blqw.MIS.Owin
 {
-    class DataProvider : IApiDataProvider
+    class RequestParams
     {
-        static DataProvider()
+        static RequestParams()
         {
             var t = typeof(MEF);
-        }  
-        IReadableStringCollection _query;
-        IReadableStringCollection _body;
-        IHeaderDictionary _header;
-        IOwinContext _context;
+        }
 
-        public DataProvider(IOwinContext context)
+        public IReadableStringCollection Query { get; }
+        public IReadableStringCollection Body { get; }
+        public IHeaderDictionary Header { get; }
+
+        public RequestParams(IOwinContext context)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _query = _context.Request.Query;
-            _header = _context.Request.Headers;
-            _body = ParseBody(_context);
+            Query = context.Request.Query;
+            Header = context.Request.Headers;
+            Body = ParseBody(context);
         }
 
         /// <summary>
@@ -55,7 +47,7 @@ namespace blqw.MIS.OwinAdapter
             var format = GetFormat(context.Request.ContentType)?.ToLowerInvariant();
             if (format == "json")
             {
-                var bytes = ReadAll(context.Request.Body);
+                var bytes = context.Request.Body.ReadAll();
                 var encoding = GetEncoding(context.Request.ContentType) ?? Encoding.UTF8;
                 var json = encoding.GetString(bytes);
                 var obj = Json.ToObject(json);
@@ -180,98 +172,42 @@ namespace blqw.MIS.OwinAdapter
             }
         }
 
-        /// <summary>
-        /// 字符串缓冲
-        /// </summary>
-        [ThreadStatic]
-        private static byte[] _Buffer;
-        /// <summary>
-        /// 读取流中的所有字节
-        /// </summary>
-        /// <param name="stream"> </param>
-        private static byte[] ReadAll(Stream stream)
-        {
-            var length = 1024;
-            if (_Buffer == null)
-            {
-                _Buffer = new byte[length];
-            }
-            length = _Buffer.Length;
-            var bytes = new List<byte>();
-            int count;
-            do
-            {
-                if ((count = stream.Read(_Buffer, 0, length)) == length)
-                {
-                    bytes.AddRange(_Buffer);
-                }
-                else
-                {
-                    bytes.AddRange(_Buffer.Take(count));
-                }
-            } while (count > 0);
-            return bytes.ToArray();
-        }
 
-        public ApiData GetParameter(ApiParameterDescriptor parameter)
+        public ParamValue GetParameter(ApiParameterDescriptor parameter)
         {
-            var value = (object)_body.Get(parameter.Name) ?? _query.Get(parameter.Name);
+            var value = (object)Body.Get(parameter.Name) ?? Query.Get(parameter.Name);
             if (value == null)
             {
-                return ApiData.NotFound;
+                return ParamValue.NotFound;
             }
             try
             {
                 value = value.ChangeType(parameter.ParameterType);
-                return new ApiData(value);
+                return new ParamValue(value);
             }
             catch (Exception ex)
             {
-                return new ApiData(ex);
+                return new ParamValue(ex);
             }
         }
 
-        public ApiData GetProperty(ApiPropertyDescriptor property)
+        public ParamValue GetProperty(ApiPropertyDescriptor property)
         {
-            var value = (object)_header.Get(property.Name);
+            var value = (object)Header.Get(property.Name);
             if (value == null)
             {
-                return ApiData.NotFound;
+                return ParamValue.NotFound;
             }
             try
             {
                 value = value.ChangeType(property.PropertyType);
-                return new ApiData(value);
+                return new ParamValue(value);
             }
             catch (Exception ex)
             {
-                return new ApiData(ex);
+                return new ParamValue(ex);
             }
         }
 
-        public ISession GetSession()
-        {
-            var sessionid = _context.Request.Cookies[SESSION_KEY];
-            var expires = 3600;
-            return new MemorySession(sessionid, expires, CreateNewSesssionId);
-        }
-        private static Random _r = new Random();
-        private static string CreateNewSesssionId() => $"{Guid.NewGuid():n}{_r.NextDouble()}";
-
-        private const string SESSION_KEY = "mis.owin.sid";
-
-        public void SaveSession(ISession session)
-        {
-            if (session?.IsNewSession == true)
-            {
-                _context.Response.Cookies.Append(SESSION_KEY, session.SessionId, new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = _context.Request.IsSecure,
-                });
-            }
-        }
-
-        public object GetApiInstance(ApiDescriptor api) => null;
     }
 }

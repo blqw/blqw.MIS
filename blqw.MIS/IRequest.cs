@@ -21,15 +21,16 @@ namespace blqw.MIS
         /// <summary>
         /// 参数
         /// </summary>
-        IDictionary<string, object> Arguments { get; }
+        IReadOnlyList<ApiArgument> Arguments { get; }
         /// <summary>
         /// 属性
         /// </summary>
-        IDictionary<string, object> Properties { get; }
+        IReadOnlyList<ApiProperty> Properties { get; }
         /// <summary>
-        /// 扩展信息
+        /// 当前请求的扩展信息
         /// </summary>
         IDictionary<string, object> Extends { get; }
+
         /// <summary>
         /// 获取或设置请求的返回值
         /// </summary>

@@ -1,4 +1,4 @@
-﻿using blqw.MIS.Descriptors;
+﻿ using blqw.MIS.Descriptors;
 using blqw.MIS.Services;
 using System;
 using System.Collections.Generic;
@@ -29,7 +29,7 @@ namespace blqw.MIS
             _types = new List<ApiClassDescriptor>();
             _apis = new List<ApiDescriptor>();
 
-            FindAllApis(exportedTypes, factory);
+             FindAllApis(exportedTypes, factory);
 
             Namespaces = _namespaces.AsReadOnly();
             ApiClasses = _types.AsReadOnly();
@@ -65,7 +65,7 @@ namespace blqw.MIS
             if (factory == null) factory = DefaultIApiClassDescriptorFactory.Instance;
             foreach (var t in exportedTypes)
             {
-                var apiclass = factory.Create(t, this);
+                 var apiclass = factory.Create(t, this);
                 if (apiclass == null)
                 {
                     continue;

@@ -20,9 +20,7 @@ namespace blqw.MIS.Services
 
         private DefaultIApiClassDescriptorFactory()
         {
-            Name = "默认类描述创建工厂";
             Data = new NameDictionary();
-            RequireClone = false;
         }
 
 
@@ -33,7 +31,7 @@ namespace blqw.MIS.Services
         /// <summary>
         /// 服务名称
         /// </summary>
-        public string Name { get; }
+        public string Name => "默认类描述创建工厂";
 
         /// <summary>
         /// 服务属性集
@@ -43,7 +41,7 @@ namespace blqw.MIS.Services
         /// <summary>
         /// 使用时是否必须克隆出新对象
         /// </summary>
-        public bool RequireClone { get; }
+        public bool RequireClone => false;
 
         /// <summary>
         /// 克隆当前对象,当<see cref="IService.RequireClone"/>为true时,每次使用服务将先调用该方法获取新对象

@@ -1,9 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Resources;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.ServiceModel.Channels;
+using System.Resources;
 
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
