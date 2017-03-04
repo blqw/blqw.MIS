@@ -36,7 +36,7 @@ namespace blqw.MIS
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public static class Version
     {
-        private const string PRE_VERSION = "0.1.0";
+        private const string PRE_VERSION = "0.1.1";
         private const string BUG_FIX = "0";
         private const string PREVIEW = "";
 

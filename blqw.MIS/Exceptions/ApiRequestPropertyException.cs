@@ -20,7 +20,7 @@ namespace blqw.MIS
         /// <param name="message"></param>
         /// <param name="innerException"></param>
         protected ApiRequestPropertyException(int errorCode, string paramName, string message, Exception innerException = null)
-            : base(200, string.Format(message ?? "属性{0}有误", paramName), innerException)
+            : base(200, string.Format(message ?? "属性[{0}]有误", paramName), innerException)
         {
             if (errorCode < 6000 || errorCode > 6999) throw new ArgumentOutOfRangeException(nameof(errorCode));
             ParamName = paramName ?? throw new ArgumentNullException(nameof(paramName));

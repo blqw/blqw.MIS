@@ -11,8 +11,8 @@ namespace blqw.MIS
     /// </summary>
     public class ApiRequestArgumentNotFoundException : ApiRequestArgumentException
     {
-        public ApiRequestArgumentNotFoundException(string paramName, string message = "参数{0}不存在", Exception innerException = null)
-            : base(5404, paramName, message ?? "参数{0}不存在", innerException)
+        public ApiRequestArgumentNotFoundException(string paramName, string message = "参数[{0}]不存在", Exception innerException = null)
+            : base(5404, paramName, message ?? "参数[{0}]不存在", innerException)
         {
 
         }

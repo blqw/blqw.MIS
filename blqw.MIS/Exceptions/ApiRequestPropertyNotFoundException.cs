@@ -11,8 +11,8 @@ namespace blqw.MIS
     /// </summary>
     public class ApiRequestPropertyNotFoundException : ApiRequestPropertyException
     {
-        public ApiRequestPropertyNotFoundException(string paramName, string message = "属性{0}不存在", Exception innerException = null)
-            : base(6404, paramName, message ?? "属性{0}不存在", innerException)
+        public ApiRequestPropertyNotFoundException(string paramName, string message = "属性[{0}]不存在", Exception innerException = null)
+            : base(6404, paramName, message ?? "属性[{0}]不存在", innerException)
         {
 
         }

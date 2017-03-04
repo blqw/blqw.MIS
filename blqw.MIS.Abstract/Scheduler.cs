@@ -37,10 +37,17 @@ namespace blqw.MIS
             if (api == null) return null;
             requestSetter.ApiDescriptor = api;
             var resolver = _entry.Resolver.GetServiceInstance(true);
-            requestSetter.Instance = resolver.CreateApiClassInstance(request);
-            requestSetter.Properties = resolver.ParseProperties(request)?.AsReadOnly();
-            requestSetter.Arguments = resolver.ParseArguments(request)?.AsReadOnly();
-            requestSetter.Result = await _entry.Invoker.GetServiceInstance(true).Execute(request).ProcessResultAsync();
+            try
+            {
+                requestSetter.Instance = resolver.CreateApiClassInstance(request);
+                requestSetter.Properties = resolver.ParseProperties(request)?.AsReadOnly();
+                requestSetter.Arguments = resolver.ParseArguments(request)?.AsReadOnly();
+                requestSetter.Result = await _entry.Invoker.GetServiceInstance(true).Execute(request).ProcessResultAsync();
+            }
+            catch (Exception ex)
+            {
+                requestSetter.Result = ex.ProcessException();
+            }
             return resolver.GetResponse(request);
         }
 
@@ -63,25 +70,6 @@ namespace blqw.MIS
             requestSetter.Arguments = resolver.ParseArguments(request)?.AsReadOnly();
             requestSetter.Result = _entry.Invoker.GetServiceInstance(true).Execute(request).ProcessResult();
             return resolver.GetResponse(request);
-        }
-
-        /// <summary>
-        /// 出现错误时触发
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="ex"></param>
-        public void OnError(IRequest request, Exception ex)
-        {
-
-        }
-
-        /// <summary>
-        /// 响应结束时触发
-        /// </summary>
-        /// <param name="request"></param>
-        public void OnEnd(IRequest request)
-        {
-
         }
     }
 }

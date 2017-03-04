@@ -90,6 +90,8 @@ https://www.processon.com/view/link/58bab468e4b09b24d6e9cb08
 
 
 # 更新日志
+## [0.1.1]
+* 支持实体属性
 
 ## [0.1.0]
 * 第二次重构,之前更新日志作废

@@ -130,7 +130,7 @@ namespace blqw.MIS.Descriptors
             {
                 var lambda = Lambda<Action<object, object[]>>(call, instance, args);
                 var execute = lambda.Compile();
-                return (a, b) => { execute(a, b); return null; };
+                return (a, b) => { execute(a, b); return ApiNoResultException.Instance; };
             }
 
             var ret = Convert(call, typeof(object));

@@ -11,8 +11,8 @@ namespace blqw.MIS
     /// </summary>
     public class ApiRequestArgumentCastException : ApiRequestArgumentException
     {
-        public ApiRequestArgumentCastException(string paramName, string message = "参数{0}值有误", string detail = null, Exception innerException = null)
-            : base(5500, paramName, message ?? "参数{0}值有误", innerException)
+        public ApiRequestArgumentCastException(string paramName, string message = "参数[{0}]值有误", string detail = null, Exception innerException = null)
+            : base(5500, paramName, message ?? "参数[{0}]值有误", innerException)
         {
             Detail = detail;
         }

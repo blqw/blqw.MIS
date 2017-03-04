@@ -69,27 +69,6 @@ namespace blqw.MIS.Owin
             return req ?? throw new ArgumentException($"{nameof(request)}类型只能是{typeof(Request).FullName}", nameof(request));
         }
 
-        public static async Task WriteErrorAsync(this IOwinResponse response, Exception ex)
-        {
-            ex = ex.ProcessException();
-            if (ex is ApiRequestException e)
-            {
-                response.ContentType = "application /json;charset=utf-8";
-                response.StatusCode = e.ResponseStatusCode;
-                response.Expires = DateTimeOffset.Now;
-                var content = Encoding.UTF8.GetBytes(new { e.Message, Code = e.HResult }.ToJsonString());
-                response.ContentLength = content.Length;
-                await response.WriteAsync(content);
-            }
-            else
-            {
-                response.ContentType = "text/plain;charset=utf-8";
-                response.StatusCode = 500;
-                response.Expires = DateTimeOffset.Now;
-                var content = Encoding.UTF8.GetBytes(ex.ToString());
-                response.ContentLength = content.Length;
-                await response.WriteAsync(content);
-            }
-        }
+        
     }
 }

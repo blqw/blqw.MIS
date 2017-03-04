@@ -12,7 +12,7 @@ namespace blqw.MIS.Owin.Services
         public ServiceEntry(ApiContainer container)
         {
             Container = container ?? throw new ArgumentNullException(nameof(container));
-            Invoker = new Invoker();
+            Invoker = new DefaultInvoker();
             Resolver = new Resolver();
             Selector = new Selector(container);
         }

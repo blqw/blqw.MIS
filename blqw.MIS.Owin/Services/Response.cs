@@ -10,8 +10,6 @@ namespace blqw.MIS.Owin.Services
 {
     public class Response : IResponse
     {
-        private readonly Task _task;
-
         public Response(Request request)
         {
             Request = request;
@@ -23,7 +21,7 @@ namespace blqw.MIS.Owin.Services
         /// 获取真实响应对象
         /// </summary>
         /// <returns></returns>
-        public object GetActualResponse() => Request.OwinContext.Response;
+        public object GetActualResponse() => Request.Result;
 
         /// <summary>
         /// 请求
@@ -36,7 +34,7 @@ namespace blqw.MIS.Owin.Services
         /// 获取数据
         /// </summary>
         /// <returns></returns>
-        public byte[] GetData() => Request.OwinContext.Response.Body.ReadAll();
+        public byte[] GetData() => Request.Result == null ? null : Encoding.UTF8.GetBytes(Request.Result.ToString());
 
         /// <summary>
         /// 返回请求的等效字符串
@@ -57,36 +55,7 @@ namespace blqw.MIS.Owin.Services
         public Exception Exception { get; }
 
         public string ToString(string format, IFormatProvider formatProvider)
-        {
-            var request = Request.ActualRequest;
-            var response = Request.OwinContext.Response;
-            switch (format)
-            {
-                case "all":
-                    var buffer = StringBuilderPool.GetOut();
-                    buffer.AppendLine(response.Protocol);
-                    buffer.Append(" ");
-                    buffer.Append(response.StatusCode);
-                    buffer.Append(" ");
-                    buffer.Append(response.ReasonPhrase);
-                    foreach (var header in response.Headers)
-                    {
-                        foreach (var value in header.Value)
-                        {
-                            buffer.Append(header.Key);
-                            buffer.Append(":");
-                            buffer.AppendLine(value);
-                        }
-                    }
-                    buffer.AppendLine();
-                    buffer.Append((request.ContentType.GetEncoding() ?? Encoding.Default).GetString(response.Body.ReadAll()));
-                    return StringBuilderPool.Return(buffer);
-                case "body":
-                case null:
-                default:
-                    return (request.ContentType.GetEncoding() ?? Encoding.Default).GetString(response.Body.ReadAll());
-            }
-        }
+            => GetActualResponse()?.ToString() ?? "<null>";
 
         public override string ToString() => ToString(null, null);
     }

@@ -50,5 +50,29 @@ namespace BizDemo
         {
             
         }
+
+        [Api]
+        public static object StaticEntity(MyClass my)
+        {
+            return my;
+        }
+
+        [Api]
+        public static void StaticVoid()
+        {
+
+        }
+
+        [Api]
+        public static object StaticNull()
+        {
+            return null;
+        }
+
+        public class MyClass
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
     }
 }

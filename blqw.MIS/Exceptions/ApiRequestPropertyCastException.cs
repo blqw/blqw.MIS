@@ -11,8 +11,8 @@ namespace blqw.MIS
     /// </summary>
     public class ApiRequestPropertyCastException : ApiRequestArgumentException
     {
-        public ApiRequestPropertyCastException(string paramName, string message = "属性{0}值有误", string detail = null, Exception innerException = null)
-            : base(6500, paramName, message ?? "属性{0}值有误", innerException)
+        public ApiRequestPropertyCastException(string paramName, string message = "属性[{0}]值有误", string detail = null, Exception innerException = null)
+            : base(6500, paramName, message ?? "属性[{0}]值有误", innerException)
         {
             Detail = detail;
         }

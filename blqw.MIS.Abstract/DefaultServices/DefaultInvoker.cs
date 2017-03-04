@@ -13,12 +13,7 @@ namespace blqw.MIS.Services
     /// </summary>
     public class DefaultInvoker : IInvoker
     {
-        /// <summary>
-        /// 默认实例
-        /// </summary>
-        public static DefaultInvoker Instance { get; } = new DefaultInvoker();
-
-        protected DefaultInvoker()
+        public DefaultInvoker()
         {
             Data = new NameDictionary();
         }

@@ -1,6 +1,7 @@
 ﻿using blqw.MIS.Services;
 using System;
 using System.Collections.Generic;
+using blqw.MIS.Descriptors;
 
 namespace blqw.MIS.Owin.Services
 {
@@ -44,14 +45,13 @@ namespace blqw.MIS.Owin.Services
             foreach (var p in req.ApiDescriptor.Parameters)
             {
                 var value = (object)param.Body.Get(p.Name) ?? param.Query.Get(p.Name);
+                if (value == null && p.IsEntity)
+                {
+                    value = ParseEntity(p.ParameterType, p.Properties, param, p.Name + ".", false);
+                }
                 if (value == null)
                 {
-                    if (p.IsEntity)
-                    {
-                        //TODO:balabala
-                        throw new NotSupportedException("暂不支持实体参数");
-                    }
-                    else if (p.HasDefaultValue)
+                    if (p.HasDefaultValue)
                     {
                         yield return new ApiArgument(p.Parameter, p.DefaultValue);
                     }
@@ -60,23 +60,58 @@ namespace blqw.MIS.Owin.Services
                         throw new ApiRequestArgumentNotFoundException(p.Name);
                     }
                 }
-                else
+                try
                 {
+                    value = value.ChangeType(p.ParameterType);
+                }
+                catch (Exception ex)
+                {
+                    var e = ex;
+                    while (e.InnerException != null) e = e.InnerException;
+                    throw new ApiRequestArgumentCastException(p.Name, detail: e.Message, innerException: ex);
+                }
+                yield return new ApiArgument(p.Parameter, value);
+            }
+        }
+
+        private object ParseEntity(Type entityType, IEnumerable<ApiPropertyDescriptor> properties, RequestParams param, string prefix, bool fullNameOnly)
+        {
+            var entity = Activator.CreateInstance(entityType);
+            var hasValue = false;
+            foreach (var p in properties)
+            {
+                var fullname = prefix + p.Name;
+                var value = (object)param.Body.Get(fullname) ?? param.Query.Get(fullname);
+                if (value == null && fullNameOnly == false)
+                {
+                    value = param.Body.Get(p.Name) ?? param.Query.Get(p.Name);
+                }
+                if (value == null && p.IsEntity)
+                {
+                    value = ParseEntity(p.PropertyType, p.Properties, param, fullname + ".", true);
+                }
+                if (value == null && p.HasDefaultValue)
+                {
+                    value = p.DefaultValue;
+                }
+                if (value != null)
+                {
+                    hasValue = true;
                     try
                     {
-                        value = value.ChangeType(p.ParameterType);
+                        value = value.ChangeType(p.PropertyType);
+                        p.SetValue(entity, value);
                     }
-                    catch (Exception ex)
+                    catch (Exception e)
                     {
-                        var e = ex;
-                        while (e.InnerException != null) e = e.InnerException;
-                        throw new ApiRequestArgumentCastException(p.Name, detail: e.Message, innerException: ex);
+                        throw new ApiRequestArgumentCastException(fullname, detail: e.Message, innerException: e);
                     }
-                    yield return new ApiArgument(p.Parameter, value);
                 }
-            }
 
+            }
+            return hasValue ? entity : null;
         }
+
 
         /// <summary>
         /// 解析属性
@@ -105,7 +140,7 @@ namespace blqw.MIS.Owin.Services
                     }
                     catch (Exception ex)
                     {
-                        throw new ApiRequestPropertyCastException(p.Name, "Header头{0} 值有误", ex.Message, ex);
+                        throw new ApiRequestPropertyCastException(p.Name, "Header头[{0}] 值有误", ex.Message, ex);
                     }
                     yield return new ApiProperty(p.Property, value);
                 }
