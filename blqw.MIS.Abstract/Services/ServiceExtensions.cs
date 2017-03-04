@@ -94,13 +94,20 @@ namespace blqw.MIS
                 return (task.Exception ?? ex).ProcessException();
             }
 
-            var t = task.GetType().GetTypeInfo();
+            var i = task.GetType();
+            if (i == VoidTask)
+            {
+                return null;
+            }
+            var t = i.GetTypeInfo();
             if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Task<>))
             {
                 return ProcessResult(((dynamic)task).Result); //如果是泛型任务,获得Result值
             }
             return null;
         }
+
+        private static readonly Type VoidTask = typeof(Task<>).MakeGenericType(Type.GetType("System.Threading.Tasks.VoidTaskResult"));
 
         /// <summary>
         /// 异步处理返回值

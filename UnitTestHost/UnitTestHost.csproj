@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UnitTestHost</RootNamespace>
     <AssemblyName>UnitTestHost</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
@@ -19,6 +19,7 @@
     <TestProjectType>UnitTest</TestProjectType>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,6 +60,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestTests.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -70,9 +72,13 @@
       <Project>{46a94acc-edf2-42cc-bde1-94a376d6f3d4}</Project>
       <Name>BizDemo</Name>
     </ProjectReference>
-    <ProjectReference Include="..\blqw.MIS.UnitTestAdapter\blqw.MIS.UnitTestAdapter.csproj">
-      <Project>{d01a38c1-35e5-4a40-8c50-f6b1cee2ac9d}</Project>
-      <Name>blqw.MIS.UnitTestAdapter</Name>
+    <ProjectReference Include="..\blqw.MIS.UnitTest\blqw.MIS.UnitTest.csproj">
+      <Project>{556697d6-306b-4b9f-96c6-72f4b3ece298}</Project>
+      <Name>blqw.MIS.UnitTest</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\blqw.MIS\blqw.MIS.csproj">
+      <Project>{1a953b40-4f0a-48c3-84e6-de5e061f8391}</Project>
+      <Name>blqw.MIS</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RequestParams.cs" />
+    <Compile Include="Services\Invoker.cs" />
     <Compile Include="Services\RequestSetter.cs" />
     <Compile Include="Services\Resolver.cs" />
     <Compile Include="Services\Response.cs" />

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using blqw.MIS.Owin.Services;
+using Microsoft.Owin;
 
 namespace blqw.MIS.Owin
 {
@@ -58,6 +60,36 @@ namespace blqw.MIS.Owin
             var end = contentType.IndexOf(';');
             var charset = end < 0 ? contentType.Substring(start) : contentType.Substring(start, end - start);
             return string.IsNullOrWhiteSpace(charset) ? null : Encoding.GetEncoding(charset);
+        }
+
+
+        public static Request CastRequest(this IRequest request)
+        {
+            var req = (request ?? throw new ArgumentNullException(nameof(request))) as Request;
+            return req ?? throw new ArgumentException($"{nameof(request)}类型只能是{typeof(Request).FullName}", nameof(request));
+        }
+
+        public static async Task WriteErrorAsync(this IOwinResponse response, Exception ex)
+        {
+            ex = ex.ProcessException();
+            if (ex is ApiRequestException e)
+            {
+                response.ContentType = "text/json;charset=utf-8";
+                response.StatusCode = e.ResponseStatusCode;
+                response.Expires = DateTimeOffset.Now;
+                var content = Encoding.UTF8.GetBytes(new { e.Message, Code = e.HResult }.ToJsonString());
+                response.ContentLength = content.Length;
+                await response.WriteAsync(content);
+            }
+            else
+            {
+                response.ContentType = "text/plain;charset=utf-8";
+                response.StatusCode = 500;
+                response.Expires = DateTimeOffset.Now;
+                var content = Encoding.UTF8.GetBytes(ex.ToString());
+                response.ContentLength = content.Length;
+                await response.WriteAsync(content);
+            }
         }
     }
 }

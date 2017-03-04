@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using blqw.MIS.Services;
 
-namespace blqw.MIS.Owin.Services
+namespace blqw.MIS.UnitTest
 {
     public class ServiceEntry : IServiceEntry
     {

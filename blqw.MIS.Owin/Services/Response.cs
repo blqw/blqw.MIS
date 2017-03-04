@@ -15,41 +15,15 @@ namespace blqw.MIS.Owin.Services
         public Response(Request request)
         {
             Request = request;
-            _task = GetActualResponseAsyncImpl();
-        }
-
-        async Task GetActualResponseAsyncImpl()
-        {
-            var response = Request.OwinContext.Response;
-            response.ContentType = "text/json;charset=utf-8";
-            response.Expires = DateTimeOffset.Now;
-            if (Request.Result != null)
-            {
-                response.StatusCode = 200;
-                response.ReasonPhrase = "OK";
-                var content = Request.Result.ToJsonString();
-                response.ContentLength = content.Length;
-                await response.WriteAsync(content);
-            }
-            else
-            {
-                response.StatusCode = 205;
-                response.ReasonPhrase = "Reset Content";
-            }
+            Exception = request.Result as Exception;
+            IsError = Exception != null;
         }
 
         /// <summary>
         /// 获取真实响应对象
         /// </summary>
         /// <returns></returns>
-        public async Task<IOwinResponse> GetActualResponseAsync()
-        {
-            if (_task.IsCompleted == false)
-            {
-                await _task;
-            }
-            return Request.OwinContext.Response;
-        }
+        public object GetActualResponse() => Request.OwinContext.Response;
 
         /// <summary>
         /// 请求
@@ -62,11 +36,7 @@ namespace blqw.MIS.Owin.Services
         /// 获取数据
         /// </summary>
         /// <returns></returns>
-        public async Task<byte[]> GetDataAsync()
-        {
-            var response = await GetActualResponseAsync();
-            return response.Body.ReadAll();
-        }
+        public byte[] GetData() => Request.OwinContext.Response.Body.ReadAll();
 
         /// <summary>
         /// 返回请求的等效字符串
@@ -76,10 +46,20 @@ namespace blqw.MIS.Owin.Services
         public string ToString(string format)
             => ToString(format, null);
 
+        /// <summary>
+        /// 是否有异常
+        /// </summary>
+        public bool IsError { get; }
+
+        /// <summary>
+        /// 异常信息
+        /// </summary>
+        public Exception Exception { get; }
+
         public string ToString(string format, IFormatProvider formatProvider)
         {
             var request = Request.ActualRequest;
-            var response = GetActualResponseAsync().Result;
+            var response = Request.OwinContext.Response;
             switch (format)
             {
                 case "all":
@@ -109,7 +89,5 @@ namespace blqw.MIS.Owin.Services
         }
 
         public override string ToString() => ToString(null, null);
-
-        async Task<object> IResponse.GetActualResponseAsync() => await GetActualResponseAsync();
     }
 }

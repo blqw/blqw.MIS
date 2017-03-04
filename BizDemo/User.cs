@@ -1,5 +1,6 @@
 ﻿using blqw.MIS;
 using System;
+using System.Threading.Tasks;
 
 namespace BizDemo
 {
@@ -15,12 +16,19 @@ namespace BizDemo
             return "hello mis";
         }
 
+
+        [Api]
+        public async Task<string> TestAsync()
+        {
+            return "hello mis";
+        }
+
         //public ISession Session { get; set; }
 
         //[Api]
         //public void SetSession(string name, string value, ISession Session)
         //{
-            
+
         //    Session[name] = value;
         //}
 

@@ -22,6 +22,7 @@ namespace blqw.MIS.Owin
         public override async Task Invoke(IOwinContext owin)
         {
             var request = new Request(owin);
+            Exception exception = null;
             try
             {
                 var response = await _scheduler.OnExecuteAsync(new RequestSetter(request));
@@ -30,33 +31,23 @@ namespace blqw.MIS.Owin
                     await Next.Invoke(owin);
                 }
             }
-            catch (ApiRequestException ex)
-            {
-                owin.Response.ContentType = "text/json;charset=utf-8";
-                owin.Response.StatusCode = ex.ResponseStatusCode;
-                owin.Response.Expires = DateTimeOffset.Now;
-                var content = Encoding.UTF8.GetBytes(new { ex.Message, Code = ex.HResult }.ToJsonString());
-                owin.Response.ContentLength = content.Length;
-                await owin.Response.WriteAsync(content);
-                request.Result = ex;
-                _scheduler.OnError(request, ex);
-            }
             catch (Exception ex)
             {
-                ex = ex.ProcessException();
-                owin.Response.ContentType = "text/plain;charset=utf-8";
-                owin.Response.StatusCode = 500;
-                owin.Response.Expires = DateTimeOffset.Now;
-                var content = Encoding.UTF8.GetBytes(ex.ToString());
-                owin.Response.ContentLength = content.Length;
-                await owin.Response.WriteAsync(content);
-                request.Result = ex;
-                _scheduler.OnError(request, ex);
+                exception = ex;
             }
-            finally
+
+            if (exception != null)
             {
-                _scheduler.OnEnd(request);
+                await owin.Response.WriteErrorAsync(exception);
+                request.Result = exception;
+                _scheduler.OnError(request, exception);
             }
+
+            _scheduler.OnEnd(request);
         }
+
+
+
+
     }
 }

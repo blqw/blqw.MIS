@@ -138,7 +138,7 @@ namespace blqw.MIS.Descriptors
                 return throwIfError ? throw new InvalidOperationException("开放式泛型类型属性不能用作API属性") : false;
             }
 
-            if (property.GetIndexParameters()?.Length == 0)
+            if (property.GetIndexParameters()?.Length > 0)
             {
                 return throwIfError ? throw new InvalidOperationException("索引器不能声明为API属性") : false;
             }

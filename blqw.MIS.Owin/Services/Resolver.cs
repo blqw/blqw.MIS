@@ -39,7 +39,7 @@ namespace blqw.MIS.Owin.Services
         /// <returns></returns>
         public IEnumerable<ApiArgument> ParseArguments(IRequest request)
         {
-            var req = CastRequest(request);
+            var req = request.CastRequest();
             var param = new RequestParams(req.OwinContext);
             foreach (var p in req.ApiDescriptor.Parameters)
             {
@@ -85,7 +85,7 @@ namespace blqw.MIS.Owin.Services
         /// <returns></returns>
         public IEnumerable<ApiProperty> ParseProperties(IRequest request)
         {
-            var req = CastRequest(request);
+            var req = request.CastRequest();
             var param = new RequestParams(req.OwinContext);
             foreach (var p in req.ApiDescriptor.Properties)
             {
@@ -129,20 +129,6 @@ namespace blqw.MIS.Owin.Services
         /// <param name="request"></param>
         /// <returns></returns>
         public IResponse GetResponse(IRequest request)
-        {
-            var req = CastRequest(request);
-            if (req.Result is Exception ex)
-            {
-                throw ex;
-            }
-            return new Response(req);
-        }
-
-
-        private static Request CastRequest(IRequest request)
-        {
-            var req = (request ?? throw new ArgumentNullException(nameof(request))) as Request;
-            return req ?? throw new ArgumentException($"{nameof(request)}类型只能是{typeof(Request).FullName}", nameof(request));
-        }
+            => new Response(request.CastRequest());
     }
 }

@@ -18,7 +18,7 @@ namespace blqw.MIS.Services
         /// </summary>
         public static DefaultInvoker Instance { get; } = new DefaultInvoker();
 
-        private DefaultInvoker()
+        protected DefaultInvoker()
         {
             Data = new NameDictionary();
         }
@@ -62,7 +62,7 @@ namespace blqw.MIS.Services
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public object Execute(IRequestBase request)
+        public virtual object Execute(IRequestBase request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
             SetProperty(request);
@@ -87,10 +87,10 @@ namespace blqw.MIS.Services
             for (var i = 0; i < props1.Count; i++)
             {
                 var p = props1[i];
-                var rp = props2[i];
-                if (p.Property != rp.Property)
+                var rp = props2.ElementAtOrDefault(i);
+                if (!Equals(p.Property, rp.Property))
                 {
-                    rp = props2.FirstOrDefault(x => x.Property == p.Property);
+                    rp = props2.FirstOrDefault(x => Equals(x.Property, p.Property));
                 }
                 if (rp.Property != null)
                 {

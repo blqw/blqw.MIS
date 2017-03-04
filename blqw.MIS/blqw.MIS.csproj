@@ -47,6 +47,7 @@
     <Compile Include="Exceptions\ApiRequestArgumentCastException.cs" />
     <Compile Include="Exceptions\ApiRequestArgumentException.cs" />
     <Compile Include="Exceptions\ApiRequestArgumentNotFoundException.cs" />
+    <Compile Include="Exceptions\ApiNotFoundException.cs" />
     <Compile Include="Exceptions\ApiRequestException.cs" />
     <Compile Include="Filters\IFilter.cs" />
     <Compile Include="IRequest.cs" />

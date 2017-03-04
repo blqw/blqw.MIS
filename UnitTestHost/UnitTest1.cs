@@ -4,22 +4,17 @@ using blqw.MIS;
 using BizDemo;
 using blqw;
 using blqw.IOC;
+using blqw.MIS.UnitTest;
 
 namespace UnitTestHost
 {
     [TestClass]
     public class UnitTest1
     {
-        [TestMethod]
+        //[TestMethod]
         public void TestMethod1()
         {
-            var r = UnitTest.Call(() => new User() { X = 100 }.Get(1, "blqw", 1));
-            if (r.Exception != null)
-            {
-                throw r.Exception;
-            }
-            Console.WriteLine(r.Result.ToJsonString());
-            Console.WriteLine("1".To<int>());
+
         }
     }
 }

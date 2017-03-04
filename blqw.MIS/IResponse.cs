@@ -13,7 +13,7 @@ namespace blqw.MIS
         /// 获取真实响应对象
         /// </summary>
         /// <returns></returns>
-        Task<object> GetActualResponseAsync();
+        object GetActualResponse();
         /// <summary>
         /// 请求
         /// </summary>
@@ -22,12 +22,22 @@ namespace blqw.MIS
         /// 获取数据
         /// </summary>
         /// <returns></returns>
-        Task<byte[]> GetDataAsync();
+        byte[] GetData();
         /// <summary>
         /// 返回请求的等效字符串
         /// </summary>
         /// <param name="format">格式化参数</param>
         /// <returns></returns>
         string ToString(string format);
+
+        /// <summary>
+        /// 是否有异常
+        /// </summary>
+        bool IsError { get; }
+
+        /// <summary>
+        /// 异常信息
+        /// </summary>
+        Exception Exception { get; }
     }
 }

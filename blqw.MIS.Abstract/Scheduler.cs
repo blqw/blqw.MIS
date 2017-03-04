@@ -45,6 +45,27 @@ namespace blqw.MIS
         }
 
         /// <summary>
+        /// 同步执行调度程序,返回响应实体
+        /// </summary>
+        /// <param name="requestSetter"></param>
+        /// <returns></returns>
+        public IResponse OnExecute(IRequestSetter requestSetter)
+        {
+            if (requestSetter == null) throw new ArgumentNullException(nameof(requestSetter));
+            var request = requestSetter.Request;
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            var api = _entry.Selector.GetServiceInstance(true).FindApi(request);
+            if (api == null) return null;
+            requestSetter.ApiDescriptor = api;
+            var resolver = _entry.Resolver.GetServiceInstance(true);
+            requestSetter.Instance = resolver.CreateApiClassInstance(request);
+            requestSetter.Properties = resolver.ParseProperties(request)?.AsReadOnly();
+            requestSetter.Arguments = resolver.ParseArguments(request)?.AsReadOnly();
+            requestSetter.Result = _entry.Invoker.GetServiceInstance(true).Execute(request).ProcessResult();
+            return resolver.GetResponse(request);
+        }
+
+        /// <summary>
         /// 出现错误时触发
         /// </summary>
         /// <param name="request"></param>
