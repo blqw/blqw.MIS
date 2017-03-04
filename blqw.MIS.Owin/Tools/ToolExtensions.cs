@@ -74,7 +74,7 @@ namespace blqw.MIS.Owin
             ex = ex.ProcessException();
             if (ex is ApiRequestException e)
             {
-                response.ContentType = "text/json;charset=utf-8";
+                response.ContentType = "application /json;charset=utf-8";
                 response.StatusCode = e.ResponseStatusCode;
                 response.Expires = DateTimeOffset.Now;
                 var content = Encoding.UTF8.GetBytes(new { e.Message, Code = e.HResult }.ToJsonString());

@@ -97,7 +97,7 @@ namespace blqw.MIS.Owin.Services
                     buffer.Append(" ");
                     buffer.Append(request.Uri);
                     buffer.Append(" ");
-                    buffer.AppendLine(request.Accept);
+                    buffer.AppendLine(request.Protocol);
                     foreach (var header in request.Headers)
                     {
                         foreach (var value in header.Value)

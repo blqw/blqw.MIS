@@ -64,7 +64,7 @@ namespace blqw.MIS.Owin.Services
             {
                 case "all":
                     var buffer = StringBuilderPool.GetOut();
-                    buffer.AppendLine(request.Accept);
+                    buffer.AppendLine(response.Protocol);
                     buffer.Append(" ");
                     buffer.Append(response.StatusCode);
                     buffer.Append(" ");
