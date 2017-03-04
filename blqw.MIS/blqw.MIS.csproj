@@ -44,11 +44,14 @@
     <Compile Include="Api\ApiPropertyAttribute.cs" />
     <Compile Include="Api\IApiAttribute.cs" />
     <Compile Include="Exceptions\ApiException.cs" />
+    <Compile Include="Exceptions\ApiRequestPropertyCastException.cs" />
     <Compile Include="Exceptions\ApiRequestArgumentCastException.cs" />
+    <Compile Include="Exceptions\ApiRequestPropertyException.cs" />
     <Compile Include="Exceptions\ApiRequestArgumentException.cs" />
+    <Compile Include="Exceptions\ApiRequestPropertyNotFoundException.cs" />
     <Compile Include="Exceptions\ApiRequestArgumentNotFoundException.cs" />
-    <Compile Include="Exceptions\ApiNotFoundException.cs" />
     <Compile Include="Exceptions\ApiRequestException.cs" />
+    <Compile Include="Exceptions\ApiNotFoundException.cs" />
     <Compile Include="Filters\IFilter.cs" />
     <Compile Include="IRequest.cs" />
     <Compile Include="IResponse.cs" />

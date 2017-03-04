@@ -26,7 +26,7 @@ namespace BizDemo
             => Task.FromResult("Hello");
 
         [ApiProperty]
-        public string Name { get; set; }
+        public string Name { get; set; } = null;
 
         [Api]
         public void CheckProp(string name)

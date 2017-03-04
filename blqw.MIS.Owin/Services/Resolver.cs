@@ -92,9 +92,10 @@ namespace blqw.MIS.Owin.Services
                 var value = (object)param.Header.Get(p.Name);
                 if (value == null)
                 {
-                    if (p.HasDefaultValue == false)
-                        throw new ApiRequestArgumentNotFoundException(p.Name);
-                    yield return new ApiProperty(p.Property, p.DefaultValue);
+                    if (p.HasDefaultValue)
+                    {
+                        yield return new ApiProperty(p.Property, p.DefaultValue);
+                    }
                 }
                 else
                 {
@@ -104,7 +105,7 @@ namespace blqw.MIS.Owin.Services
                     }
                     catch (Exception ex)
                     {
-                        throw new ApiRequestArgumentCastException(p.Name, detail: ex.Message, innerException: ex);
+                        throw new ApiRequestPropertyCastException(p.Name, "Header头{0} 值有误", ex.Message, ex);
                     }
                     yield return new ApiProperty(p.Property, value);
                 }

@@ -30,6 +30,7 @@ namespace blqw.MIS.Owin.Services
 
         async Task GetResponseAsync(Request request)
         {
+            request.Result = await request.Result.ProcessResultAsync();
             var response = request.OwinContext.Response;
             response.ContentType = "text/json;charset=utf-8";
             response.Expires = DateTimeOffset.Now;

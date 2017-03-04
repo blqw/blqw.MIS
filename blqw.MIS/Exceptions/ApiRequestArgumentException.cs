@@ -19,6 +19,7 @@ namespace blqw.MIS
         protected ApiRequestArgumentException(int errorCode, string paramName, string message, Exception innerException = null)
             : base(200, string.Format(message ?? "参数{0}有误", paramName), innerException)
         {
+            if (errorCode < 5000 || errorCode > 5999) throw new ArgumentOutOfRangeException(nameof(errorCode));
             ParamName = paramName ?? throw new ArgumentNullException(nameof(paramName));
             HResult = errorCode;
         }

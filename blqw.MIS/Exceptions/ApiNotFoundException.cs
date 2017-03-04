@@ -9,13 +9,13 @@ namespace blqw.MIS
     /// <summary>
     /// 请求错误
     /// </summary>
-    public class ApiRequestException : ApiException
+    public class ApiNotFoundException : ApiException
     {
-        public ApiRequestException(int statusCode, string message, Exception innerException)
+        public ApiNotFoundException(string message = "Api未找到", Exception innerException = null)
             : base(message, innerException)
         {
-            ResponseStatusCode = statusCode;
-            HResult = statusCode;
+            ResponseStatusCode = 404;
+            HResult = 404;
         }
 
         public string Detail { get; protected set; }
