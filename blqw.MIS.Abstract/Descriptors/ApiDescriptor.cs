@@ -136,5 +136,8 @@ namespace blqw.MIS.Descriptors
             var ret = Convert(call, typeof(object));
             return Lambda<Func<object, object[], object>>(ret, instance, args).Compile();
         }
+
+        public override string ToString()
+            => $"[Api]:{Method}";
     }
 }

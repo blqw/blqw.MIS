@@ -7,9 +7,9 @@ namespace blqw.MIS.Owin
 {
     public class RouteTable
     {
-        Dictionary<string, ApiDescriptor> _static;
+        private readonly Dictionary<string, ApiDescriptor> _static;
 
-        public RouteTable(IReadOnlyList<ApiDescriptor> apis)
+        public RouteTable(IEnumerable<ApiDescriptor> apis)
         {
             _static = new Dictionary<string, ApiDescriptor>(StringComparer.OrdinalIgnoreCase);
             foreach (var api in apis)
@@ -27,5 +27,7 @@ namespace blqw.MIS.Owin
             }
             return null;
         }
+
+        public IEnumerable<string> Urls => _static.Keys;
     }
 }

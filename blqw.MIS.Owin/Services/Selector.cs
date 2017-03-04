@@ -25,6 +25,9 @@ namespace blqw.MIS.Owin.Services
 
         }
 
+        public IEnumerable<string> GetAllUrls()
+            => _route.Urls;
+
         /// <summary>
         /// 服务名称
         /// </summary>

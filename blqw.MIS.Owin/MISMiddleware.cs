@@ -1,6 +1,7 @@
 ﻿using blqw.MIS.Owin.Services;
 using Microsoft.Owin;
 using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,8 +15,14 @@ namespace blqw.MIS.Owin
             : base(next)
         {
             var container = new ApiContainer("Owin", ExportedTypes.Enumerable());
-            _scheduler = new Scheduler(new ServiceEntry(container));
-            Console.WriteLine($"载入接口完成,共 {container.Apis.Count} 个");
+            var entry = new ServiceEntry(container);
+            _scheduler = new Scheduler(entry);
+            var urls = ((Selector) entry.Selector).GetAllUrls().ToArray();
+            foreach (var url in urls)
+            {
+                Console.WriteLine(url);
+            }
+            Console.WriteLine($"载入接口完成,共 {urls.Length} 个");
         }
 
 
