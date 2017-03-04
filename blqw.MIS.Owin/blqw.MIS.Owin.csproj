@@ -72,7 +72,6 @@
     <Compile Include="Services\Response.cs" />
     <Compile Include="Services\Selector.cs" />
     <Compile Include="Services\ServiceEntry.cs" />
-    <Compile Include="Tools\ParamValue.cs" />
     <Compile Include="Tools\ExportedTypes.cs" />
     <Compile Include="Tools\NameDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

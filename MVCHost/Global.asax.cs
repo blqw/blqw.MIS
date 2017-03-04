@@ -1,5 +1,4 @@
 ﻿using blqw.MIS;
-using blqw.MIS.MVCAdapter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +8,7 @@ using System.Web.Mvc.Routing;
 using System.Web.Routing;
 using System.Web.Security;
 using System.Web.SessionState;
+using blqw.MIS.MVC;
 
 namespace MVCHost
 {

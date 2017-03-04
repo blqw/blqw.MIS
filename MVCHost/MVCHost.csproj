@@ -14,7 +14,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MVCHost</RootNamespace>
     <AssemblyName>MVCHost</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
@@ -23,6 +23,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,14 +50,13 @@
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
@@ -76,13 +76,13 @@
     <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
@@ -108,21 +108,9 @@
       <Project>{46a94acc-edf2-42cc-bde1-94a376d6f3d4}</Project>
       <Name>BizDemo</Name>
     </ProjectReference>
-    <ProjectReference Include="..\blqw.MIS.Container.NetFramework45\blqw.MIS.Container.NetFramework45.csproj">
-      <Project>{008058b2-cfda-4f78-9532-017f1c85b7f9}</Project>
-      <Name>blqw.MIS.Container.NetFramework45</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\blqw.MIS.Core\blqw.MIS.Core.csproj">
-      <Project>{5b066124-fab8-435e-a86b-7e4d5b270650}</Project>
-      <Name>blqw.MIS.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\blqw.MIS.MVCAdapter\blqw.MIS.MVCAdapter.csproj">
-      <Project>{77F693A5-0D3E-4DFE-B92A-DDE6FB4CE974}</Project>
-      <Name>blqw.MIS.MVCAdapter</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\blqw.MIS.Container\blqw.MIS.Container.csproj">
-      <Project>{a54df45f-52a2-4785-8e91-f80be0556285}</Project>
-      <Name>blqw.MIS.Container</Name>
+    <ProjectReference Include="..\blqw.MIS.MVC\blqw.MIS.MVC.csproj">
+      <Project>{77f693a5-0d3e-4dfe-b92a-dde6fb4ce974}</Project>
+      <Name>blqw.MIS.MVC</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

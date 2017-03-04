@@ -40,7 +40,6 @@ namespace blqw.MIS.Owin
             }
             if (contentType.StartsWith("multipart/form-data", StringComparison.OrdinalIgnoreCase))
             {
-                //throw new NotSupportedException("不支持的ContentType");
                 return context.Request.ReadFormAsync().Result;
             }
 
@@ -123,7 +122,7 @@ namespace blqw.MIS.Owin
             }
         }
 
-        static char[] _contentTypeSeparator = new[] { ' ', ';' };
+        static readonly char[] _contentTypeSeparator = new[] { ' ', ';' };
 
         private string GetFormat(string contentType)
         {
@@ -171,43 +170,7 @@ namespace blqw.MIS.Owin
                 throw;
             }
         }
-
-
-        public ParamValue GetParameter(ApiParameterDescriptor parameter)
-        {
-            var value = (object)Body.Get(parameter.Name) ?? Query.Get(parameter.Name);
-            if (value == null)
-            {
-                return ParamValue.NotFound;
-            }
-            try
-            {
-                value = value.ChangeType(parameter.ParameterType);
-                return new ParamValue(value);
-            }
-            catch (Exception ex)
-            {
-                return new ParamValue(ex);
-            }
-        }
-
-        public ParamValue GetProperty(ApiPropertyDescriptor property)
-        {
-            var value = (object)Header.Get(property.Name);
-            if (value == null)
-            {
-                return ParamValue.NotFound;
-            }
-            try
-            {
-                value = value.ChangeType(property.PropertyType);
-                return new ParamValue(value);
-            }
-            catch (Exception ex)
-            {
-                return new ParamValue(ex);
-            }
-        }
+        
 
     }
 }

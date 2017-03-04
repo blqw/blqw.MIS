@@ -39,8 +39,9 @@ namespace blqw.MIS.Owin
                 if (response == null)
                 {
                     await Next.Invoke(owin);
-                    if (owin.Response.StatusCode == 404)
+                    if (oresponse.StatusCode == 404)
                     {
+                        oresponse.ContentType = "text/plain;charset=utf-8";
                         content = Encoding.UTF8.GetBytes("api不存在");
                     }
                 }
@@ -82,6 +83,7 @@ namespace blqw.MIS.Owin
             {
                 content = Encoding.UTF8.GetBytes(e.ToString());
                 owin.Response.ContentType = "text/plain;charset=utf-8";
+                owin.Response.StatusCode = 500;
             }
 
             //输出内容,如果有
