@@ -28,7 +28,7 @@ namespace blqw.MIS
         /// </summary>
         /// <param name="requestSetter"></param>
         /// <returns></returns>
-        public async Task<IResponse> OnExecuteAsync(IRequestSetter requestSetter)
+        public async Task<IResponse> ExecuteAsync(IRequestSetter requestSetter)
         {
             if (requestSetter == null) throw new ArgumentNullException(nameof(requestSetter));
             var request = requestSetter.Request;
@@ -49,7 +49,7 @@ namespace blqw.MIS
         /// </summary>
         /// <param name="requestSetter"></param>
         /// <returns></returns>
-        public IResponse OnExecute(IRequestSetter requestSetter)
+        public IResponse Execute(IRequestSetter requestSetter)
         {
             if (requestSetter == null) throw new ArgumentNullException(nameof(requestSetter));
             var request = requestSetter.Request;

@@ -40,9 +40,9 @@ namespace blqw.MIS
         private const string BUG_FIX = "0";
         private const string PREVIEW = "";
 
-        public const string Full = PRE_VERSION + "." + BUG_FIX + "-" + PREVIEW;
+        public const string Full = PRE_VERSION + "." + BUG_FIX + PREVIEW;
 
-        public const string String = PRE_VERSION + "." + BUG_FIX + PREVIEW;
+        public const string String = PRE_VERSION + "." + BUG_FIX;
 
 
         public static int Major => GetVersion().Major;

@@ -16,7 +16,7 @@ namespace blqw.MIS.UnitTest
             try
             {
                 var request = ExpressionParser.Parse(testCase);
-                var response = _scheduler.OnExecute(request);
+                var response = _scheduler.Execute(request);
                 if (response == null) return new UnitTestResult(new ApiNotFoundException());
                 if (response.IsError)
                 {
@@ -35,7 +35,7 @@ namespace blqw.MIS.UnitTest
             try
             {
                 var request = ExpressionParser.Parse(testCase);
-                var response = _scheduler.OnExecute(request);
+                var response = _scheduler.Execute(request);
                 if (response == null) return new UnitTestResult<T>(new ApiNotFoundException());
                 if (response.IsError)
                 {
@@ -54,7 +54,7 @@ namespace blqw.MIS.UnitTest
             try
             {
                 var request = ExpressionParser.Parse(testCase);
-                var response = _scheduler.OnExecute(request);
+                var response = _scheduler.Execute(request);
                 if (response == null) return new UnitTestResult<T>(new ApiNotFoundException());
                 if (response.IsError)
                 {
@@ -73,7 +73,7 @@ namespace blqw.MIS.UnitTest
             try
             {
                 var request = ExpressionParser.Parse(testCase);
-                var response = _scheduler.OnExecute(request);
+                var response = _scheduler.Execute(request);
                 if (response == null) return new UnitTestResult(new ApiNotFoundException());
                 if (response.IsError)
                 {

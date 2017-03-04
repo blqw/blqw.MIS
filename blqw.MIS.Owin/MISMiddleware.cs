@@ -32,7 +32,7 @@ namespace blqw.MIS.Owin
             Exception exception = null;
             try
             {
-                var response = await _scheduler.OnExecuteAsync(new RequestSetter(request));
+                var response = await _scheduler.ExecuteAsync(new RequestSetter(request));
                 if (response == null)
                 {
                     await Next.Invoke(owin);
