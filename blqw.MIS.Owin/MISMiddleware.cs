@@ -32,50 +32,51 @@ namespace blqw.MIS.Owin
             try
             {
                 var request = new Request(owin);
-                var response = await _scheduler.ExecuteAsync(new RequestSetter(request));
-                var oresponse = request.OwinContext.Response;
-                oresponse.Expires = DateTimeOffset.Now;
-                oresponse.Headers["MIS-RequestId"] = request.Id;
-                if (response == null)
+                var result = await _scheduler.ExecuteAsync(new RequestSetter(request));
+                var response = request.OwinContext.Response;
+                response.Expires = DateTimeOffset.Now;
+                response.Headers["MIS-RequestId"] = request.Id;
+                if (result is Exception ex)
                 {
-                    await Next.Invoke(owin);
-                    if (oresponse.StatusCode == 404)
+                    ex = ex.ProcessException();
+                    if (result is ApiNotFoundException)
                     {
-                        oresponse.ContentType = "text/plain;charset=utf-8";
-                        content = Encoding.UTF8.GetBytes("api不存在");
+                        await Next.Invoke(owin);
+                        if (response.StatusCode == 404)
+                        {
+                            response.ContentType = "text/plain;charset=utf-8";
+                            content = Encoding.UTF8.GetBytes("api不存在");
+                        }
                     }
-                }
-                else if (response.IsError)
-                {
-                    var ex = response.Exception.ProcessException();
-                    if (ex is ApiNoResultException)
+                    else if (ex is ApiNoResultException)
                     {
-                        oresponse.StatusCode = 205;
+                        response.StatusCode = 205;
                     }
                     else if (ex is ApiRequestException e)
                     {
-                        oresponse.StatusCode = 400;
+                        response.StatusCode = 400;
+                        content = Encoding.UTF8.GetBytes("请求中出现错误");
                         if (e.Detail != null)
                         {
-                            oresponse.Headers["MIS-ErrorDetail"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(e.Detail));
+                            response.Headers["MIS-ErrorDetail"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(e.Detail));
                         }
                     }
                     else
                     {
-                        oresponse.StatusCode = 500;
+                        response.StatusCode = 500;
+                        content = Encoding.UTF8.GetBytes("服务器异常");
                     }
-                    oresponse.ContentType = "text/plain;charset=utf-8";
-                    oresponse.Headers["MIS-ErrorMessage"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(ex.Message));
-                    oresponse.Headers["MIS-ErrorStackTrace"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(ex.ToString()));
-                    content = Encoding.UTF8.GetBytes("请求中出现错误");
+                    response.ContentType = "text/plain;charset=utf-8";
+                    response.Headers["MIS-ErrorMessage"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(ex.Message));
+                    response.Headers["MIS-ErrorStackTrace"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(ex.ToString()));
                 }
                 else
                 {
-                    oresponse.ContentType = "text/json;charset=utf-8";
-                    oresponse.StatusCode = 200;
-                    if (request.Result != null)
+                    response.ContentType = "text/json;charset=utf-8";
+                    response.StatusCode = 200;
+                    if (result != null)
                     {
-                        content = Encoding.UTF8.GetBytes(response.GetActualResponse().ToJsonString());
+                        content = Encoding.UTF8.GetBytes(result.ToJsonString());
                     }
                 }
             }

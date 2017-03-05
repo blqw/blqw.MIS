@@ -72,8 +72,6 @@ public class UserManager
 ## * 请求(Request)
 包含请求的二进制流,对应的字符串,实际请求对象
 
-## * 响应(Response)
-包含响应的二进制流,对应的字符串,实际响应对象
 
 # 设计图示
 https://www.processon.com/view/link/58bab468e4b09b24d6e9cb08
@@ -90,9 +88,12 @@ https://www.processon.com/view/link/58bab468e4b09b24d6e9cb08
 
 
 # 更新日志
+## [0.1.2]
+* 优化结构,去掉了`IResponse`对象
+
 ## [0.1.1]
 * 支持实体属性
-* 支持mvc5
+* 支持mvc
 
 ## [0.1.0]
 * 第二次重构,之前更新日志作废

@@ -43,7 +43,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Request.cs" />
     <Compile Include="Services\Resolver.cs" />
-    <Compile Include="Services\Response.cs" />
     <Compile Include="Services\Selector.cs" />
     <Compile Include="Services\ServiceEntry.cs" />
     <Compile Include="Tools\ExportedTypes.cs" />

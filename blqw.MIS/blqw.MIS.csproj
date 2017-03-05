@@ -55,7 +55,6 @@
     <Compile Include="Exceptions\ApiNoResultException.cs" />
     <Compile Include="Filters\IFilter.cs" />
     <Compile Include="IRequest.cs" />
-    <Compile Include="IResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\NameDictionary.cs" />
   </ItemGroup>

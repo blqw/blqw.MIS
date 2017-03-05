@@ -65,19 +65,7 @@ namespace blqw.MIS.UnitTest
             if (request.Method.DeclaringType == null) throw new ArgumentException("无法推断ApiClass类型", nameof(request));
             return request.Method.IsStatic ? null : Activator.CreateInstance(request.Method.DeclaringType);
         }
-
-        /// <summary>
-        /// 获取响应体
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public IResponse GetResponse(IRequest request)
-        {
-            var req = CastRequest(request);
-            return new Response(req);
-        }
-
-
+        
         private static Request CastRequest(IRequest request)
         {
             var req = (request ?? throw new ArgumentNullException(nameof(request))) as Request;

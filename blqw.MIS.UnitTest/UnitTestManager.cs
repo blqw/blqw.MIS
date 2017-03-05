@@ -16,11 +16,10 @@ namespace blqw.MIS.UnitTest
             try
             {
                 var request = ExpressionParser.Parse(testCase);
-                var response = _scheduler.Execute(request);
-                if (response == null) return new UnitTestResult(new ApiNotFoundException());
-                if (response.IsError)
+                var result = _scheduler.Execute(request);
+                if (result is Exception ex)
                 {
-                    return new UnitTestResult(response.Exception);
+                    return new UnitTestResult(ex);
                 }
                 return new UnitTestResult();
             }
@@ -35,13 +34,12 @@ namespace blqw.MIS.UnitTest
             try
             {
                 var request = ExpressionParser.Parse(testCase);
-                var response = _scheduler.Execute(request);
-                if (response == null) return new UnitTestResult<T>(new ApiNotFoundException());
-                if (response.IsError)
+                var result = _scheduler.Execute(request);
+                if (result is Exception ex)
                 {
-                    return new UnitTestResult<T>(response.Exception);
+                    return new UnitTestResult<T>(ex);
                 }
-                return new UnitTestResult<T>((T)response.GetActualResponse());
+                return new UnitTestResult<T>((T)result);
             }
             catch (Exception e)
             {
@@ -54,13 +52,12 @@ namespace blqw.MIS.UnitTest
             try
             {
                 var request = ExpressionParser.Parse(testCase);
-                var response = _scheduler.Execute(request);
-                if (response == null) return new UnitTestResult<T>(new ApiNotFoundException());
-                if (response.IsError)
+                var result = _scheduler.Execute(request);
+                if (result is Exception ex)
                 {
-                    return new UnitTestResult<T>(response.Exception);
+                    return new UnitTestResult<T>(ex);
                 }
-                return new UnitTestResult<T>((T)response.GetActualResponse());
+                return new UnitTestResult<T>((T)result);
             }
             catch (Exception e)
             {
@@ -73,11 +70,10 @@ namespace blqw.MIS.UnitTest
             try
             {
                 var request = ExpressionParser.Parse(testCase);
-                var response = _scheduler.Execute(request);
-                if (response == null) return new UnitTestResult(new ApiNotFoundException());
-                if (response.IsError)
+                var result = _scheduler.Execute(request);
+                if (result is Exception ex)
                 {
-                    return new UnitTestResult(response.Exception);
+                    return new UnitTestResult(ex);
                 }
                 return new UnitTestResult();
             }

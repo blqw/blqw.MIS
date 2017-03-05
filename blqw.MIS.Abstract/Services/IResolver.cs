@@ -26,11 +26,5 @@ namespace blqw.MIS.Services
         /// <param name="request"></param>
         /// <returns></returns>
         object CreateApiClassInstance(IRequest request);
-        /// <summary>
-        /// 获取响应体
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        IResponse GetResponse(IRequest request);
     }
 }

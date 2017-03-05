@@ -28,13 +28,13 @@ namespace blqw.MIS
         /// </summary>
         /// <param name="requestSetter"></param>
         /// <returns></returns>
-        public async Task<IResponse> ExecuteAsync(IRequestSetter requestSetter)
+        public async Task<object> ExecuteAsync(IRequestSetter requestSetter)
         {
             if (requestSetter == null) throw new ArgumentNullException(nameof(requestSetter));
             var request = requestSetter.Request;
             if (request == null) throw new ArgumentNullException(nameof(request));
             var api = _entry.Selector.GetServiceInstance(true).FindApi(request);
-            if (api == null) return null;
+            if (api == null) return new ApiNotFoundException();
             requestSetter.ApiDescriptor = api;
             var resolver = _entry.Resolver.GetServiceInstance(true);
             try
@@ -48,7 +48,7 @@ namespace blqw.MIS
             {
                 requestSetter.Result = ex.ProcessException();
             }
-            return resolver.GetResponse(request);
+            return request.Result;
         }
 
         /// <summary>
@@ -56,20 +56,27 @@ namespace blqw.MIS
         /// </summary>
         /// <param name="requestSetter"></param>
         /// <returns></returns>
-        public IResponse Execute(IRequestSetter requestSetter)
+        public object Execute(IRequestSetter requestSetter)
         {
             if (requestSetter == null) throw new ArgumentNullException(nameof(requestSetter));
             var request = requestSetter.Request;
             if (request == null) throw new ArgumentNullException(nameof(request));
             var api = _entry.Selector.GetServiceInstance(true).FindApi(request);
-            if (api == null) return null;
+            if (api == null) return new ApiNotFoundException();
             requestSetter.ApiDescriptor = api;
             var resolver = _entry.Resolver.GetServiceInstance(true);
-            requestSetter.Instance = resolver.CreateApiClassInstance(request);
-            requestSetter.Properties = resolver.ParseProperties(request)?.AsReadOnly();
-            requestSetter.Arguments = resolver.ParseArguments(request)?.AsReadOnly();
-            requestSetter.Result = _entry.Invoker.GetServiceInstance(true).Execute(request).ProcessResult();
-            return resolver.GetResponse(request);
+            try
+            {
+                requestSetter.Instance = resolver.CreateApiClassInstance(request);
+                requestSetter.Properties = resolver.ParseProperties(request)?.AsReadOnly();
+                requestSetter.Arguments = resolver.ParseArguments(request)?.AsReadOnly();
+                requestSetter.Result = _entry.Invoker.GetServiceInstance(true).Execute(request).ProcessResult();
+            }
+            catch (Exception ex)
+            {
+                requestSetter.Result = ex.ProcessException();
+            }
+            return request.Result;
         }
     }
 }

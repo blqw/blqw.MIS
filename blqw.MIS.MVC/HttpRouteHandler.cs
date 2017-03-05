@@ -30,45 +30,46 @@ namespace blqw.MIS.MVC
             try
             {
                 var request = new Request(httpContext);
-                var response = _scheduler.Execute(new RequestSetter(request));
-                var httpResponse = httpContext.Response;
-                if (response == null)
+                var result = _scheduler.Execute(new RequestSetter(request));
+                var response = httpContext.Response;
+                if (result is Exception ex)
                 {
-                    httpResponse.StatusCode = 404;
-                    httpResponse.ContentType = "text/plain;charset=utf-8";
-                    content = Encoding.UTF8.GetBytes("接口不存在");
-                }
-                else if (response.IsError)
-                {
-                    var ex = response.Exception.ProcessException();
-                    if (ex is ApiNoResultException)
+                    ex = ex.ProcessException();
+                    if (result is ApiNotFoundException)
                     {
-                        httpResponse.StatusCode = 205;
+                        response.StatusCode = 404;
+                        response.ContentType = "text/plain;charset=utf-8";
+                        content = Encoding.UTF8.GetBytes("接口不存在");
+                    }
+                    else if (ex is ApiNoResultException)
+                    {
+                        response.StatusCode = 205;
                     }
                     else if (ex is ApiRequestException e)
                     {
-                        httpResponse.StatusCode = 400;
+                        response.StatusCode = 400;
+                        content = Encoding.UTF8.GetBytes("请求中出现错误");
                         if (e.Detail != null)
                         {
-                            httpResponse.Headers["MIS-ErrorDetail"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(e.Detail));
+                            response.Headers["MIS-ErrorDetail"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(e.Detail));
                         }
                     }
                     else
                     {
-                        httpResponse.StatusCode = 500;
+                        response.StatusCode = 500;
+                        content = Encoding.UTF8.GetBytes("服务器异常");
                     }
-                    httpResponse.ContentType = "text/plain;charset=utf-8";
-                    httpResponse.Headers["MIS-ErrorMessage"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(ex.Message));
-                    httpResponse.Headers["MIS-ErrorStackTrace"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(ex.ToString()));
-                    content = Encoding.UTF8.GetBytes("请求中出现错误");
+                    response.ContentType = "text/plain;charset=utf-8";
+                    response.Headers["MIS-ErrorMessage"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(ex.Message));
+                    response.Headers["MIS-ErrorStackTrace"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(ex.ToString()));
                 }
                 else
                 {
-                    httpResponse.ContentType = "text/json;charset=utf-8";
-                    httpResponse.StatusCode = 200;
-                    if (request.Result != null)
+                    response.ContentType = "text/json;charset=utf-8";
+                    response.StatusCode = 200;
+                    if (result != null)
                     {
-                        content = Encoding.UTF8.GetBytes(response.GetActualResponse().ToJsonString());
+                        content = Encoding.UTF8.GetBytes(result.ToJsonString());
                     }
                 }
             }
