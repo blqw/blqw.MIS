@@ -39,7 +39,7 @@ namespace blqw.MIS.MVC
                     {
                         response.StatusCode = 404;
                         response.ContentType = "text/plain;charset=utf-8";
-                        content = Encoding.UTF8.GetBytes("接口不存在");
+                        content = Encoding.UTF8.GetBytes("api不存在");
                     }
                     else if (ex is ApiNoResultException)
                     {
