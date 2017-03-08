@@ -43,6 +43,7 @@
     <Compile Include="Api\ApiParameterAttribute.cs" />
     <Compile Include="Api\ApiPropertyAttribute.cs" />
     <Compile Include="Api\IApiAttribute.cs" />
+    <Compile Include="Events\ApiGlobalEvents.cs" />
     <Compile Include="Exceptions\ApiException.cs" />
     <Compile Include="Exceptions\ApiNotFoundException.cs" />
     <Compile Include="Exceptions\ApiRequestPropertyCastException.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="Exceptions\ApiRequestArgumentNotFoundException.cs" />
     <Compile Include="Exceptions\ApiRequestException.cs" />
     <Compile Include="Exceptions\ApiNoResultException.cs" />
+    <Compile Include="Exceptions\ApiSetupException.cs" />
     <Compile Include="Filters\IFilter.cs" />
     <Compile Include="IRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

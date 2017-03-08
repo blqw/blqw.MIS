@@ -61,7 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TestTests.cs" />
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="TestGlobalEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

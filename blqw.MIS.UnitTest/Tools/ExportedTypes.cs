@@ -15,9 +15,9 @@ namespace blqw.MIS.UnitTest
         public static IEnumerable<Type> Enumerable()
         {
             var tempDomain = AppDomain.CreateDomain("MIS");
-
-            foreach (var file in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll", SearchOption.AllDirectories)
-                .Union(Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.exe", SearchOption.AllDirectories)))
+            var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            foreach (var file in Directory.GetFiles(dir, "*.dll", SearchOption.AllDirectories)
+                .Union(Directory.GetFiles(dir, "*.exe", SearchOption.AllDirectories)))
             {
                 Assembly ass;
                 try

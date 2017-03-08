@@ -17,6 +17,10 @@ namespace blqw.MIS.UnitTest
             {
                 var request = ExpressionParser.Parse(testCase);
                 var result = _scheduler.Execute(request);
+                if (result is ApiNoResultException)
+                {
+                    return new UnitTestResult();
+                }
                 if (result is Exception ex)
                 {
                     return new UnitTestResult(ex);
@@ -71,6 +75,10 @@ namespace blqw.MIS.UnitTest
             {
                 var request = ExpressionParser.Parse(testCase);
                 var result = _scheduler.Execute(request);
+                if (result is ApiNoResultException)
+                {
+                    return new UnitTestResult();
+                }
                 if (result is Exception ex)
                 {
                     return new UnitTestResult(ex);
