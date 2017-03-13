@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace blqw.MIS
 {
@@ -11,6 +7,10 @@ namespace blqw.MIS
     /// </summary>
     public abstract class ApiGlobalEvents
     {
+        /// <summary>
+        /// 服务器初始化完成
+        /// </summary>
+        public virtual Task OnInit() => null;
         /// <summary>
         /// 这是第一个被触发的事件
         /// </summary>

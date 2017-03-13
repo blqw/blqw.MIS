@@ -77,7 +77,7 @@ public class UserManager
 https://www.processon.com/view/link/58bab468e4b09b24d6e9cb08
 
 # 待完成功能
-- 支持实体参数
+- ~~支持实体参数~~
 - ~~支持事件~~
 - 支持过滤器
 - 支持日志

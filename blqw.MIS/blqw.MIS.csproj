@@ -43,6 +43,14 @@
     <Compile Include="Api\ApiParameterAttribute.cs" />
     <Compile Include="Api\ApiPropertyAttribute.cs" />
     <Compile Include="Api\IApiAttribute.cs" />
+    <Compile Include="Descriptors\ApiClassDescriptor.cs" />
+    <Compile Include="Descriptors\ApiDescriptor.cs" />
+    <Compile Include="Descriptors\ApiParameterDescriptor.cs" />
+    <Compile Include="Descriptors\ApiPropertyDescriptor.cs" />
+    <Compile Include="Descriptors\DescriptorBase.cs" />
+    <Compile Include="Descriptors\IDescriptor.cs" />
+    <Compile Include="Descriptors\NamespaceDescriptor.cs" />
+    <Compile Include="Descriptors\DescriptorExtensions.cs" />
     <Compile Include="Events\ApiGlobalEvents.cs" />
     <Compile Include="Exceptions\ApiException.cs" />
     <Compile Include="Exceptions\ApiNotFoundException.cs" />

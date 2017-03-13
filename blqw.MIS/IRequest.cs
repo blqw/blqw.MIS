@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using blqw.MIS.Descriptors;
 
 namespace blqw.MIS
 {
@@ -42,7 +43,7 @@ namespace blqw.MIS
         /// <summary>
         /// API方法
         /// </summary>
-        MethodInfo Method { get; }
+        ApiDescriptor Api { get; }
         /// <summary>
         /// 获取请求流
         /// </summary>

@@ -85,10 +85,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\blqw.MIS.Abstract\blqw.MIS.Abstract.csproj">
-      <Project>{731eba63-a20e-4e73-a350-3a04bf8675a5}</Project>
-      <Name>blqw.MIS.Abstract</Name>
-    </ProjectReference>
     <ProjectReference Include="..\blqw.MIS\blqw.MIS.csproj">
       <Project>{1a953b40-4f0a-48c3-84e6-de5e061f8391}</Project>
       <Name>blqw.MIS</Name>
