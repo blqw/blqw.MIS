@@ -143,17 +143,7 @@ namespace blqw.MIS.Descriptors
             }
             return true;
         }
-
-        /// <summary>
-        /// 创建API属性描述,如果属性不合法,则返null
-        /// </summary>
-        /// <param name="property"></param>
-        /// <param name="apiclass"></param>
-        /// <returns></returns>
-        internal static ApiPropertyDescriptor Create(PropertyInfo property, ApiClassDescriptor apiclass)
-            => CheckProperty(property, false) ? new ApiPropertyDescriptor(property, apiclass) : null;
-
-
+        
         /// <summary>
         /// 参数是否为一个实体
         /// </summary>

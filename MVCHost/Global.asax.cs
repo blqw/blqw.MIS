@@ -17,7 +17,7 @@ namespace MVCHost
 
         protected void Application_Start(object sender, EventArgs e)
         {
-            RouteTable.Routes.Add("mis", new MISRoute());
+            MISRoute.Register();
         }
 
     }

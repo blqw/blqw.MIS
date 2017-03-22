@@ -11,19 +11,14 @@ namespace blqw.MIS.Descriptors
     public class NamespaceDescriptor : DescriptorBase
     {
         /// <summary>
-        /// API类型描述
-        /// </summary>
-        private readonly List<ApiClassDescriptor> _types = new List<ApiClassDescriptor>();
-
-        /// <summary>
         /// 实例化命名空间
         /// </summary>
         /// <param name="fullName">命名空间完整名称</param>
-        public NamespaceDescriptor(string fullName)
+        public NamespaceDescriptor(string fullName, IList<ApiClassDescriptor> apiClasses)
         {
             FullName = fullName ?? throw new ArgumentNullException(nameof(fullName));
             Name = fullName.Split('.').Last();
-            Types = new ReadOnlyCollection<ApiClassDescriptor>(_types);
+            Types = apiClasses.AsReadOnly();
         }
 
         /// <summary>
@@ -36,11 +31,5 @@ namespace blqw.MIS.Descriptors
         /// </summary>
         public IReadOnlyList<ApiClassDescriptor> Types { get; }
         
-        /// <summary>
-        /// 添加一个ApiClass描述
-        /// </summary>
-        /// <param name="apiclass"></param>
-        internal void AddApiCalss(ApiClassDescriptor apiclass)
-            => _types.Add(apiclass);
     }
 }

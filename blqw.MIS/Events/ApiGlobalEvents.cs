@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using blqw.MIS.Descriptors;
 
 namespace blqw.MIS
 {
@@ -10,7 +12,7 @@ namespace blqw.MIS
         /// <summary>
         /// 服务器初始化完成
         /// </summary>
-        public virtual Task OnInit() => null;
+        public virtual Task OnInit(IEnumerable<ApiDescriptor> apis) => null;
         /// <summary>
         /// 这是第一个被触发的事件
         /// </summary>

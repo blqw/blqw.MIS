@@ -80,17 +80,7 @@ namespace blqw.MIS.Descriptors
             }
             return true;
         }
-
-
-        /// <summary>
-        /// 创建API描述,如果方法不是API则返回null
-        /// </summary>
-        /// <param name="method">同于创建API的方法</param>
-        /// <param name="apiclass">方法所在类的描述</param>
-        /// <returns></returns>
-        internal static ApiDescriptor Create(MethodInfo method, ApiClassDescriptor apiclass)
-            => CheckMethod(method, false) ? new ApiDescriptor(method, apiclass) : null;
-
+        
         /// <summary>
         /// 调用API方法
         /// </summary>

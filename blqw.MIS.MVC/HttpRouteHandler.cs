@@ -15,7 +15,7 @@ namespace blqw.MIS.MVC
         {
             var container = new ApiContainer("Mvc5", ExportedTypes.Enumerable());
             var entry = new ServiceEntry(container, urlTemplate);
-            _scheduler = new Scheduler(entry);
+            _scheduler = Scheduler.Create(entry);
         }
 
         /// <summary>

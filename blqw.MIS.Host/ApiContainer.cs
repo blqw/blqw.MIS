@@ -17,7 +17,11 @@ namespace blqw.MIS
         private readonly List<ApiClassDescriptor> _types;
         private readonly List<ApiDescriptor> _apis;
         private readonly List<ApiGlobalEvents> _events;
-        private static readonly Dictionary<string, Func<ApiGlobalEvents, IRequest, Task>> EventHandles = InitEventHandles();
+        private static readonly Dictionary<string, Func<ApiGlobalEvents, IRequest, Task>> _eventHandles = InitEventHandles();
+
+        private static readonly Func<ApiGlobalEvents, IEnumerable<ApiDescriptor>, Task> _initHandle =
+            (Func<ApiGlobalEvents, IEnumerable<ApiDescriptor>, Task>)typeof(ApiGlobalEvents).GetRuntimeMethod("OnInit", new[] { typeof(IEnumerable<ApiDescriptor>) })
+                .CreateDelegate(typeof(Func<ApiGlobalEvents, IEnumerable<ApiDescriptor>, Task>));
 
         private static Dictionary<string, Func<ApiGlobalEvents, IRequest, Task>> InitEventHandles()
         {
@@ -51,18 +55,32 @@ namespace blqw.MIS
             _types = new List<ApiClassDescriptor>();
             _apis = new List<ApiDescriptor>();
             var @base = typeof(ApiGlobalEvents).GetTypeInfo();
-            _events = exportedTypes
-                            .Select(t => t.GetTypeInfo())
+            var types = exportedTypes as Type[] ?? exportedTypes.ToArray();
+            _events = types.Select(t => t.GetTypeInfo())
                             .Where(t => @base.IsAssignableFrom(t) && t.IsAbstract == false && t.ContainsGenericParameters == false)
                             .Select(t => (ApiGlobalEvents)Activator.CreateInstance(t.AsType()))
                             .ToList();
 
-            FindAllApis(exportedTypes, factory);
-
-
+            FindAllApis(types, factory);
             Namespaces = _namespaces.AsReadOnly();
             ApiClasses = _types.AsReadOnly();
             Apis = _apis.AsReadOnly();
+            foreach (var ns in Namespaces)
+            {
+                ns.Extends["$ApiContainer"] = this;
+            }
+            foreach (var apiClass in ApiClasses)
+            {
+                apiClass.Extends["$ApiContainer"] = this;
+                foreach (var property in apiClass.Properties)
+                {
+                    property.Extends["$ApiContainer"] = this;
+                }
+            }
+            foreach (var api in Apis)
+            {
+                api.Extends["$ApiContainer"] = this;
+            }
         }
 
         /// <summary>
@@ -92,28 +110,29 @@ namespace blqw.MIS
         {
             if (exportedTypes == null) throw new ArgumentNullException(nameof(exportedTypes));
             if (factory == null) factory = DefaultIApiClassDescriptorFactory.Instance;
+            var ns = new Dictionary<string, IList<ApiClassDescriptor>>();
             foreach (var t in exportedTypes)
             {
-                var apiclass = factory.Create(t, this);
+                var apiclass = factory.Create(t);
                 if (apiclass == null)
                 {
                     continue;
                 }
                 _types.Add(apiclass);
-                var ns = _namespaces.FirstOrDefault(it => it.FullName == t.Namespace);
-                if (ns == null)
+                if (ns.TryGetValue(t.Namespace, out var list) == false)
                 {
-                    _namespaces.Add(ns = new NamespaceDescriptor(t.Namespace, this));
-
+                    list = new List<ApiClassDescriptor>();
+                    ns.Add(t.Namespace, list);
                 }
-                ns.AddApiCalss(apiclass);
+                list.Add(apiclass);
                 _apis.AddRange(apiclass.Apis);
             }
+            _namespaces.AddRange(ns.Select(it => new NamespaceDescriptor(it.Key, it.Value)));
         }
 
         private async Task OnEventAsync(IRequest request, string eventName)
         {
-            if (EventHandles.TryGetValue(eventName, out var ent))
+            if (_eventHandles.TryGetValue(eventName, out var ent))
             {
                 foreach (var e in _events)
                 {
@@ -194,10 +213,25 @@ namespace blqw.MIS
         /// <param name="request">当前请求</param>
         public Task OnBeginResponseAsync(IRequest request) => OnEventAsync(request, nameof(OnBeginResponse));
 
+        public async Task OnInitAsync()
+        {
+            var apis = Apis;
+            foreach (var e in _events)
+            {
+                try
+                {
+                    await _initHandle(e, apis);
+                }
+                catch (Exception ex)
+                {
+                    throw new NotImplementedException($"{e.GetType().FullName}.{nameof(OnInit)}方法异常,详见异常内部说明", ex);
+                }
+            }
+        }
 
         private void OnEvent(IRequest request, string eventName)
         {
-            if (EventHandles.TryGetValue(eventName, out var ent))
+            if (_eventHandles.TryGetValue(eventName, out var ent))
             {
                 foreach (var e in _events)
                 {
@@ -276,6 +310,26 @@ namespace blqw.MIS
         /// </summary>
         /// <param name="request">当前请求</param>
         public void OnBeginResponse(IRequest request) => OnEvent(request, nameof(OnBeginResponse));
+
+        public void OnInit()
+        {
+            var apis = Apis;
+            foreach (var e in _events)
+            {
+                try
+                {
+                    var task = _initHandle(e, apis);
+                    if (task?.IsCompleted == false)
+                    {
+                        task.Wait();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new NotImplementedException($"{e.GetType().FullName}.{nameof(OnInit)}方法异常,详见异常内部说明", ex);
+                }
+            }
+        }
     }
 }
 

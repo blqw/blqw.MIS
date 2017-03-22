@@ -16,8 +16,7 @@ namespace blqw.MIS.Services
         /// 创建API类描述
         /// </summary>
         /// <param name="type">类型对象</param>
-        /// <param name="container">容器</param>
         /// <returns></returns>
-        ApiClassDescriptor Create(Type type, ApiContainer container);
+        ApiClassDescriptor Create(Type type);
     }
 }

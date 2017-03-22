@@ -19,10 +19,26 @@ namespace blqw.MIS
         /// 初始化调度器
         /// </summary>
         /// <param name="entry"></param>
-        public Scheduler(IServiceEntry entry)
+        private Scheduler(IServiceEntry entry)
         {
             _entry = entry ?? throw new ArgumentNullException(nameof(entry));
         }
+
+        public static Scheduler Create(IServiceEntry entry)
+        {
+            var s = new Scheduler(entry);
+            entry.Container.OnInit();
+            return s;
+        }
+
+
+        public static async Task<Scheduler> CreateAsync(IServiceEntry entry)
+        {
+            var s = new Scheduler(entry);
+            await entry.Container.OnInitAsync();
+            return s;
+        }
+
         /// <summary>
         /// 异步执行调度程序,返回响应实体
         /// </summary>

@@ -12,24 +12,17 @@ namespace blqw.MIS.Descriptors
     public class ApiClassDescriptor : DescriptorBase
     {
         /// <summary>
-        /// API描述集合
-        /// </summary>
-        private readonly List<ApiDescriptor> _apis = new List<ApiDescriptor>();
-        /// <summary>
-        /// 属性描述集合
-        /// </summary>
-        private readonly List<ApiPropertyDescriptor> _properties = new List<ApiPropertyDescriptor>();
-
-        /// <summary>
         /// API类初始化
         /// </summary>
         /// <param name="type">API类型对应的<see cref="Type"/></param>
-        public ApiClassDescriptor(Type type)
+        /// <param name="apis">API描述集合</param>
+        /// <param name="properties">属性描述集合</param>
+        public ApiClassDescriptor(Type type, IList<ApiDescriptor> apis, IList<ApiPropertyDescriptor> properties)
         {
             Type = type ?? throw new ArgumentNullException(nameof(type));
             CheckType(type.GetTypeInfo(), true);
-            Apis = _apis.AsReadOnly();
-            Properties = _properties.AsReadOnly();
+            Apis = apis.AsReadOnly();
+            Properties = properties.AsReadOnly();
             Name = type.Name;
             FullName = GetFullName(type);
         }
@@ -95,44 +88,6 @@ namespace blqw.MIS.Descriptors
                 return throwIfError ? throw new InvalidOperationException("受保护的类型不能用作API类") : false;
             }
             return true;
-        }
-
-        /// <summary>
-        /// 构建一个ApiClass描述,如果<paramref name="type"/>不是ApiClass则返回null
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        internal static ApiClassDescriptor Create(Type type)
-        {
-            var typeInfo = type.GetTypeInfo();
-            if (CheckType(typeInfo, false) == false)
-            {
-                return null;
-            }
-
-            var methods = typeInfo.DeclaredMethods.Where(m => m.IsDefined(typeof(ApiAttribute)));
-
-            if (methods.Any() == false)
-            {
-                return null;
-            }
-
-            var apiclass = new ApiClassDescriptor(type);
-
-            apiclass._apis.AddRange(methods
-                .Select(it => ApiDescriptor.Create(it, apiclass))
-                .Where(it => it != null));
-            if (apiclass._apis.Count == 0)
-            {
-                return null;
-            }
-
-            apiclass._properties.AddRange(typeInfo.DeclaredProperties
-                .Where(it => it.IsDefined(typeof(ApiPropertyAttribute)))
-                .Select(it => ApiPropertyDescriptor.Create(it, apiclass))
-                .Where(it => it != null));
-
-            return apiclass;
         }
     }
 }

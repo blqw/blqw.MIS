@@ -43,7 +43,7 @@ namespace blqw.MIS.MVC.Services
         {
             var req = request.CastRequest();
             var param = req.Context.Request;
-            foreach (var p in req.ApiDescriptor.Parameters)
+            foreach (var p in req.Api.Parameters)
             {
                 var value = (object)param.Form[p.Name] ?? param.QueryString[p.Name];
                 if (value == null && p.IsEntity)
@@ -123,7 +123,7 @@ namespace blqw.MIS.MVC.Services
         {
             var req = request.CastRequest();
             var param = req.Context.Request;
-            foreach (var p in req.ApiDescriptor.Properties)
+            foreach (var p in req.Api.Properties)
             {
                 var value = (object)param.Headers[p.Name];
                 if (value == null)
@@ -156,8 +156,8 @@ namespace blqw.MIS.MVC.Services
         public object CreateApiClassInstance(IRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
-            if (request.Method.DeclaringType == null) throw new ArgumentException("无法推断ApiClass类型", nameof(request));
-            return request.Method.IsStatic ? null : Activator.CreateInstance(request.Method.DeclaringType);
+            if (request.Api == null) throw new ArgumentException("无法推断ApiClass类型", nameof(request));
+            return request.Api.Method.IsStatic ? null : Activator.CreateInstance(request.Api.ApiClass.Type);
         }
         
     }

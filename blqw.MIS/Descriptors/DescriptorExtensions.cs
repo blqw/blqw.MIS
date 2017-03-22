@@ -10,7 +10,7 @@ namespace blqw.MIS
     /// <summary>
     /// 服务扩展方法
     /// </summary>
-    public static class DescriptorExtensions
+    internal static class DescriptorExtensions
     {
         /// <summary>
         /// 转换当前集合为只读集合

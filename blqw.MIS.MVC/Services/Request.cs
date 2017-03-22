@@ -14,7 +14,7 @@ namespace blqw.MIS.MVC.Services
     /// <summary>
     /// 基于<seealso cref="HttpContext"/>实现的 IRequest
     /// </summary>
-    public class Request : IRequestBase, IRequest
+    public class Request : IRequest
     {
 
         public Request(HttpContext context)
@@ -64,12 +64,7 @@ namespace blqw.MIS.MVC.Services
         /// API实例
         /// </summary>
         public object Instance { get; internal set; }
-
-        /// <summary>
-        /// API方法
-        /// </summary>
-        public MethodInfo Method => ApiDescriptor?.Method;
-
+        
         /// <summary>
         /// 获取请求流
         /// </summary>
@@ -122,7 +117,7 @@ namespace blqw.MIS.MVC.Services
         /// <summary>
         /// 接口描述
         /// </summary>
-        public ApiDescriptor ApiDescriptor { get; internal set; }
+        public ApiDescriptor Api { get; internal set; }
 
 
         object IRequest.ActualRequest => ActualRequest;

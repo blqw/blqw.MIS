@@ -42,18 +42,10 @@
   <ItemGroup>
     <Compile Include="ApiContainer.cs" />
     <Compile Include="DefaultServices\DefaultInvoker.cs" />
-    <Compile Include="Descriptors\ApiClassDescriptor.cs" />
-    <Compile Include="Descriptors\ApiDescriptor.cs" />
-    <Compile Include="Descriptors\ApiParameterDescriptor.cs" />
-    <Compile Include="Descriptors\ApiPropertyDescriptor.cs" />
-    <Compile Include="Descriptors\DescriptorBase.cs" />
-    <Compile Include="Descriptors\IDescriptor.cs" />
-    <Compile Include="Descriptors\NamespaceDescriptor.cs" />
     <Compile Include="Scheduler.cs" />
     <Compile Include="IRequestSetter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IServiceEntry.cs" />
-    <Compile Include="Tools\IRequestBase.cs" />
     <Compile Include="Services\IApiClassDescriptorFactory.cs" />
     <Compile Include="Services\IInvoker.cs" />
     <Compile Include="Services\IResolver.cs" />

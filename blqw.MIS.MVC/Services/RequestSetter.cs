@@ -16,7 +16,7 @@ namespace blqw.MIS.MVC.Services
         public IReadOnlyList<ApiProperty> Properties { set => _request.Properties = value; }
         public object Result { set => _request.Result = value; }
         public object Instance { set => _request.Instance = value; }
-        public ApiDescriptor ApiDescriptor { set => _request.ApiDescriptor = value; }
+        public ApiDescriptor ApiDescriptor { set => _request.Api = value; }
 
         public IRequest Request => _request;
     }

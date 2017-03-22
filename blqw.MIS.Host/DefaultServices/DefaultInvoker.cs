@@ -50,22 +50,22 @@ namespace blqw.MIS.Services
         /// <param name="request"></param>
         /// <returns></returns>
         object IInvoker.Execute(IRequest request)
-            => Execute(request as IRequestBase ?? throw new ArgumentException("参数必须实现IRequestBase", nameof(request)));
+            => Execute(request ?? throw new ArgumentException("参数必须实现IRequestBase", nameof(request)));
         
         /// <summary>
         /// 执行调用器得到返回值
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public virtual object Execute(IRequestBase request)
+        public virtual object Execute(IRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
             SetProperty(request);
             var args = GetArguments(request);
-            return request.ApiDescriptor.Invoke(request.Instance, args);
+            return request.Api.Invoke(request.Instance, args);
         }
 
-        private static object[] GetArguments(IRequestBase request)
+        private static object[] GetArguments(IRequest request)
         {
             var args = new object[request.Arguments.Count];
             foreach (var arg in request.Arguments)
@@ -75,9 +75,9 @@ namespace blqw.MIS.Services
             return args;
         }
 
-        private static void SetProperty(IRequestBase request)
+        private static void SetProperty(IRequest request)
         {
-            var props1 = request.ApiDescriptor.Properties;
+            var props1 = request.Api.Properties;
             var props2 = request.Properties;
             for (var i = 0; i < props1.Count; i++)
             {
