@@ -41,6 +41,7 @@
       <HintPath>..\packages\blqw.Json.3.1.3.4\lib\net45\blqw.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
@@ -54,6 +55,9 @@
     <Compile Include="MISRoute.cs" />
     <Compile Include="HttpRouteHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BodyParser\IBodyParser.cs" />
+    <Compile Include="Services\BodyParser\JsonBodyParser.cs" />
+    <Compile Include="Services\BodyParser\UrlencodedParser.cs" />
     <Compile Include="Services\Request.cs" />
     <Compile Include="Services\RequestSetter.cs" />
     <Compile Include="Services\Resolver.cs" />

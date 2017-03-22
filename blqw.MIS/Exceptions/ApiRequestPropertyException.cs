@@ -3,12 +3,12 @@
 namespace blqw.MIS
 {
     /// <summary>
-    /// 请求参数错误
+    /// 请求属性错误
     /// </summary>
     public abstract class ApiRequestPropertyException : ApiRequestException
     {
         /// <summary>
-        /// 参数名称
+        /// 属性名称
         /// </summary>
         public string ParamName { get; }
 

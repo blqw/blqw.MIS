@@ -3,11 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Web;
 using blqw.MIS.Descriptors;
+using System.ComponentModel.Composition;
+using System.Linq;
 
 namespace blqw.MIS.MVC.Services
 {
     public class Resolver : IResolver
     {
+        static Resolver()
+        {
+            blqw.IOC.MEF.Import(typeof(Resolver));
+        }
+        [ImportMany]
+        private static readonly IBodyParser[] _parsers;
+
         public void Dispose()
         {
 
@@ -34,6 +43,12 @@ namespace blqw.MIS.MVC.Services
         /// <returns></returns>
         public IService Clone() => new Resolver();
 
+        private string GetMineType(string contentType)
+        {
+            var index = contentType.IndexOf(';');
+            return index < 0 ? contentType : contentType.Remove(index);
+        }
+
         /// <summary>
         /// 解析参数
         /// </summary>
@@ -42,77 +57,15 @@ namespace blqw.MIS.MVC.Services
         public IEnumerable<ApiArgument> ParseArguments(IRequest request)
         {
             var req = request.CastRequest();
-            var param = req.Context.Request;
-            foreach (var p in req.Api.Parameters)
+            var mineType = GetMineType(req.Context.Request.ContentType);
+            var parser = _parsers.FirstOrDefault(x => x.Match(mineType));
+            if (parser == null)
             {
-                var value = (object)param.Form[p.Name] ?? param.QueryString[p.Name];
-                if (value == null && p.IsEntity)
-                {
-                    value = ParseEntity(p.ParameterType, p.Properties, param, p.Name + ".", false);
-                }
-                if (value == null)
-                {
-                    if (p.HasDefaultValue)
-                    {
-                        yield return new ApiArgument(p.Parameter, p.DefaultValue);
-                    }
-                    else
-                    {
-                        throw new ApiRequestArgumentNotFoundException(p.Name);
-                    }
-                }
-                try
-                {
-                    value = value.ChangeType(p.ParameterType);
-                }
-                catch (Exception ex)
-                {
-                    var e = ex;
-                    while (e.InnerException != null) e = e.InnerException;
-                    throw new ApiRequestArgumentCastException(p.Name, detail: e.Message, innerException: ex);
-                }
-                yield return new ApiArgument(p.Parameter, value);
+                throw new ApiRequestException(415, $"服务器无法处理 {mineType} 类型的的实体", null);
             }
+            return parser.Parse(req);
         }
-
-        private object ParseEntity(Type entityType, IEnumerable<ApiPropertyDescriptor> properties, HttpRequest param, string prefix, bool fullNameOnly)
-        {
-            var entity = Activator.CreateInstance(entityType);
-            var hasValue = false;
-            foreach (var p in properties)
-            {
-                var fullname = prefix + p.Name;
-                var value = (object)param.Form[fullname] ?? param.QueryString[fullname];
-                if (value == null && fullNameOnly == false)
-                {
-                    value = param.Form[p.Name] ?? param.QueryString[p.Name];
-                }
-                if (value == null && p.IsEntity)
-                {
-                    value = ParseEntity(p.PropertyType, p.Properties, param, fullname + ".", true);
-                }
-                if (value == null && p.HasDefaultValue)
-                {
-                    value = p.DefaultValue;
-                }
-                if (value != null)
-                {
-                    hasValue = true;
-                    try
-                    {
-                        value = value.ChangeType(p.PropertyType);
-                        p.SetValue(entity, value);
-                    }
-                    catch (Exception e)
-                    {
-                        throw new ApiRequestArgumentCastException(fullname, detail: e.Message, innerException: e);
-                    }
-                }
-
-            }
-            return hasValue ? entity : null;
-        }
-
+        
 
         /// <summary>
         /// 解析属性
